@@ -38,6 +38,7 @@
         });
         
         setInterval(function(){
+            //privbar(true);
             //$("#blurcont").height($("#container").height()+12);
         }, 50);
     </script>
@@ -53,6 +54,20 @@
             <input id="mynameval" type="text" value="나" /></div>
             <div>크기조절 표시 <input type="checkbox" checked="checked" onclick="resizeview();"/></div>
             <div>미터기 닉네임 표시 <input id="showname" type="checkbox" checked="checked" onclick="goTab(currenttab + 1, $('#tab' + currenttab));"/></div>
+            <div>
+                <div id="privback" style="border:1px solid rgb(144,216,255); border-radius:3px; background:rgb(23,45,67); height:18px;">
+                    <div id="privbar" style="background:rgb(232,255,254); height:18px; width:50%; border-radius:2px;"></div>
+                </div>
+                <div style="border-radius:3px; background: -webkit-linear-gradient(left, 
+    rgba(0,0,0,.5) 0%,
+    rgba(0,0,0,.5) 5%,
+    rgba(0,0,0,.25) 15%,
+    rgba(0,0,0,.0) 100%); z-index:5; height:20px; position:relative; top:-20px; font-family:'맑은 고딕'; color:#FFF; line-height:20px; padding-left:5px; text-shadow:0px 0px 3px rgba(0,0,0,.5);">미리보기</div>
+            </div>
+            <div>자신 색상 (메인) R<input id="cr" type="number" min="0" max="255" value="232"  style="width:40px;" onchange="privbar(false);"/>
+            G<input id="cg" type="number" min="0" max="255" value="255" style="width:40px;" onchange="privbar(0);"/>
+            B<input id="cb" type="number" min="0" max="255" value="254"  style="width:40px;" onchange="privbar(0);"/>
+            <button onclick="privbar(1);">적용</div></div>
         </div>
         <div id="bottomset">
             <div class="chatloglikehandle settingcon" id="viewresize" style="border-bottom-right-radius:0px; float:right;">
@@ -73,6 +88,15 @@
         var viewback = true;
         var nicknameshow = true;
         var currenttab = 0; // max 3
+        
+        function privbar(bool)
+        {
+            if(bool == 1)
+            {
+                $(".self .bar-back").css("background", "rgb("+$("#cr").val()+","+$("#cg").val()+","+$("#cb").val()+")");
+            }
+            $("#privbar").css("background", "rgb("+$("#cr").val()+","+$("#cg").val()+","+$("#cb").val()+")");
+        }
         
         function resizeview()
         {

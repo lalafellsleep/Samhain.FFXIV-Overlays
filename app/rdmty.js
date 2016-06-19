@@ -442,9 +442,11 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                 }
             }
             
-            if ($("input:checkbox[id='viewname']").is(":checked") && !isSelf)
+            var virtualname = combatant.name;
+            
+            if(!$("input:checkbox[id='showname']").is(":checked") && !isSelf)
             {
-                combatant.name = "";
+                virtualname = "";
             }
 
             if (combatant.Job !== "") {
@@ -456,7 +458,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                         }
                         stats = {
                             job: combatant.Job || '',
-                            characterName: combatant.name,
+                            characterName: virtualname,
                             total: combatant.healed,
                             totalFormatted: checkThousand(combatant.healed),
                             perSecond: Math.round(combatant.enchps)+' HPS',
@@ -474,7 +476,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                         }
                         stats = {
                             job: combatant.Job || '',
-                            characterName: combatant.name,
+                            characterName: virtualname,
                             total: combatant.damagetaken,
                             totalFormatted: checkThousand(combatant.damagetaken),
                             perSecond: '받은힐 '+checkThousand(combatant.healstaken),
@@ -491,7 +493,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                     }
                     stats = {
                             job: combatant.Job || '',
-                            characterName: combatant.name,
+                            characterName: virtualname,
                             total: combatant.damage,
                             totalFormatted: checkThousand(combatant.damage),
                             perSecond: Math.round(combatant.encdps)+' DPS',
@@ -506,7 +508,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                     }
                     stats = {
                         job: combatant.Job || '',
-                        characterName: combatant.name,
+                        characterName: virtualname,
                         total: combatant.damage,
                         crithit: '극대 '+combatant['crithit%'],
                         TOHIT: '명중 '+combatant.TOHIT+'%',

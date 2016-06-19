@@ -288,7 +288,7 @@ li:last-child {
     line-height: 20px;
     overflow: hidden;
     
-    
+    border-radius:3px;
     background: -webkit-linear-gradient(left, 
     rgba(0,0,0,.5) 0%,
     rgba(0,0,0,.5) 5%,
@@ -374,11 +374,11 @@ background: -webkit-linear-gradient(top,  #2D9600 0%,#2D9600 80%,#720000 80%,#C0
 }
 
 .show-job-colors .창술사 .bar, .show-job-colors .용기사 .bar {
-background: -webkit-linear-gradient(top,  #3752d8 0%,#3752d8 49%,#720000 49%,#C00000 100%);
+background: -webkit-linear-gradient(top,  #3752d8 0%,#3752d8 80%,#720000 80%,#C00000 100%);
 }
 
 .show-job-colors .환술사 .bar, .show-job-colors .백마도사 .bar {
-background: -webkit-linear-gradient(top,  #767676 0%,#767676 49%,#007200 49%,#00C000 100%);
+background: -webkit-linear-gradient(top,  #767676 0%,#767676 80%,#007200 80%,#00C000 100%);
 }
 
 .show-job-colors .주술사 .bar, .show-job-colors .흑마도사 .bar {
@@ -390,7 +390,7 @@ background: -webkit-linear-gradient(top,  #ee2e48 0%,#ee2e48 80%,#720000 80%,#C0
 }
 
 .show-job-colors .학자 .bar {
-background: -webkit-linear-gradient(top,  #4442a8 0%,#4442a8 49%,#007200 49%,#00C000 100%);
+background: -webkit-linear-gradient(top,  #4442a8 0%,#4442a8 80%,#007200 80%,#00C000 100%);
 }
 
 .show-job-colors .궁술사 .bar, .show-job-colors .음유시인 .bar {

@@ -1,6 +1,28 @@
 // fiddle: http://jsfiddle.net/v1ddnsvh/8/
 /* global window */
-
+var language_kr = 1;
+var languagepack = 
+{
+    "lastEncounter" : ["마지막 전투", "Last Encounter"],
+    "totalDamage" : ["총 대미지", "Tot. Dmg"],
+    "totalHeal" : ["총 힐량", "Tot. Heal"],
+    "RDPS" : ["RDPS", "RDPS"],
+    "RHPS" : ["RDPS", "RDPS"],
+    "Dodge" : ["빗맞음", "Dodge"],
+    "damagesTaken" : ["받은 데미지 ", "Dmg Recv "],
+    "healsTaken" : ["받은 힐 ", "Heal Recv "],
+    "timeOfDeath" : ["회 사망", " Death"],
+    "accNCrit" : ["적중/극대", "Acc/Crit"],
+    "displayName" : ["미터기 유저명 표시", "Display Player Name"],
+    "displayMe" : ["내 이름 표시", "My Name"],
+    "displayResize" : ["크기조절 표시", "Resize Handle Display"],
+    "acc" : ["명중", "Acc"],
+    "crit" : ["극대", "Crit"],
+    "me" : ["나", "Me"],
+    "DPS" : ["딜량", "DPS"],
+    "HPS" : ["힐량", "HPS"],
+    "DMG" : ["피격", "Dmg"]
+};
 var IMAGE_PATH = 'images';
 var EncountersArray = [];
 
@@ -105,7 +127,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
                                 this.props.characterName
                             ),
                             React.createElement("span", {className: "character-job "+this.props.job}, 
-                                this.props.job
+                                this.props.displayJobName
                             )
                         )
                     )
@@ -176,7 +198,7 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
 
                             React.createElement("div", {className: ("dropdown-menu encounters-list-dropdown " + (this.state.showEncountersList ? '' : 'hidden'))}, 
                                 React.createElement("div", {onClick: this.props.onSelectEncounter.bind(this, null)}, 
-                                    "마지막 전투"
+                                    languagepack.lastEncounter[language_kr]
                                 ), 
 
                                 EncountersArray.map(function(encounter, i) {
@@ -207,61 +229,37 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
                 React.createElement("div", {className: "extra-details"}, 
                     React.createElement("div", {className: "extra-row damage"}, 
                         React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "총데미지 :"), 
+                            React.createElement("span", {className: "label ff-header"}, languagepack.totalDamage[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
                                 checkThousand(encounter.damage)
                             )
                         ), 
                         React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "RDPS :"), 
+                            React.createElement("span", {className: "label ff-header"}, languagepack.RDPS[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
                                 checkThousand(encounter.encdps)
                             )
                         ), 
-/*                        React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "Crits"), 
-                            React.createElement("span", {className: "value ff-text"}, 
-                                encounter['crithit%']
-                            )
-                        ), */
                         React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "빗맞음 :"), 
+                            React.createElement("span", {className: "label ff-header"}, languagepack.Dodge[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
                                 encounter['misses']
                             )
                         )
-/*                        React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "Max"), 
-                            React.createElement("span", {className: "value ff-text"}, 
-                                encounter.maxhit
-                            )
-                        ) */
                     ), 
                     React.createElement("div", {className: "extra-row healing"}, 
                         React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "총힐량 :"), 
+                            React.createElement("span", {className: "label ff-header"}, languagepack.totalHeal[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
                                 checkThousand(encounter.healed)
                             )
                         ), 
                         React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "RHPS :"), 
+                            React.createElement("span", {className: "label ff-header"}, languagepack.RHPS[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
                                 checkThousand(encounter.enchps)
                             )
                         )
-  /*                      React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "Crits"), 
-                            React.createElement("span", {className: "value ff-text"}, 
-                                encounter['critheal%']
-                            )
-                        ), 
-                        React.createElement("div", {className: "cell"}, 
-                            React.createElement("span", {className: "label ff-header"}, "Max"), 
-                            React.createElement("span", {className: "value ff-text"}, 
-                                encounter.maxheal
-                            )
-                        )*/
                     )
                 )
             )
@@ -300,11 +298,15 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
         var isSelf;
         var rank = 1;
         var stats;
+        var displayJob = "";
 
         for (var i = 0; i < names.length; i++) {
             combatant = isDataArray ? this.props.data[i] : this.props.data[names[i]];
             stats = null;
-            
+
+            if (language_kr == 1)
+                displayJob = combatant.Job.toUpperCase();
+
 			if (combatant.Job =="Acn")
 			{   
 				combatant.Job = '비술사';
@@ -424,6 +426,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                     }
                     else if (combatant.name.indexOf("Limit Break") === 0) {
                         combatant.Job = "리미트";
+                        combatant.JobN = "Limit Break";
                     }
                     else if (combatant.name.match(/[^a-zA-Z()'\s]/)) {
                         combatant.Job = "초코보";
@@ -432,6 +435,12 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                         combatant.Job = "";
                     }
 			}
+
+            if (language_kr == 0)
+                displayJob = combatant.Job;
+
+            if (combatant.JobN == "" || combatant.JobN === undefined)
+                combatant.JobN = displayJob;
 
             isSelf = combatant.name === 'YOU' || combatant.name === 'You' || combatant.name === $("#mynameval").val();
             if(isSelf)
@@ -451,12 +460,13 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
 
             if (combatant.Job !== "") {
                 // should probably fix this
-                if (this.props.currentView === '2. 총힐량') {
+                if (this.props.currentView === '2') {
                     if (parseInt(combatant.healed, 10) > 0) {
                         if (!maxdps) {
                             maxdps = parseFloat(combatant.healed);
                         }
                         stats = {
+                            displayJobName: combatant.JobN,
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.healed,
@@ -464,34 +474,36 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             perSecond: Math.round(combatant.enchps)+' HPS',
                             additional: '['+checkThousand(Math.round(combatant.healed*(1-getStrCuts(combatant['OverHealPct'])/100)))+']',
 							additional1: 1-(getStrCuts(combatant['OverHealPct'])/100),
-                            crithit: '해제:'+combatant.cures+', ',
+                            crithit: languagepack.Dodge[language_kr]+':'+combatant.cures+', ',
                             percentage: combatant['healed%']
                         }
                     }
                 }
-                else if (this.props.currentView === '3. 받은데미지') {
+                else if (this.props.currentView === '3') {
                     if (parseInt(combatant.damagetaken, 10) > 0) {
                         if (!maxdps) {
                             maxdps = parseFloat(combatant.damagetaken);
                         }
                         stats = {
+                            displayJobName: combatant.JobN,
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.damagetaken,
                             totalFormatted: checkThousand(combatant.damagetaken),
-                            perSecond: '받은힐 '+checkThousand(combatant.healstaken),
-                            percentage: combatant.deaths +"회 사망",                            
+                            perSecond: languagepack.healsTaken[language_kr] +checkThousand(combatant.healstaken),
+                            percentage: combatant.deaths + languagepack.timeOfDeath[language_kr],                            
 /*                          perSecond: combatant.ParryPct,
                             percentage: combatant.BlockPct */
                             additional1: 1,
                         }
                     }
                 }
-                else if (this.props.currentView === '1. 총딜량') {
+                else if (this.props.currentView === '1') {
                     if (!maxdps) {
                         maxdps = parseFloat(combatant.damage);
                     }
                     stats = {
+                            displayJobName: combatant.JobN,
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.damage,
@@ -502,16 +514,17 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
 
                         }
 				     }
-                else if (this.props.currentView === '4. 적중&극대') {
+                else if (this.props.currentView === '4') {
                     if (!maxdps) {
                         maxdps = parseFloat(combatant.damage);
                     }
                     stats = {
+                        displayJobName: combatant.JobN,
                         job: combatant.Job || '',
                         characterName: virtualname,
                         total: combatant.damage,
-                        crithit: '극대 '+combatant['crithit%'],
-                        TOHIT: '명중 '+combatant.TOHIT+'%',
+                        crithit: languagepack.crit[language_kr] + ' '+combatant['crithit%'],
+                        TOHIT: languagepack.acc[language_kr] + ' '+combatant.TOHIT+'%',
                         additional1: 1,
                     }
                 }
@@ -683,14 +696,12 @@ var ____Class4=React.Component;for(var ____Class4____Key in ____Class4){if(____C
         );
     }});
 
-
-//<div class="handlecont2"><div class="handlecont_in handlecont_in2">적중, 극대</div></div>
 DamageMeter.defaultProps = {
     chartViews: [
-        '1. 총딜량',
-        '2. 총힐량',
-        '3. 받은데미지',
-        '4. 적중&극대'
+        '1',
+        '2',
+        '3',
+        '4'
     ],
     parseData: {},
     noJobColors: false

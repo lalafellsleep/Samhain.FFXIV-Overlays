@@ -96,7 +96,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
                             ), 
                             React.createElement("div", {className: "info"}, 
                             React.createElement("span", {className: "job-icon"}, 
-                            React.createElement("img", {src: this.jobImage(this.props.job)})						
+                            React.createElement("img", {src: this.jobImage(this.props.job), className: this.props.job})						
 							),
                             React.createElement("span", {className: "rank"}, 
                                 this.props.rank, "."
@@ -104,7 +104,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
                             React.createElement("span", {className: "character-name"}, 
                                 this.props.characterName
                             ),
-                            React.createElement("span", {className: "character-job"}, 
+                            React.createElement("span", {className: "character-job "+this.props.job}, 
                                 this.props.job
                             )
                         )
@@ -420,7 +420,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                         combatant.Job = "포탑";
                     }
                     else if (combatant.name.indexOf("자동포탑 비숍") === 0) {
-                        combatant.Job = "비숍";
+                        combatant.Job = "포탑";
                     }
                     else if (combatant.name.indexOf("Limit Break") === 0) {
                         combatant.Job = "리미트";

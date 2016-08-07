@@ -1,6 +1,6 @@
 // fiddle: http://jsfiddle.net/v1ddnsvh/8/
 /* global window */
-var language_kr = 1;
+var language_kr = 0;
 var languagepack = 
 {
     "lastEncounter" : ["마지막 전투", "Last Encounter"],

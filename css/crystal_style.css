@@ -289,7 +289,23 @@ li:last-child {
     rgba(0,0,0,.15) 75%,
     rgba(0,0,0,.3) 100%);
 }
-/*c
+
+.setting_border
+{
+	border:1px solid rgba(255,255,255,.25);
+	padding:3px; margin-bottom:5px; font-size:12px;
+	border-radius:5px;
+}
+
+.setting_border input
+{
+	background:rgba(255,255,255,.5);
+	border:0px;
+	padding:3px;
+	border-radius:5px;
+}
+
+/*
 .character-job
 {
     color:#F04040;

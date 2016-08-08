@@ -25,10 +25,9 @@ var languagepack =
 };
 var IMAGE_PATH = 'images';
 var EncountersArray = [];
-
 var React = window.React;
-
-var formatNumber = function(number)  {
+var formatNumber = function(number)  
+{
     number = parseFloat(number, 10);
 
     if (number >= 1000) {
@@ -41,29 +40,32 @@ var formatNumber = function(number)  {
     return number.toFixed(2);
 };
 
-function checkThousand(n) {
- var reg = /(^[+-]?\d+)(\d{3})/;   
+function checkThousand(n) 
+{
+    var reg = /(^[+-]?\d+)(\d{3})/;   
 
- n += '';                         
+    n += '';                         
 
-  while (reg.test(n))
-  n = n.replace(reg, '$1' + ',' + '$2');
- return n;
+    while (reg.test(n))
+        n = n.replace(reg, '$1' + ',' + '$2');
+
+    return n;
 }
 
-function getStrCuts(str) {
-        ns = str.substr(0, str.length-1);
-        if (ns.length != str.length) {
-            ns = ns + "";
-        }
-        return ns;
+function getStrCuts(str) 
+{
+    ns = str.substr(0, str.length-1);
+    if (ns.length != str.length) 
+    {
+        ns = ns + "";
     }
-
-
+    return ns;
+}
 
 var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____Class0.hasOwnProperty(____Class0____Key)){CombatantCompact[____Class0____Key]=____Class0[____Class0____Key];}}var ____SuperProtoOf____Class0=____Class0===null?null:____Class0.prototype;CombatantCompact.prototype=Object.create(____SuperProtoOf____Class0);CombatantCompact.prototype.constructor=CombatantCompact;CombatantCompact.__superConstructor__=____Class0;function CombatantCompact(){"use strict";if(____Class0!==null){____Class0.apply(this,arguments);}}
     Object.defineProperty(CombatantCompact.prototype,"jobImage",{writable:true,configurable:true,value:function(job) {"use strict";
-        if (window.JSFIDDLE) {
+        if (window.JSFIDDLE) 
+        {
             return window.GLOW_ICONS[job.toLowerCase()];
         }
 

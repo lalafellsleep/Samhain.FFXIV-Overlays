@@ -3,25 +3,25 @@
 var language_kr = 0;
 var languagepack = 
 {
-    "lastEncounter" : ["마지막 전투", "Last Encounter"],
-    "totalDamage" : ["총 대미지", "Tot. Dmg"],
-    "totalHeal" : ["총 힐량", "Tot. Heal"],
-    "RDPS" : ["RDPS", "RDPS"],
-    "RHPS" : ["RDPS", "RDPS"],
-    "Dodge" : ["빗맞음", "Dodge"],
-    "damagesTaken" : ["받은 데미지 ", "Dmg Recv "],
-    "healsTaken" : ["받은 힐 ", "Heal Recv "],
-    "timeOfDeath" : ["회 사망", " Death"],
-    "accNCrit" : ["적중/극대", "Acc/Crit"],
-    "displayName" : ["미터기 유저명 표시", "Display Player Name"],
-    "displayMe" : ["내 이름 표시", "My Name"],
-    "displayResize" : ["크기조절 표시", "Resize Handle Display"],
-    "acc" : ["명중", "Acc"],
-    "crit" : ["극대", "Crit"],
-    "me" : ["나", "Me"],
-    "DPS" : ["딜량", "DPS"],
-    "HPS" : ["힐량", "HPS"],
-    "DMG" : ["피격", "Dmg"]
+    "lastEncounter" : ["마지막 전투", "Last Encounter", "最後の戦い"],
+    "totalDamage" : ["총 대미지", "Tot. Dmg", "総ダメージ"],
+    "totalHeal" : ["총 힐량", "総ヒーリング"],
+    "RDPS" : ["RDPS", "RDPS", "合計DPS"],
+    "RHPS" : ["RDPS", "RDPS", "合計HPS"],
+    "Dodge" : ["빗맞음", "Dodge", "回避"],
+    "damagesTaken" : ["받은 데미지 ", "Dmg Recv ", "被撃 "],
+    "healsTaken" : ["받은 힐 ", "Heal Recv ", "回復 "],
+    "timeOfDeath" : ["회 사망", " Death", "回 死亡"],
+    "accNCrit" : ["적중/극대", "Acc/Crit", "衝/極"],
+    "displayName" : ["미터기 유저명 표시", "Display Player Name", "ユーザ名の表示"],
+    "displayMe" : ["내 이름 표시", "My Name", "本人名の表示"],
+    "displayResize" : ["크기조절 표시", "Resize Handle Display", "サイズ変更の表示"],
+    "acc" : ["명중", "Acc", "衝突"],
+    "crit" : ["극대", "Crit", "極大"],
+    "me" : ["나", "Me", "自分"],
+    "DPS" : ["딜량", "DPS", "DPS"],
+    "HPS" : ["힐량", "HPS", "HPS"],
+    "DMG" : ["피격", "Dmg", "被撃"]
 };
 var IMAGE_PATH = 'images';
 var EncountersArray = [];

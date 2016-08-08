@@ -166,7 +166,9 @@ ul {
     padding: 0 6px 6px;
 }
 
-.header {
+.header 
+{
+	padding-bottom:3px;
 }
 
 .encounter-header {
@@ -174,7 +176,7 @@ ul {
     align-items: center;
     justify-content: space-between;
 
-    padding: 6px 6px 1px 6px;
+    padding: 3px;
     font-size: 11px;
     -webkit-user-select: none;
 }
@@ -268,6 +270,8 @@ li {
     rgba(0,0,0,0) 0%,
     rgba(0,0,0,.15) 75%,
     rgba(0,0,0,.3) 100%);
+
+	transition:.2s;
 }
 
 li::first-child
@@ -467,7 +471,8 @@ li:last-child {
 
 .job-icon>.전사
 {
-    -webkit-filter:hue-rotate(285deg);
+    -webkit-filter:hue-rotate(285deg), contrast(4);
+	filter:hue-rotate(285deg), contrast(4);
     opacity:.5;
 }
 

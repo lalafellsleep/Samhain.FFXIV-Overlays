@@ -192,8 +192,10 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
             React.createElement("div", {className: ("header " + (this.state.expanded ? '' : 'collapsed'))}, 
                 React.createElement("div", {className: "encounter-header"}, 
                     React.createElement("div", {className: "encounter-data ff-header"}, 
+                        React.createElement("span", {className: "duration"}, 
+                            "[", encounter.duration, "]"),
                         React.createElement("span", {className: "target-name dropdown-parent", onClick: this.handleEncounterClick.bind(this)}, 
-                            encounter.title, 
+                            encounter.title + " (" + encounter.encdps.substr(0, encounter.encdps.indexOf(".")) +")",
 
 
                             React.createElement("div", {className: ("dropdown-menu encounters-list-dropdown " + (this.state.showEncountersList ? '' : 'hidden'))}, 
@@ -210,12 +212,6 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
 
                                 }.bind(this))
                             )
-
-
-
-                        ), 
-                        React.createElement("span", {className: "duration"}, 
-                            "(", encounter.duration, ")"
                         ), 
                         React.createElement("span", {className: ("arrow " + (this.state.expanded ? 'up' : 'down')), onClick: this.handleExtraDetails.bind(this)})
                     ), 

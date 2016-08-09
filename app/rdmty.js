@@ -5,14 +5,14 @@ var languagepack =
 {
     "lastEncounter" : ["마지막 전투", "Last Encounter", "最後の戦い"],
     "totalDamage" : ["총 대미지", "Tot. Dmg", "総ダメージ"],
-    "totalHeal" : ["총 힐량", "総ヒーリング"],
+    "totalHeal" : ["총 힐량", "Tot. Heal", "総ヒーリング"],
     "RDPS" : ["RDPS", "RDPS", "合計DPS"],
-    "RHPS" : ["RDPS", "RDPS", "合計HPS"],
-    "Dodge" : ["빗맞음", "Dodge", "回避"],
+    "RHPS" : ["RHPS", "RHPS", "合計HPS"],
+    "Dodge" : ["미스", "Dodge", "回避"],
     "damagesTaken" : ["받은 데미지 ", "Dmg Recv ", "被撃 "],
     "healsTaken" : ["받은 힐 ", "Heal Recv ", "回復 "],
     "timeOfDeath" : ["회 사망", " Death", "回 死亡"],
-    "accNCrit" : ["적중/극대", "Acc/Crit", "衝/極"],
+    "accNCrit" : ["기타", "Acc/Crit", "衝/極"],
     "displayName" : ["미터기 유저명 표시", "Display Player Name", "ユーザ名の表示"],
     "displayMe" : ["내 이름 표시", "My Name", "本人名の表示"],
     "displayResize" : ["크기조절 표시", "Resize Handle Display", "サイズ変更の表示"],
@@ -62,6 +62,11 @@ function getStrCuts(str)
     return ns;
 }
 
+function returnSpanblock(string)
+{
+    return "<span class=\"datablock\">"+string+"</span>";
+}
+
 var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____Class0.hasOwnProperty(____Class0____Key)){CombatantCompact[____Class0____Key]=____Class0[____Class0____Key];}}var ____SuperProtoOf____Class0=____Class0===null?null:____Class0.prototype;CombatantCompact.prototype=Object.create(____SuperProtoOf____Class0);CombatantCompact.prototype.constructor=CombatantCompact;CombatantCompact.__superConstructor__=____Class0;function CombatantCompact(){"use strict";if(____Class0!==null){____Class0.apply(this,arguments);}}
     Object.defineProperty(CombatantCompact.prototype,"jobImage",{writable:true,configurable:true,value:function(job) {"use strict";
         if (window.JSFIDDLE) 
@@ -99,7 +104,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
                             this.props.additional ?
                             React.createElement("span", {className: "additional"}, 
                                 this.props.additional
-                            ) : null, 
+                            ) : null/*, 
                             "(", 
                             this.props.perSecond ?
                             React.createElement("span", {className: "ps"}, 
@@ -116,7 +121,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
                             React.createElement("span", {className: "percent"}, 
                                 this.props.percentage
                             ), 
-                            ")"
+                            ")"*/
                             ), 
                             React.createElement("div", {className: "info"}, 
                             React.createElement("span", {className: "job-icon"}, 
@@ -226,6 +231,7 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
                 ), 
                 React.createElement("div", {className: "extra-details"}, 
                     React.createElement("div", {className: "extra-row damage"}, 
+                        React.createElement("div", {className: "detailTitle"}, encounter.title),
                         React.createElement("div", {className: "cell"}, 
                             React.createElement("span", {className: "label ff-header"}, languagepack.totalDamage[language_kr] + " :"), 
                             React.createElement("span", {className: "value ff-text"}, 
@@ -468,9 +474,13 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.healed,
-                            totalFormatted: checkThousand(combatant.healed),
-                            perSecond: Math.round(combatant.enchps)+' HPS',
-                            additional: '['+checkThousand(Math.round(combatant.healed*(1-getStrCuts(combatant['OverHealPct'])/100)))+']',
+                            totalFormatted: React.createElement("span", {className:"datas"},
+                                Math.round(combatant.enchps)+' HPS',
+                                React.createElement("span", {className:"hoverview"},
+                                    '[' + combatant.healed + ' (' + combatant['healed%'] + ') ] Ov.H [' + combatant['OverHealPct'] +']'
+                                )
+                            ),
+                            //additional: '['+checkThousand(Math.round(combatant.healed*(1-getStrCuts(combatant['OverHealPct'])/100)))+']',
 							additional1: 1-(getStrCuts(combatant['OverHealPct'])/100),
                             crithit: languagepack.Dodge[language_kr]+':'+combatant.cures+', ',
                             percentage: combatant['healed%']
@@ -487,7 +497,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.damagetaken,
-                            totalFormatted: checkThousand(combatant.damagetaken),
+                            totalFormatted: checkThousand(combatant.damagetaken) + ' (' + combatant.deaths + languagepack.timeOfDeath[language_kr] +')',
                             perSecond: languagepack.healsTaken[language_kr] +checkThousand(combatant.healstaken),
                             percentage: combatant.deaths + languagepack.timeOfDeath[language_kr],                            
 /*                          perSecond: combatant.ParryPct,
@@ -505,8 +515,13 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.damage,
-                            totalFormatted: checkThousand(combatant.damage),
-                            perSecond: Math.round(combatant.encdps)+' DPS',
+                            totalFormatted: React.createElement("span", {className:"datas"},
+                                Math.round(combatant.encdps)+' DPS',
+                                React.createElement("span", {className:"hoverview"},
+                                    '[' + checkThousand(combatant.damage) + ' (' + combatant['damage%'] + ') ]'
+                                )
+                            ),
+                            //perSecond: Math.round(combatant.encdps)+' DPS',
                             additional1: 1,
                             percentage: combatant['damage%']
 
@@ -514,16 +529,27 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
 				     }
                 else if (this.props.currentView === '4') {
                     if (!maxdps) {
-                        maxdps = parseFloat(combatant.damage);
+                        maxdps = combatant.damage;
                     }
                     stats = {
                         displayJobName: combatant.JobN,
                         job: combatant.Job || '',
                         characterName: virtualname,
                         total: combatant.damage,
+                        additional: React.createElement("span", {className:"datas"},
+                            React.createElement("span", {className:"datablock", style:{width:"23px"}},
+                                combatant.TOHIT
+                            ),
+                            React.createElement("span", {className:"datablock", style:{width:"23px"}},
+                                combatant["misses"]
+                            ),
+                            React.createElement("span", {className:"datablock", style:{width:"20px"}},
+                                combatant['crithit%'].replace("%","")
+                            )
+                        ),
                         crithit: languagepack.crit[language_kr] + ' '+combatant['crithit%'],
                         TOHIT: languagepack.acc[language_kr] + ' '+combatant.TOHIT+'%',
-                        additional1: 1,
+                        additional1: 1
                     }
                 }
 
@@ -662,6 +688,19 @@ var ____Class4=React.Component;for(var ____Class4____Key in ____Class4){if(____C
                 }), function(d)  {
                     if (this.state.currentViewIndex === 2) {
                         return -parseInt(d.damagetaken, 10);
+                    }
+                }.bind(this));
+            }
+	        else if (this.state.currentViewIndex === 4) 
+            {
+                data = _.sortBy(_.filter(data, function(d)  
+                {
+                    return parseInt(Math.abs(d.damagetaken - d.healstaken), 10) > 0;
+                }), function(d) 
+                {
+                    if (this.state.currentViewIndex === 4) 
+                    {
+                        return -parseInt(d.damagetaken - d.healstaken, 10);
                     }
                 }.bind(this));
             }

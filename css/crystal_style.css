@@ -132,11 +132,23 @@ html
     z-index:-1;
 }
 
-#container {
+#containercase
+{
+    position:fixed;
+    top:6px;
+    left:6px;
+    right:12px;
+    bottom:40px;
+	overflow:hidden;
+}
+
+#container 
+{	
+	padding:6px;
     font-family: "맑은 고딕", Tahoma;
     font-size: 12px;
     color: rgb(232, 255, 254);
-    padding:6px;
+	overflow:auto;
 }
 
 #source {
@@ -152,7 +164,15 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+	overflow:hidden;
+	overflow-y:scroll;
+	position:absolute;
+	top:50px;
+	left:6px;
+	right:-20px;
+	bottom:0px;
 }
+
 .ff-header {
     color: #DED7BE;
     text-shadow: -1px 0 2px #795516, 0 1px 2px #795516, 1px 0 2px #795516, 0 -1px 2px #795516;
@@ -160,10 +180,52 @@ ul {
 .ff-text {
     color: #E2EBF5;
     text-shadow: -1px 0 3px #217AA2, 0 1px 3px #217AA2, 1px 0 3px #217AA2, 0 -1px 3px #217AA2;
+	float:right;
 }
 
 .combatants {
     padding: 0 6px 6px;
+}
+
+.hoverview
+{
+	transition:1s;
+	display:inline-block;
+	width:1px;
+	padding-left:10px;
+	margin-right:-8px;
+}
+
+.datas:hover .hoverview
+{
+	width:auto;
+}
+
+.datablock
+{
+	display:inline-block;
+	padding-left:10px; padding-right:10px;
+
+	line-height:17px;
+	border-left:1px solid rgba(0,0,0,0.5);
+
+	text-align:right;
+}
+
+.detailTitle
+{
+	left:10px;
+	right:10px;
+	top:-10px;
+	position:absolute;
+
+	background:#000;
+	border-radius:5px;
+	box-shadow:inset 0px 0px 5px rgba(210, 240, 255, .5), 0px 1px 5px rgba(210, 240, 255, .5);
+	border:1px solid rgba(210, 240, 255, .75);
+	text-align:center;
+    color: #E2EBF5;
+    text-shadow: -1px 0 3px #217AA2, 0 1px 3px #217AA2, 1px 0 3px #217AA2, 0 -1px 3px #217AA2;
 }
 
 .header 
@@ -187,9 +249,18 @@ ul {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.extra-details {
-    padding: 2px 6px 6px 10px;
+.extra-details 
+{
+    padding: 10px;
+	padding-top:20px;
+	z-index:99;
+	position:absolute;
+	background:rgba(0,0,0,.8);
+	border-radius:5px;
+	box-shadow:inset 0px 0px 5px rgba(210, 240, 255, .5);
+	border:1px solid rgba(210, 240, 255, .75);
 }
+
 .collapsed .extra-details {
     display: none;
 }
@@ -197,6 +268,8 @@ ul {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+	display:block;
+	line-height:20px;
 }
 .extra-details .cell {
     margin-right: 4px;
@@ -279,8 +352,9 @@ li::first-child
     
 }
 
-li:last-child {
-    margin-bottom: 0;
+li:last-child 
+{
+    margin-bottom:10px;
 }
 
 .self {

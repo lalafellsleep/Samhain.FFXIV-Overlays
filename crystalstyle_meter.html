@@ -50,11 +50,13 @@
 		<div id="realcont">
 			<div id="blurcont">
 			</div>
-			<div id="container">
-				◇ DPS Meter v2016.06.16<br>
-				Modify by Laiglinne - [KR] Altema
+			<div id="containercase">
+				<div id="container">
+					◇ DPS Meter v2016.06.16<br>
+					Modify by Laiglinne - [KR] Altema
+				</div>
 			</div>
-			<div id="setainer" style="display:none; padding:10px; color:#FFF;">
+			<div id="setainer" style="display:none; padding:10px; color:#FFF; z-index:99; position:absolute;">
 				<div class="setting_border"><span id="_displayMe">내 이름 표시</span> <input id="myname" type="checkbox" checked="checked" />
 				<input id="mynameval" type="text" value="나" /></div>
 				<div class="setting_border"><span id="_displayResize">크기조절 표시</span> <input type="checkbox" checked="checked" onclick="resizeview();" id="showresize"/></div>
@@ -86,21 +88,21 @@
 			$("input:checkbox[id='showname']").prop("checked", setting.showPlayerName);
 			$("input:checkbox[id='showresize']").prop("checked", setting.showResize);
 
-			viewback = setting.showResize;
+			viewback = !setting.showResize;
 			resizeview();
 
-			if (language_kr == 1)
-			{
-				$("#_DPS").html(languagepack.DPS[1]);
-				$("#_HPS").html(languagepack.HPS[1]);
-				$("#_DMG").html(languagepack.DMG[1]);
-				$("#_accNCrit").html(languagepack.accNCrit[1]);
+			$("#_DPS").html(languagepack.DPS[language_kr]);
+			$("#_HPS").html(languagepack.HPS[language_kr]);
+			$("#_DMG").html(languagepack.DMG[language_kr]);
+			$("#_accNCrit").html(languagepack.accNCrit[language_kr]);
 
-				$("#mynameval").val(languagepack.me[1]);
-				$("#_displayMe").html(languagepack.displayMe[1]);
-				$("#_displayResize").html(languagepack.displayResize[1]);
-				$("#_displayName").html(languagepack.displayName[1]);
-			}
+			$("#mynameval").val(languagepack.me[language_kr]);
+			$("#_displayMe").html(languagepack.displayMe[language_kr]);
+			$("#_displayResize").html(languagepack.displayResize[language_kr]);
+			$("#_displayName").html(languagepack.displayName[language_kr]);
+			
+			$("#_acc").html(languagepack.acc[language_kr]);
+			$("#_dodge").html(languagepack.Dodge[language_kr]);
 			
 			function privbar(bool)
 			{

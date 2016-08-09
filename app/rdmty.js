@@ -21,7 +21,8 @@ var languagepack =
     "me" : ["나", "Me", "自分"],
     "DPS" : ["딜량", "DPS", "DPS"],
     "HPS" : ["힐량", "HPS", "HPS"],
-    "DMG" : ["피격", "Dmg", "被撃"]
+    "DMG" : ["피격", "Dmg", "被撃"],
+    "Limitbreak" : ["리미트 브레이크","Limit Break","リミット"]
 };
 var IMAGE_PATH = 'images';
 var EncountersArray = [];
@@ -202,7 +203,7 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
                         React.createElement("span", {className: "duration"}, 
                             "[", encounter.duration, "]"),
                         React.createElement("span", {className: "target-name dropdown-parent", onClick: this.handleEncounterClick.bind(this)}, 
-                            encounter.title + " (" + encounter.encdps.substr(0, encounter.encdps.indexOf(".")) +")",
+                            encounter.title + " (" + encounter.encdps.substr(0, encounter.encdps.indexOf(".")) +" DPS)",
 
 
                             React.createElement("div", {className: ("dropdown-menu encounters-list-dropdown " + (this.state.showEncountersList ? '' : 'hidden'))}, 
@@ -430,7 +431,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                     }
                     else if (combatant.name.indexOf("Limit Break") === 0) {
                         combatant.Job = "리미트";
-                        combatant.JobN = "Limit Break";
+                        combatant.JobN = " "; //languagepack.Limitbreak[language_kr];
                     }
                     else if (combatant.name.match(/[^a-zA-Z()'\s]/)) {
                         combatant.Job = "초코보";
@@ -461,6 +462,9 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
             {
                 virtualname = "";
             }
+
+            if(combatant.JobN == " ")
+                virtualname = languagepack.Limitbreak[language_kr];
 
             if (combatant.Job !== "") {
                 // should probably fix this

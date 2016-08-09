@@ -168,6 +168,31 @@ ul {
     padding: 0 6px 6px;
 }
 
+.hoverview
+{
+	transition:1s;
+	display:inline-block;
+	width:1px;
+	padding-left:10px;
+	margin-right:-8px;
+}
+
+.datas:hover .hoverview
+{
+	width:auto;
+}
+
+.datablock
+{
+	display:inline-block;
+	padding-left:10px; padding-right:10px;
+
+	line-height:17px;
+	border-left:1px solid rgba(0,0,0,0.5);
+
+	text-align:right;
+}
+
 .header {
 }
 

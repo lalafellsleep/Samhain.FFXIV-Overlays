@@ -357,7 +357,7 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
 			}               
 			else if (combatant.Job =="Pgl")
 			{   
-				combatant.Job = '격투사';
+				combatant.Job = '격투가';
 			}				
 			else if (combatant.Job =="Pld")
 			{   

@@ -90,7 +90,7 @@ var ____Class0=React.Component;for(var ____Class0____Key in ____Class0){if(____C
 
 
                 React.createElement("div", {
-                    className: "bar", 
+                    className: "bar" + (this.props.isSelf ? ' self' : ''), 
                     style: {width: width}}),
                     
                 React.createElement("div", {

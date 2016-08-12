@@ -1,6 +1,6 @@
 var setting =
 {
-	"language" : 0,
+	"language" : 1,
 	"myname" : "나",
 	"showPlayerName":false,
 	"showResize":true,

@@ -9,6 +9,7 @@
     <script src="lib/react.min.js"></script>
     <script src="lib/lodash.min.js"></script>
     <script src="app/rdmty.js"></script>
+    <script src="setting.js"></script>
     <script>
         function onOverlayDataUpdate(e) 
         {
@@ -78,19 +79,25 @@
         var viewback = true;
         var nicknameshow = true;
         var currenttab = 0; // max 3
+        language_kr = setting.language;
 
-		if (language_kr == 1)
-		{
-			$("#_DPS").html(languagepack.DPS[1]);
-			$("#_HPS").html(languagepack.HPS[1]);
-			$("#_DMG").html(languagepack.DMG[1]);
-			$("#_accNCrit").html(languagepack.accNCrit[1]);
+        $("input:checkbox[id='myname']").prop("checked", setting.useCustomName);
+        $("input:checkbox[id='showname']").prop("checked", setting.showPlayerName);
+        $("input:checkbox[id='showresize']").prop("checked", setting.showResize);
 
-			$("#mynameval").val(languagepack.me[1]);
-			$("#_displayMe").html(languagepack.displayMe[1]);
-			$("#_displayResize").html(languagepack.displayResize[1]);
-			$("#_displayName").html(languagepack.displayName[1]);
-		}
+        viewback = !setting.showResize;
+        resizeview();
+
+        $("#_DPS").html(languagepack.DPS[language_kr]);
+        $("#_HPS").html(languagepack.HPS[language_kr]);
+        $("#_DMG").html(languagepack.DMG[language_kr]);
+        $("#_accNCrit").html(languagepack.accNCrit[language_kr]);
+
+        $("#mynameval").val(languagepack.me[language_kr]);
+        $("#_displayMe").html(languagepack.displayMe[language_kr]);
+        $("#_displayResize").html(languagepack.displayResize[language_kr]);
+        $("#_displayName").html(languagepack.displayName[language_kr]);
+
         
         function privbar(bool)
         {

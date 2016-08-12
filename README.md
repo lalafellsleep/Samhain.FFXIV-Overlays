@@ -2,6 +2,9 @@
 ## Issue
 https://github.com/laiglinne-ff/ff14_overlayskin/issues
 
+#Sample Image (Default Style)
+![](https://github.com/laiglinne-ff/ff14_overlayskin/blob/master/images/preview_3.PNG?raw=true)
+
 #Sample Image (Crystal Style)
 ###DPS Viewer + More Stats (Encounter List)
 ![](https://github.com/laiglinne-ff/ff14_overlayskin/blob/master/images/preview_1.PNG?raw=true)

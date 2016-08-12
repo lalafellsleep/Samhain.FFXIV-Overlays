@@ -4,7 +4,7 @@ https://github.com/laiglinne-ff/ff14_overlayskin/issues
 
 #Sample Image (Crystal Style)
 ###DPS Viewer + More Stats (Encounter List)
-![](https://raw.githubusercontent.com/laiglinne-ff/ff14_overlayskin/695478d937b88692fa42df48c0cc19b95a7187e2/images/preview_1.PNG)
+![](https://github.com/laiglinne-ff/ff14_overlayskin/blob/master/images/preview_1.PNG?raw=true)
 
 ###Custom Settings (this option can't autosave)
 ![](https://raw.githubusercontent.com/laiglinne-ff/ff14_overlayskin/695478d937b88692fa42df48c0cc19b95a7187e2/images/preview_2.PNG)

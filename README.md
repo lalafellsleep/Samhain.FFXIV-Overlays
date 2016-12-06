@@ -1,5 +1,5 @@
 #Randy Sample (Pink DPS)
-![](https://puu.sh/sFVpw/7b5ba55cb6.jpg)
+![](http://puu.sh/sFWfy/04c8439c71.jpg)
 
 #Regular Colours
 ![](https://puu.sh/sFU3c/5caca5a424.jpg)

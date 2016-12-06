@@ -524,8 +524,8 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             total: combatant.damage,
                             totalFormatted: React.createElement("span", {className:"datas"},
                                 /*RAAA*/
-                                /*combatant.maxhit + ' | ' + combatant.JobN + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS')).slice(-9) +  ('\xa0\xa0\xa0\xa0\xa0\xa0' + (' (' + combatant['damage%'] + ')')).slice(-6),*/
-                                combatant.JobN + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS')).slice(-9) +  ('\xa0\xa0\xa0\xa0\xa0\xa0' + (' (' + combatant['damage%'] + ')')).slice(-6),
+                                combatant.maxhit + ' | ' + combatant.JobN + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS')).slice(-9) +  ('\xa0\xa0\xa0\xa0\xa0\xa0' + (' (' + combatant['damage%'] + ')')).slice(-6),
+                                /*combatant.JobN + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS')).slice(-9) +  ('\xa0\xa0\xa0\xa0\xa0\xa0' + (' (' + combatant['damage%'] + ')')).slice(-6),*/
 
 
 

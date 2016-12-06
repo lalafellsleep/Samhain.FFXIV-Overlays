@@ -1,6 +1,6 @@
 // fiddle: http://jsfiddle.net/v1ddnsvh/8/
 /* global window */
-var language_kr = 0;
+var language_kr = 1;
 var languagepack = 
 {
     "lastEncounter" : ["마지막 전투", "Last Encounter", "最後の戦い"],
@@ -202,18 +202,18 @@ var ____Class2=React.Component;for(var ____Class2____Key in ____Class2){if(____C
                     React.createElement("div", {className: "encounter-data ff-header"}, 
                         React.createElement("span", {className: "duration"}, 
                             "[", encounter.duration, "]"),
-                        React.createElement("span", {className: "target-name dropdown-parent", onClick: this.handleEncounterClick.bind(this)}, 
+                        React.createElement("span", {className: "target-name dropdown-parent", /*onClick: this.handleEncounterClick.bind(this)*/}, 
                             encounter.title + " (" + encounter.encdps.substr(0, encounter.encdps.indexOf(".")) +" DPS)",
 
 
                             React.createElement("div", {className: ("dropdown-menu encounters-list-dropdown " + (this.state.showEncountersList ? '' : 'hidden'))}, 
-                                React.createElement("div", {onClick: this.props.onSelectEncounter.bind(this, null)}, 
+                                React.createElement("div", {/*onClick: this.props.onSelectEncounter.bind(this, null)*/}, 
                                     languagepack.lastEncounter[language_kr]
                                 ), 
 
                                 EncountersArray.map(function(encounter, i) {
                                     return (
-                                        React.createElement("div", {key: i, onClick: this.props.onSelectEncounter.bind(this, i)}, 
+                                        React.createElement("div", {key: i, /*onClick: this.props.onSelectEncounter.bind(this, i)*/}, 
                                             encounter.Encounter.title
                                         )
                                     );
@@ -520,9 +520,10 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             characterName: virtualname,
                             total: combatant.damage,
                             totalFormatted: React.createElement("span", {className:"datas"},
-                                Math.round(combatant.encdps)+' DPS',
-                                React.createElement("span", {className:"hoverview"},
-                                    '[' + checkThousand(combatant.damage) + ' (' + combatant['damage%'] + ') ]'
+                                Math.round(combatant.encdps)+' DPS' + ' (' + combatant['damage%'] + ')',
+                                
+                                React.createElement("span", {className:"data"},
+                                    ''
                                 )
                             ),
                             //perSecond: Math.round(combatant.encdps)+' DPS',

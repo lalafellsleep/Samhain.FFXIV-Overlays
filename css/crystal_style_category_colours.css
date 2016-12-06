@@ -127,7 +127,7 @@ html
 #container 
 {
     padding: 6px;
-    font-family: "맑은 고딕", Tahoma;
+    font-family: Ubuntu Mono Bold, "맑은 고딕";
     font-size: 12px;
     color: rgb(232, 255, 254);
     overflow: none;
@@ -288,7 +288,7 @@ ul
 .target-name 
 {
     cursor: pointer;
-    font-weight: 400;
+    font-weight: bold;
     margin-right: 12px;
     padding: 2px 4px;
     position: relative;
@@ -699,6 +699,7 @@ li:last-child
 }
 .row .stats 
 {
+    font-weight: bold;
     float: right;
     margin-left: 4px;
     white-space: nowrap;
@@ -750,6 +751,7 @@ li:last-child
 }
 .character-name 
 {
+    font-weight: bold;
     float: left;
     padding-left: 2px;
     padding-right: 3px;

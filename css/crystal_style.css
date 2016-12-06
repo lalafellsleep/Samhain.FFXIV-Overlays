@@ -127,7 +127,7 @@ html
 #container 
 {
     padding: 6px;
-    font-family: "맑은 고딕", Tahoma;
+    font-family: Ubuntu Mono Bold, "맑은 고딕";
     font-size: 12px;
     color: rgb(232, 255, 254);
     overflow: none;
@@ -750,6 +750,7 @@ li:last-child
 }
 .character-name 
 {
+    font-weight: bold;
     float: left;
     padding-left: 2px;
     padding-right: 3px;

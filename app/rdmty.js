@@ -517,13 +517,15 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                         maxdps = parseFloat(combatant.damage);
                     }
                     stats = {
-                            displayJobName: combatant.JobN,
+                            displayJobName: '',
+                            /*displayJobName: combatant.JobN,*/
                             job: combatant.Job || '',
                             characterName: virtualname,
                             total: combatant.damage,
                             totalFormatted: React.createElement("span", {className:"datas"},
-                                combatant.maxhit + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS' + ' (' + combatant['damage%'] + ')')).slice(-17),
-                                
+                                /*combatant.maxhit + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS' + ' (' + combatant['damage%'] + ')')).slice(-17),*/
+                                /*RAAA*/
+                                combatant.JobN + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS' + ' (' + combatant['damage%'] + ')')).slice(-15),
 
                                 React.createElement("span", {className:"data"},
                                     ''

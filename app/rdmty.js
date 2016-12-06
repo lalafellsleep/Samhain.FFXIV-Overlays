@@ -41,6 +41,8 @@ var formatNumber = function(number)
     return number.toFixed(2);
 };
 
+
+
 function checkThousand(n) 
 {
     var reg = /(^[+-]?\d+)(\d{3})/;   
@@ -520,8 +522,9 @@ var ____Class3=React.Component;for(var ____Class3____Key in ____Class3){if(____C
                             characterName: virtualname,
                             total: combatant.damage,
                             totalFormatted: React.createElement("span", {className:"datas"},
-                                Math.round(combatant.encdps)+' DPS' + ' (' + combatant['damage%'] + ')',
+                                combatant.maxhit + ' | ' + ('\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + (Math.round(combatant.encdps) + ' DPS' + ' (' + combatant['damage%'] + ')')).slice(-17),
                                 
+
                                 React.createElement("span", {className:"data"},
                                     ''
                                 )

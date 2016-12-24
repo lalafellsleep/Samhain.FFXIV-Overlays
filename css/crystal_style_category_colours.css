@@ -420,7 +420,7 @@ li:last-child
 .show-job-colors .몽크 .bar 
 {
     background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
-    box-shadow: inset 0px 0px 7px #b38915;
+    box-shadow: inset 0px 0px 7px rgb(226, 104, 104);
 }
 .show-job-colors .격투가 .bar::after,
 .show-job-colors .몽크 .bar::after 

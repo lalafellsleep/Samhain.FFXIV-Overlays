@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="http://act.project.so/r/laiglinne/ffxiv_overlay_corejs/app.js"></script>
+    	<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<style>
+			/* CHANGE FONT HERE! */
+			* {font-family:'malgun gothic';}
+			/* if you want css customization refer look below */
+
+			/* case div */
+			div.chatstyle div.data .cover>div
+			{font-size:12px; color:#FFF; position:absolute; left:15px; right:15px; height:20px;}
+
+			/* unknown job(class) default style*/
+			div.chatstyle div.data>.cover>div>.bar
+			{box-shadow:inset 0px 0px 10px rgba(192, 192, 192, .5); height:20px; line-height:20px;	
+			background:radial-gradient(rgba(192, 192, 192, 0) 0%, rgba(192, 192, 192, 1)  75%, rgba(192, 192, 192, 1) 100%);
+			text-shadow:0px 0px 3px rgba(0,0,0,.3),
+			3px 3px 5px rgba(0,0,0,.3),
+			3px 0px 5px rgba(0,0,0,.3),
+			3px -3px 5px rgba(0,0,0,.3),
+
+			0px 3px 5px rgba(0,0,0,.3),
+			0px -3px 5px rgba(0,0,0,.3),
+			
+			-3px 3px 5px rgba(0,0,0,.3),
+			-3px 0px 5px rgba(0,0,0,.3),
+			-3px -3px 5px rgba(0,0,0,.3);
+			}
+
+			div.chatstyle div.data>.cover>div>.bar:after, div.chatstyle div.data>.cover>div>.bar:before
+			{
+				width:0px; height:0px; content:' '; float:left; border-width:10px 6px 10px 6px; 
+				border-color:transparent rgba(192, 192, 192, 1) transparent transparent; border-style:solid; margin-left:-12px;
+			}
+
+			div.chatstyle div.data>.cover>div>.bar:before
+			{
+				float:right; margin-left:0px; margin-right:-12px;
+				border-color:transparent transparent transparent rgba(192, 192, 192, 1);
+			}
+
+			div.chatstyle div.data>.cover>div>.content
+			{
+				position:absolute;
+				top:0px;
+				height:20px; line-height:20px;
+				padding-left:22px;
+				left:0px; right:0px;
+			}
+
+			div.chatstyle div.data>.cover>div>.content>.name>.namecover>.job
+			{
+				padding-left:5px;
+				font-size:11px;
+				opacity:.75;
+			}
+
+			div.chatstyle div.data>.cover>div>.content>.value
+			{
+				position:absolute;
+				right:5px;
+			}
+			/* inner data(s) */
+		</style>
+	</head>
+	<body>
+		<div class="chatstyle">
+			<div class="data">
+				<div class="cover">
+
+				</div>
+			</div>
+			<div class="controls">
+				<div class="cover">
+					<div data-id="0" class="focus">
+						<span>DPS</span>
+					</div>
+					<div data-id="1">
+						<span>HPS</span>
+					</div>
+					<div data-id="2">
+						<span>DEF</span>
+					</div>
+					<div data-id="3">
+						<span>ACC/CRIT</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		var curopt = 0;
+		var lastCombat = null;
+		var sortkey = "mergedDamage";
+		var underDot = 0;
+		var combatlog = [];
+		var lang = new Language("en");
+		/* IF you want edit data view and tabs  */
+		var options = [
+			{v:"{encdps} DPS", k:"mergedDamage"},
+		];
+
+		$("div.controls>div.cover>div>span").click(function(){
+			$("div.controls>div.cover>div").removeClass("focus");
+			$(this).parent().addClass("focus");
+			curopt = $(this).parent().attr("data-id");
+		});
+
+		$(document).ready(function()
+		{
+			document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);
+		});
+
+		function existsCombatlog(key)
+		{
+			var r = false;
+			for(var i in combatlog)
+			{
+				if(combatlog[i].key == key) r = true; 
+			}
+			return r;
+		}
+
+		function getCombatlog(key)
+		{
+			for(var i in combatlog)
+			{
+				if(combatlog[i].key == key) return combatlog[i].value;
+			}
+		}
+
+		function addcombatlog(c)
+		{
+			combatlog.push({key:c.combatKey, value:c});
+			$("section.combatlog .cover").prepend("<div onclick=\"getrecalc('"+c.combatKey+"');\">"+c.encounter.title+" ("+c.encounter.encdps+"D, "+c.encounter.enchps+"H)</div>");
+		}
+
+		function guageSizer()
+		{
+			$(".data>.cover>div").each(function(){
+				var obj = $(".data>.cover>div[data-id=\""+$(this).attr("data-id")+"\"]");
+				var size = $(obj).find(".value").width();
+				if(size !== null)
+				{
+					size += 34;
+					$(obj).find(".name").width($(this).width() - size);
+				}
+			});
+		}
+
+		function onOverlayDataUpdate(e)
+		{
+			lastCombat = new Combatant(e, sortkey);
+			printUsers();
+		}
+
+		function printUsers()
+		{
+			if(lastCombat === null) return;
+			var d = lastCombat;
+			if(curopt == 1 || curopt == 2)
+				d["summonerMerge"] = false;
+			else
+				d["summonerMerge"] = true;
+			
+
+			d.sortkeyChange(options[curopt].k);
+			//$("header .zonearea").html(d.zone + " - " + parseFloat(d.encounter.encdps).toFixed(0) + " RD / " + parseFloat(d.encounter.enchps).toFixed(0) + " RH");
+			//$("header .wordarea").html("[--:--] ".concat(d.title).replace("--:--", d.duration));
+
+			$(".data>.cover>div").each(function()
+			{
+				var remove = true;
+				for(var i in d.persons)
+				{
+					var a = d.persons[i];
+					if(a.name == $(this).attr("data-id"))
+					{
+						remove = false;
+						break;
+					}
+				}
+
+				if(d["summonerMerge"] && $(this).attr("class") == "AVA")
+					remove = true;
+
+				if(remove) {$(this).remove(); }
+			});
+
+			d.sortkeyChange(options[curopt].k);
+
+			for(var p in d.persons)
+			{
+				var a = d.persons[p];
+				if(a.Job == "AVA" && a.petType != "Chocobo" && d["summonerMerge"]) continue;
+
+				var name = " "+(a.rank+1)+". ";
+				var top = a.rank*22;
+				if(!(localStorage.getItem("metro_qhd")=="true"?true:false))
+					top = a.rank*30;
+				var job = a.Job;
+				var alpha = 0.8;
+				var value = options[curopt].v.format(a);
+				var aclass = a.Job;
+				if(a.isPet)
+					aclass = a.petType;
+
+				var meperc = parseFloat(a[activeSort(d.sortkey, d.summonerMerge)]/a.maxdamage*100).toFixed(underDot);
+				console.log(a.maxdamage);
+				if($(".data>.cover>div[data-id=\""+a.name+"\"]").length > 0)
+				{
+				}
+				else
+				{
+					$(".data>.cover").append("<div style=\"top:"+top+"px;\" class=\""+job+"\" data-id=\""+a.name+"\" data-rank=\""+a.rank
+					+"\"><div class=\"bar\" style=\"width:"+meperc+"%;\"></div><div class=\"content\" style=\"background-image:url(img/"
+					+a.Job+".png);\"><span class=\"name\"><span class=\"namecover\"><i>"+name+"</i><span class=\"i\">"
+					+a.name+"</span><span class=\"job\">"+lang.get(aclass)+"</span></span></span><span class=\"value\">"+value+"</span></div></div>");
+				}
+
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").css("top", top+"px");
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").find("i").html(name);
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".job").html(lang.get(aclass));
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").attr("data-rank", a.rank);
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".bar").css({"width":meperc+"%"});
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".content span.value").html(value);
+				$(".data>.cover>div[data-id=\""+a.name+"\"]").find("div.content").css("background-image","url(img/"+a.Job+".png)");
+			
+				if(!(localStorage.getItem("metro_nameview")=="true"?true:false) && a.name != "YOU" && a.name != "Limit Break")
+				{
+					$(".data>.cover>div[data-id=\""+a.name+"\"] .i").css("-webkit-filter", "blur(4px)");
+				}
+			}
+			guageSizer();
+
+			if(!existsCombatlog(d.combatKey) && d.encounter.title != "Encounter")
+			{
+				addcombatlog(lastCombat);
+			}
+		}
+	</script>
+</html>

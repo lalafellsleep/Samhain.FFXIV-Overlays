@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+		<style>
+			* {font-family:'서울남산체 L'; font-size:13px;}
+			::-webkit-scrollbar{width: 0px;}
+			::-webkit-scrollbar-track-piece{background-color: transparent; -webkit-border-radius: 6px;}
+			html, body{margin:0px; padding:0px; overflow:hidden; background:rgba(0,0,0,.01); }
+			header {box-shadow:0px 0px 4px rgba(0,0,0,0.5); position:fixed; left:5px; top:5px; right:5px; height:36px; background:rgba(64,64,64,0.75); border-radius:4px; font-color:#FFF; line-height:18px; padding-left:8px; padding-right:8px; padding-top:3px; padding-bottom:3px;}
+			
+			div.resizercover {position:absolute; left:5px; right:5px; height:30px; bottom:5px; background:rgba(0,0,0,.01); }
+			div.resizercover:hover div.resizer {border-color:transparent rgba(0,0,0,0.5) rgba(0,0,0,0.5) transparent;}
+			div.resizer {width:0px; height:0px; border-width:8px; transition:.5s; border-style:solid; border-color:transparent rgba(0,0,0,0.01) rgba(0,0,0,0.01) transparent; position:fixed; bottom:5px; right:5px; z-index:999;}
+			
+		
+			header .combatdatas{overflow:hidden; position:absolute; left:1px; top:1px; bottom:1px; right:120px; background:rgba(0,0,0,0.2); border-radius:3px; padding:2px; color:#FFF; padding-left:4px; padding-right:4px; text-overflow:clip;}
+			header .combatdatas:hover{background:rgba(255,255,255,.2);}
+			header .combatdatas:active{background:rgba(0,0,0,.4);}
+			header .combatdatas .wordarea, header .combatdatas .zonearea{width:1000px;}
+			header .datachange{position:Absolute; right:1px; top:1px; bottom:1px; width:118px; background:rgba(0,0,0,0.2); border-radius:4px;}
+			header .datachange:hover{background:rgba(255,255,255,.2);}
+			header .datachange:active{background:rgba(0,0,0,.4);}
+			header .datachange .option{width:118px; padding-top:2px; color:#FFF; text-align:center;}
+
+			section.combatlog{position:absolute; left:105%; width:100%; top:71px; bottom:5px; transition:.3s; overflow:hidden;}
+			section.combatlog .cover{position:absolute; left:0px; right:10px; top:0px; bottom:0px; overflow:auto;}
+			section.combatlog .cover div{padding:5px; background:rgba(64, 64, 64, .75); color:#FFF; font-size:16px; height:26px; line-height:25px; z-index:999; overflow:hidden;}
+
+			section.data {position:absolute; left:5px; right:5px; top:71px; bottom:5px; transition:.3s; overflow:auto;}
+			section.data>div{position:absolute; height:20px; left:0px; right:0px; line-height:20px; border-radius:3px; background:rgba(0,0,0,0.25); color:#FFF; overflow:hidden; transition:.3s;}
+			section.data .bar, section.data .petbar {float:left; height:20px; transition:.3s;}
+			section.data .content {position:absolute; left:0px; top:0px; bottom:0px; right:5px; z-index:10; padding-left:20px; background-size:18px auto; background-position:2px center; background-repeat:no-repeat; 
+			text-shadow:1px 1px 4px rgba(255,178,127,0.25),
+			1px 0px 4px rgba(255,178,127,0.25),
+			1px -1px 4px rgba(255,178,127,0.25),
+			
+			0px 1px 4px rgba(255,178,127,0.25),
+			0px 0px 4px rgba(255,178,127,0.25),
+			0px -1px 4px rgba(255,178,127,0.25),
+			
+			-1px 1px 4px rgba(255,178,127,0.25),
+			-1px 0px 4px rgba(255,178,127,0.25),
+			-1px -1px 4px rgba(255,178,127,0.25);}
+			section.data .content>.name {position:absolute; left:24px; top:0px; bottom:0px; overflow:hidden;}
+			section.data .content>.name>.namecover {width:500px; position:absolute;}
+			section.data .content>.name .job{color:rgba(255,255,255,.75); text-shadow:0px 0px 3px #000; font-size:11px; margin-left:10px;}
+			section.data .content>.value {position:absolute; top:0px; bottom:0px; right:0px; overflow:hidden; text-align:right;}
+			section.data.qhd * {height:28px !important; line-height:26px !important; font-size:20px;}
+			section.data.qhd .content{background-size:28px auto !important;}
+
+			section.content {position:absolute; top:50px; left:5px; right:5px; height:18px; -webkit-filter:drop-shadow(0px 0px 2px #000);}
+			section.content .checkbox{width:42px; height:18px; border-radius:10px; background:rgba(128,128,128,.5); overflow:hidden; display:inline-block;}
+			section.content .checkboxActor{width:18px; height:18px; background:#FFF; border-radius:9px; margin-left:24px; z-index:2; position:absolute; margin-top:-18px; transition:.2s;}
+			section.content .checkActive{width:24px; padding-right:8px; background:#1F68FC; height:18px; font-size:10px !important; line-height:18px; text-align:center; color:#FFF; transition:.2s;}
+			section.content .checkInactive{width:32px; padding-left:14px; height:18px; font-size:10px !important; line-height:18px; text-align:center; color:#FFF; transition:.2s; position:relative; margin-top:-18px; margin-left:38px;}
+			section.content .label {height:16px; display:inline-block; top:-4px; position:relative; font-size:13px; color:#FFF;}
+		
+		</style>
+	</head>
+	<body unselectable="on" onselectstart="return false;">
+		<header>
+			<div class="combatdatas" toggle="off">
+				<div class="zonearea">Unknown Zone</div>
+				<div class="wordarea">[--:--] ---</div>
+			</div>
+			<div class="datachange">
+				<div class="cover">
+					<div class="option" v="0">
+						<div class="key">Total Dmg</div>
+						<div class="val">Dmg (DPS(%))</div>
+					</div>
+					<div class="option" v="1">
+						<div class="key">Seprate pet (DPS)</div>
+						<div class="val">Dmg (DPS(%))</div>
+					</div>
+					<div class="option" v="2">
+						<div class="key">Seprate pet (HPS)</div>
+						<div class="val">Healed (HPS(%))</div>
+					</div>
+					<div class="option" v="3">
+						<div class="key">Effective Heal</div>
+						<div class="val">Healed (HPS(%))</div>
+					</div>
+					<div class="option" v="4">
+						<div class="key">Over Heal</div>
+						<div class="val">Over (Over%)</div>
+					</div>
+					<div class="option" v="5">
+						<div class="key">D/H.Take, Death</div>
+						<div class="val">Dmg (Heal, Death)</div>
+					</div>
+					<div class="option" v="6">
+						<div class="key">ACC / CRIT</div>
+						<div class="val">ACC%, CRIT%</div>
+					</div>
+					<div class="option" v="7">
+						<div class="key">MaxHit</div>
+						<div class="val"></div>
+					</div>
+					<div class="option" v="8">
+						<div class="key">MaxHeal</div>
+						<div class="val"></div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<section class="content">
+			<div class="checkbox" data-id="1" checked="checked">
+				<div class="checkActive">ON</div>
+				<div class="checkboxActor"></div>
+				<div class="checkInactive">OFF</div>
+			</div>
+			<div class="label">
+				Name Mosaic
+			</div>
+			<div class="checkbox" data-id="2">
+				<div class="checkActive">ON</div>
+				<div class="checkboxActor"></div>
+				<div class="checkInactive">OFF</div>
+			</div>
+			<div class="label">
+				QHD View
+			</div>
+		</section>
+		<section class="data">
+
+		</section>
+		<section class="combatlog">
+			<div class="cover"></div>
+		</section>
+		<div class="resizercover">
+			<div class="resizer"></div>
+		</div>
+	</body>
+  	<script src="http://act.project.so/r/laiglinne/ffxiv_overlay_corejs/app.js"></script>
+	<script>
+		/* ACT Overlay Global Script (Rework Combatant data) */
+		$(".datachange").click(function(){
+			curopt++;
+			if(curopt >= options.length) curopt = 0;
+			$(this).find(".option").each(function(){$(this).hide();});
+			$(".datachange .option[v="+curopt+"]").show();
+			combatCalculator();
+		});
+
+		$(".combatdatas").click(function(){
+			$(this).attr("toggle", $(this).attr("toggle")=="on"?"off":"on");
+			if($(this).attr("toggle") == "on")
+			{
+				$("section.data").css("top", "100%");
+				$("section.combatlog").css("left", "5px");
+			}
+			else
+			{
+				$("section.data").css("top", "71px");
+				$("section.combatlog").css("left", "105%");
+			}
+		});
+
+		var options = [
+			{v:"{damage} ({encdps} DPS, {dmgPct}%)", k:"mergedDamage"},
+			{v:"{damage} ({encdps} DPS, {dmgPct}%)", k:"mergedDamage"},
+			{v:"{healed} ({enchps} HPS, {healedPct}%)", k:"mergedHealed"},
+			{v:"{validHeal} ({enchps} HPS, CRIT.H {crithealPct}%)", k:"validHeal"},
+			{v:"{invalidHeal} ({OverHPct}%)", k:"invalidHeal"},
+			{v:"{mergedDamagetaken} ({mergedHealstaken}, {deaths})", k:"mergedDamagetaken"},
+			{v:"ACC {tohit}%, CRIT.D {crithitPct}%", k:"tohit"},
+			{v:"{maxhit} &lt;{maxHit}&gt;", k:"maxHit"},
+			{v:"{maxheal} &lt;{maxHeal}&gt;", k:"maxHeal"},
+		];
+		var combatlog = [];
+		var curopt = 0;
+		var lang = new Language("ko");
+		var sortKey = "encdps";
+		var underDot = 1;
+
+		function checkboxMove(obj)
+		{
+			if($(obj).attr("checked")=="checked"?true:false)
+			{
+				$(obj).find(".checkActive").css("margin-left","-24px");
+				$(obj).find(".checkboxActor").css("margin-left","0px");
+				$(obj).find(".checkInactive").css("margin-left","0px");
+				
+				switch($(obj).attr("data-id"))
+				{
+					case "1":
+						$(".data div").each(function()
+						{
+							$(this).find(".i").css("-webkit-filter", "");
+						});
+						break;
+					case "2":
+						$("section.data").removeClass("qhd");
+						combatCalculator();
+						break;
+				}
+			}
+			else
+			{
+				$(obj).find(".checkActive").css("margin-left","0px");
+				$(obj).find(".checkboxActor").css("margin-left","24px");
+				$(obj).find(".checkInactive").css("margin-left","38px");
+
+				switch($(obj).attr("data-id"))
+				{
+					case "1":
+						$(".data div").each(function()
+						{
+							var name = $(this).attr("data-id");
+							if( name != "YOU" && name != "Limit Break" )
+								$(".data div[data-id=\""+name+"\"] .i").css("-webkit-filter", "blur(4px)");
+						});
+						break;
+					case "2":
+						$("section.data").addClass("qhd");
+						combatCalculator();
+						break;
+				}
+			}
+		}
+
+		$(".checkbox").click(function()
+		{
+			var val = $(this).attr("checked")=="checked"?true:false;
+			if($(this).attr("data-id") == "1")
+			{
+				localStorage.setItem("metro_nameview", !val);
+			}
+			else if($(this).attr("data-id") == "2")
+			{
+				localStorage.setItem("metro_qhd", !val);
+			}
+			$(this).attr("checked", !val);
+			checkboxMove(this);
+		});
+
+		var lastCombat = null;
+		
+		Storage.prototype.get = function(c)
+		{
+			return JSON.parse(this.getItem(c));
+		}
+
+		Storage.prototype.set = function(c, value)
+		{
+			localStorage.setItem(c, JSON.stringify(value));
+		}
+
+		$(document).ready(function()
+		{
+			document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);
+			
+			$(".checkbox[data-id=1]").attr("checked", localStorage.getItem("metro_nameview")=="true"?true:false);
+			$(".checkbox[data-id=2]").attr("checked", localStorage.getItem("metro_qhd")=="true"?true:false);
+			$(".checkbox").each(function(){
+				checkboxMove(this);
+			});
+			$(this).find(".option").each(function(){$(this).hide();});
+			$(".datachange .option[v="+curopt+"]").show();
+			guageSizer();
+		});
+
+		$(window).resize(function(){
+			guageSizer();
+		});
+
+		function guageSizer()
+		{
+			$(".data div").each(function(){
+				var obj = $(".data div[data-id=\""+$(this).attr("data-id")+"\"]");
+				var size = $(obj).find(".value").width();
+				if(size !== null)
+				{
+					size += 34;
+					$(obj).find(".name").width($(this).width() - size);
+				}
+			});
+		}
+
+		function onOverlayDataUpdate(e)
+		{
+			var d =  new Combatant(e, sortKey);
+			lastCombat = d;
+			combatCalculator();
+		}
+
+		function existsCombatlog(key)
+		{
+			var r = false;
+			for(var i in combatlog)
+			{
+				if(combatlog[i].key == key) r = true; 
+			}
+			return r;
+		}
+
+		function getrecalc(obj)
+		{
+			lastCombat = getCombatlog(obj);
+
+			$("section.data").css("top", "71px");
+			$("section.combatlog").css("left", "105%");
+			$(".combatdatas").attr("toggle","off");
+			
+			combatCalculator();
+		}
+
+		function getCombatlog(key)
+		{
+			for(var i in combatlog)
+			{
+				if(combatlog[i].key == key) return combatlog[i].value;
+			}
+		}
+
+		function addcombatlog(c)
+		{
+			combatlog.push({key:c.combatKey, value:c});
+			$("section.combatlog .cover").prepend("<div onclick=\"getrecalc('"+c.combatKey+"');\">"+c.encounter.title+" ("+c.encounter.encdps+"D, "+c.encounter.enchps+"H)</div>");
+		}
+
+		function combatCalculator()
+		{
+			if(lastCombat === null) return;
+			var d = lastCombat;
+			if(curopt == 1 || curopt == 2)
+				d["summonerMerge"] = false;
+			else
+				d["summonerMerge"] = true;
+
+			d.sortkeyChange(options[curopt].k);
+			$("header .zonearea").html(d.zone + " - " + parseFloat(d.encounter.encdps).toFixed(0) + " RD / " + parseFloat(d.encounter.enchps).toFixed(0) + " RH");
+			$("header .wordarea").html("[--:--] ".concat(d.title).replace("--:--", d.duration));
+
+			$(".data>div").each(function()
+			{
+				var remove = true;
+				for(var i in d.persons)
+				{
+					var a = d.persons[i];
+					if(a.name == $(this).attr("data-id"))
+					{
+						remove = false;
+						break;
+					}
+				}
+
+				if(d["summonerMerge"] && $(this).attr("class") == "AVA")
+					remove = true;
+
+				if(remove) {$(this).remove(); }
+			});
+
+			for(var p in d.persons)
+			{
+				var a = d.persons[p];
+				if(a.Job == "AVA" && a.petType != "Chocobo" && d["summonerMerge"]) continue;
+
+				var name = " "+(a.rank+1)+". ";
+				var top = a.rank*22;
+				if(!(localStorage.getItem("metro_qhd")=="true"?true:false))
+					top = a.rank*30;
+				var job = a.Job;
+				var alpha = 0.8;
+				var value = options[curopt].v.format(a);
+				var aclass = a.Class;
+				if(a.isPet)
+					aclass = a.petType;
+
+				var meperc = parseFloat(a.damage/d.maxdamage*100).toFixed(underDot);
+				var petperc = parseFloat(Math.abs(a.damage - a.mergedDamage)/d.maxdamage*100).toFixed(underDot);
+				if(options[curopt].k == "encdps" || options[curopt].k == "mergedDamage")
+				{
+					meperc = parseFloat(a.damage/d.maxdamage*100).toFixed(underDot);
+					petperc = parseFloat(Math.abs(a.damage - a.mergedDamage)/d.maxdamage*100).toFixed(underDot);
+				}
+				else if(options[curopt].k == "enchps" || options[curopt].k == "mergedHealed")
+				{
+					meperc = parseFloat(a.healed/d.maxdamage*100).toFixed(underDot);
+					petperc = parseFloat(Math.abs(a.healed - a.mergedHealed)/d.maxdamage*100).toFixed(underDot);
+				}
+				else
+				{
+					meperc = parseFloat(a[options[curopt].k]/d.maxdamage*100).toFixed(underDot);
+					petperc = 0;
+				}
+
+				if($(".data div[data-id=\""+a.name+"\"]").length > 0)
+				{
+					$(".data div[data-id=\""+a.name+"\"]").css("top", top+"px");
+					$(".data div[data-id=\""+a.name+"\"]").find("i").html(name);
+					$(".data div[data-id=\""+a.name+"\"]").find(".job").html(lang.get(aclass));
+					$(".data div[data-id=\""+a.name+"\"]").attr("data-rank", a.rank);
+					$(".data div[data-id=\""+a.name+"\"]").find(".bar").css({"width":meperc+"%", "background":"rgba("+a.R+","+a.G+","+a.B+","+alpha+")"});
+					$(".data div[data-id=\""+a.name+"\"]").find(".petbar").css({"width":petperc+"%", "background":"rgba("+(a.R+(a.R/5))+","+(a.G+(a.G/5))+","+(a.B+(a.B/5))+","+alpha+")"});
+					$(".data div[data-id=\""+a.name+"\"]").find(".content span.value").html(value);
+					$(".data div[data-id=\""+a.name+"\"]").find("div.content").css("background-image","url(img/"+a.Job+".png)");
+				}
+				else
+				{
+					$(".data").append("<div style=\"top:"+top+"px;\" class=\""+job+"\" data-id=\""+a.name+"\" data-rank=\""+a.rank+"\"><div class=\"bar\" style=\"background:rgba("+a.R+","+a.G+","+a.B+","+alpha+"); width:"+meperc+"%;\"></div><div class=\"petbar\" style=\"background:rgba("+(a.R+(a.R/5))+","+(a.G+(a.G/5))+","+(a.B+(a.B/5))+","+alpha+"); width:"+petperc+"%;\"></div><div class=\"content\" style=\"background-image:url(img/"+a.Job+".png);\"><span class=\"name\"><span class=\"namecover\"><i>"+name+"</i><span class=\"i\">"+a.name+"</span><span class=\"job\">"+lang.get(aclass)+"</span></span></span><span class=\"value\">"+value+"</span></div></div>");
+				}
+			
+				if(!(localStorage.getItem("metro_nameview")=="true"?true:false) && a.name != "YOU" && a.name != "Limit Break")
+				{
+					$(".data div[data-id=\""+a.name+"\"] .i").css("-webkit-filter", "blur(4px)");
+				}
+			}
+			guageSizer();
+
+			if(!existsCombatlog(d.combatKey) && d.encounter.title != "Encounter")
+			{
+				addcombatlog(lastCombat);
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,707 @@
+<html lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<style>
+			html, body{overflow:hidden; overflow:hidden; margin:0px; padding:0px;}
+			#totcov,#totcov2{transition:.5s;}
+			#totcov, #totcov2{position:absolute; left:0px; top:0px; bottom:0px; right:0px; padding:5px;}
+			#totcov2{padding:0px;}
+			.tdrotateL{transform:perspective( 600px ) rotateY(20deg) translateX(5%) rotate(0deg) scale(.9);}
+			.tdrotateR{transform:perspective( 600px ) rotateY(-20deg) translateX(-5%) rotate(0deg) scale(.9);}
+			.tdrotateT{transform:perspective( 100px ) rotateZ(8deg) rotate(0deg) scale(.9);}
+			.tdrotateB{transform:perspective( 100px ) rotateZ(-8deg) rotate(0deg) scale(.9);}
+
+			.zoom{transform:scale(1.25); position:fixed; left:9%; right:9%; top:9%; bottom:9%; padding:10%;}
+			.zoom2{transform:scale(1.5); position:fixed; left:18%; right:18%; top:18%; bottom:18%; padding:10%;}
+			.anim{transition:.5s;}
+			.listcov{color:#222; font-weight:bold; font-size:12px; font-family:'맑은 고딕';position:absolute; left:7px; right:7px; -webkit-filter:drop-shadow(0px 0px 2px rgba(0,0,0,.75));}
+			.detailmodelist{}
+			.detailmodelist:hover .cont_name{display:block;}
+			.jobicon{background:rgba(255,255,255,.60); height:24px; width:24px; border-radius:12px; box-shadow:inset 0px 0px 4px rgb(255, 200, 100);}
+			.jobicon div{width:20px; height:20px; border:2px solid #BCA76C; border-radius:12px;}
+			.listcontent{background:rgba(0,0,0,.3); height:20px; margin-right:10px; margin-left:32px; margin-top:-22px; text-shadow:0px 0px 5px #FFF;}
+			.leftdeco{float:left; width:10px; height:20px; overflow:hidden; margin-left:-12px;}
+			.leftdeco div{margin-top:-18px; margin-left:-36px; border:13px solid rgba(0, 0, 0, .3); border-radius:30px; width:30px; height:30px;}
+			.rightdeco{float:right; margin-right:-10px; width:0px; height:0px; border-width: 10px 5px 10px 5px; border-color:rgba(0,0,0,.3) transparent transparent rgba(0,0,0,.3); border-style:solid;}
+			.cont_name, .dpsmeter{ line-height:21px; height:20px; color:#FFF; text-shadow:0px 0px 10px rgba(0,0,0,1);}
+			.cont_name{float:left; position:absolute; left:36px;}
+			.dpsmeter{float:right; text-shadow:0px 0px 3px rgba(0,0,0,.5); position:absolute; right:10px;} 
+
+			.barometer{transition:.5s; float:left; position:releative; background:linear-gradient(to right, transparent 0%, rgba(255,255,255,.5) 100%); height:4px; margin-top:16px; width:100%; -webkit-filter:drop-shadow(0px 0px 5px rgba(0,0,0,.75));}
+			.barometer::before{float:right; margin-right:-4px; width:0px; height:0px; border-width:2px 2px 2px 2px; border-color:transparent transparent transparent rgba(255,255,255,.5); border-style:solid; content:' ';}
+			/*.dds::before{float:right; margin-right:-10px; width:0px; height:0px; border-width: 10px 5px 10px 5px; border-color:rgba(255,255,255,.75) transparent transparent rgba(255,255,255,.75); border-style:solid; content:' ';}
+			*/
+			.self .listcontent{text-shadow:0px 0px 5px #F00;}
+			.self .cont_name{text-shadow:0px 0px 5px #F00;}
+			.self .dpsmeter{text-shadow:0px 0px 5px #F00; color:#FFF !important;}
+			.self {-webkit-filter:drop-shadow(0px 0px 5px rgba(0,200,0,.25));}
+
+			.LMT .leftdeco div{border-color:rgba(0, 140, 255, .6)}
+			.LMT .rightdeco{border-color:rgba(255,204,0,.6) transparent transparent rgba(255,204,0,.6);}
+			.LMT .dpsmeter{color:#FFF;}
+
+			.DRG .leftdeco div{border-color:rgba(84, 96, 240, .6)}
+			.EFE .leftdeco div,
+			.GRE .leftdeco div,
+			.TIE .leftdeco div,
+			.SMN .leftdeco div{border-color:rgba(40, 150, 0,.6)}
+			.BLM .leftdeco div{border-color:rgba(100, 70, 150, .6)}
+			.NIN .leftdeco div{border-color:rgba(50, 40, 60, .6)}
+			.BRD .leftdeco div{border-color:rgba(180,200,80, .6)}
+			.MCH .leftdeco div,
+			.ROK .leftdeco div,
+			.BSH .leftdeco div
+			{border-color:rgba(130,255,240, .6)}
+			.MNK .leftdeco div{border-color:rgba(180,140,20, .6)}
+			
+			.WAR .leftdeco div{border-color:rgba(200,40,0,.6)}
+			.PLD .leftdeco div{border-color:rgba(210,255,255,.6)}
+			.DRK .leftdeco div{border-color:rgba(130, 50, 60, .6)}
+
+			.WHM .leftdeco div{border-color:rgba(220, 215, 180, .6)}
+			.SCH .leftdeco div,
+			.EOS .leftdeco div,
+			.SLN .leftdeco div
+			{border-color:rgba(60, 60, 170, .6)}
+			.AST .leftdeco div{border-color:rgba(240, 200, 110, .6)}
+			
+			.LMT .listcontent{background:linear-gradient(to right, rgba(0,140,255,.6) 0%, rgba(255,140,0,.6) 40%, rgba(255,204,0,.6) 100%)}
+			.LMT .barometer{background:linear-gradient(to right, rgba(0,140,255,.6) 0%, rgba(255, 204, 0,.6) 100%);}
+			.LMT .barometer::before{border-color:transparent transparent transparent rgba(0,140,255,.6));}
+
+			.DRG .listcontent{background:linear-gradient(to right, rgba(84, 96, 240,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.EFE .listcontent,
+			.GRE .listcontent,
+			.TIE .listcontent,
+			.SMN .listcontent
+			{background:linear-gradient(to right, rgba(40, 150, 0,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+
+			.BLM .listcontent{background:linear-gradient(to right, rgba(100, 70, 150,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.NIN .listcontent{background:linear-gradient(to right, rgba(50, 40, 60,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.BRD .listcontent{background:linear-gradient(to right, rgba(180, 200, 80,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.MCH .listcontent,
+			.ROK .listcontent,
+			.BSH .listcontent
+			{background:linear-gradient(to right, rgba(130, 255, 240,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.MNK .listcontent{background:linear-gradient(to right, rgba(180, 140, 20,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+
+			.WAR .listcontent{background:linear-gradient(to right, rgba(200, 40, 0,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.PLD .listcontent{background:linear-gradient(to right, rgba(210, 255, 255,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.DRK .listcontent{background:linear-gradient(to right, rgba(130, 50, 60,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+
+			.WHM .listcontent{background:linear-gradient(to right, rgba(220, 215, 180,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.SCH .listcontent,
+			.EOS .listcontent,
+			.SLN .listcontent
+			{background:linear-gradient(to right, rgba(60, 60, 170,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			.AST .listcontent{background:linear-gradient(to right, rgba(240, 200, 110,.6) 0%, rgba(0,0,0,.3) 40%, rgba(0,0,0,.3) 100%)}
+			
+
+			.LMT .jobicon{background-color:rgba(0,140,255,.6);}
+
+			.CBO .jobicon
+			{background-color:#999637;}
+
+			.ACN .jobicon,
+			.THM .jobicon,
+			.LNC .jobicon,
+			.ROG .jobicon,
+			.ARC .jobicon,
+
+			.DRG .jobicon,
+			.SMN .jobicon,
+			.BLM .jobicon,
+			.NIN .jobicon,
+			.BRD .jobicon,
+			.MCH .jobicon,
+			.MNK .jobicon
+			{background-color:rgba(220, 0, 0, .6);}
+
+			.GLD .jobicon,
+			.MRD .jobicon,
+
+			.WAR .jobicon,
+			.PLD .jobicon,
+			.DRK .jobicon
+			{background-color:rgba(0, 40, 220, .6);}
+
+			.CNJ .jobicon,
+
+			.WHM .jobicon,
+			.SCH .jobicon,
+			.AST .jobicon
+			{background-color:rgba(40, 170, 0, .6);}
+
+			.top, .option, .bottom, .detailview{background:rgba(0,0,0,.2); box-shadow:inset 0px 0px 3px rgba(255,255,255,.5); -webkit-filter:drop-shadow(0px 0px 2px rgba(0,0,0,.5));}
+			.top{position:Absolute; left:5px; top:5px; right:5px; height:34px;}
+
+			.bottom{position:absolute; left:5px; bottom:5px; right:5px; height:18px;}
+			.topliner{height:16px;}
+
+			.option{min-width:120px; overflow:auto; right:5px; top:40px; position:fixed; background:rgba(0,0,0,.75); z-index:999; font-family:'돋움'; font-size:12px; text-align:center; color:#FFF;}
+			.option[data='sort']{}
+			.option div{margin:2px; padding:2px; box-shadow:inset 0px 0px 3px rgba(255,255,255,.5); margin-left:24px;}
+			.option div[select='yes']{font-weight:bold;}
+			.option div[select='yes']:before{content:'✓'; display:block; width:24px; position:absolute; left:0px;}
+
+			.buttons{height:14px; width:14px; border-radius:7px; box-shadow:inset 0px 0px 3px rgba(255,255,255,1); float:right; margin-right:5px; margin-top:2px; font-size:11px; text-align:center; line-height:15px; color:#FFF; font-family:'돋움';} 
+			.buttons:hover{background-color:rgba(255,255,255,.2);}
+
+			.buttons.sort{background:url(img/SORT.png) no-repeat; padding-left:12px;}
+			.buttons.sort:hover{background:url(img/SORT.png) no-repeat; background-color:rgba(255,255,255,.2);}
+
+			.buttons.set{background:url(img/gear.png) no-repeat;}
+			.buttons.set:hover{background:url(img/gear.png) no-repeat; background-color:rgba(255,255,255,.2);}
+
+			.buttons.viewsize{background:url(img/view.png) no-repeat;}
+			.buttons.viewsize:hover{background:url(img/view.png) no-repeat; background-color:rgba(255,255,255,.2);}
+
+			.buttons.detailview{background:url(img/magnify.png) no-repeat; padding-left:14px; width:0px; overflow:hidden;}
+			.buttons.detailview:hover{background:url(img/magnify.png) no-repeat; background-color:rgba(255,255,255,.2); width:100px;}
+
+			.encounter{float:left; font-size:11px; color:#FFF; width:auto; padding-left:8px; padding-right:8px; margin-left:5px;}
+			.namev{}
+
+			.detailview{left:32px; top:40px; bottom:24px; right:5px; position:absolute; z-index:999;display:none;}
+			.marker{position:absolute; top:50%; margin-top:-20px; height:40px; line-height:40px; width:100%; text-align:center; font-size:14px; color:#AAA;}
+			
+			.text{height:14px; float:left; margin-left:5px; margin-top:2px; font-size:11px; text-align:left; line-height:15px; color:#FFF; font-family:'돋움';} 
+			
+		</style>
+		<script src="jquery.js"></script>
+	</head>
+	<body>
+		<div id="totcov">
+		<div id="totcov2">
+			<div class="detailview">
+				<div class="marker">
+					기능 준비 중입니다.
+				</div>
+			</div>
+			<div class="top tth">
+				<div class="topliner">
+					<div class="buttons encounter" onclick="allcloseoption('encounters');">Waiting Encounter Data...</div>
+					<div class="buttons sort" data-id="sort" style="width:58px;" onclick="allcloseoption('sort');">DPS</div>
+				</div>
+				<div class="topliner">
+					<div class="text" id="rdpshps"></div>
+					<div class="buttons set" style="" data-id="viewname" value="false" onclick="allcloseoption('multisort');"></div>
+					<div class="buttons viewsize" data-id="viewstyle" style="" onclick="allcloseoption('viewsize');"></div>
+				</div>
+			</div>
+			<div class="option tth" data="encounters" style="width:250px; display:none;right:auto; left:5px;">
+			</div>
+			<div class="option tth" data="sort" style="display:none;">
+				<div select="yes" data="encdps">DPS</div>
+				<div select="no" data="damage">D.OUT</div>
+				<div select="no" data="enchps">HPS</div>
+				<div select="no" data="healed">H.OUT</div>
+				<div select="no" data="misses">MISS</div>
+				<div select="no" data="OverHealPct">% OVER.H</div>
+				<div select="no" data="damagetaken">D.IN</div>
+				<div select="no" data="healstaken">H.IN</div>
+				<div select="no" data="crithit%">% CRIT.D</div>
+				<div select="no" data="critheal%">% CRIT.H</div>
+			</div>
+			<div class="option tth" data="viewsize" style="width:200px; display:none;">
+				<div select="yes" vid="nicknameview" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); onOverlayDataUpdate(lastEncounter);">닉네임 숨기기</div>
+				<div select="no" vid="jobclasshide" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); onOverlayDataUpdate(lastEncounter);">직업 숨기기</div>
+				<div select="no" id="z1" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#z2').attr('select','no');$(body).removeClass();$(body).addClass('zoom');}else{$(body).removeClass();}">125% 확대 보기</div>
+				<div select="no" id="z2" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#z1').attr('select','no');$(body).removeClass();$(body).addClass('zoom2');}else{$(body).removeClass();}">150% 확대 보기</div>
+				<div select="no" id="tdl" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#tdr').attr('select','no');$('#totcov').removeClass();$('#totcov').addClass('tdrotateL');}else{$('#totcov').removeClass();}">3D 보기 (Left)</div>
+				<div select="no" id="tdr" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#tdl').attr('select','no');$('#totcov').removeClass();$('#totcov').addClass('tdrotateR');}else{$('#totcov').removeClass();}">3D 보기 (Right)</div>
+				<div select="no" id="tdt" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#tdb').attr('select','no');$('#totcov2').removeClass();$('#totcov2').addClass('tdrotateT');}else{$('#totcov2').removeClass();}">3D 보기 (rotZ Left)</div>
+				<div select="no" id="tdb" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); if($(this).attr('select')=='yes'){$('#tdt').attr('select','no');$('#totcov2').removeClass();$('#totcov2').addClass('tdrotateB');}else{$('#totcov2').removeClass();}">3D 보기 (rotZ Right)</div>
+			</div>
+			<div class="option tth" data="multisort" style="width:200px; display:none;">
+				<div select="no" vid="" onclick="deleteEncounters();">전투기록 비우기</div>
+				<div select="yes" vid="useanimation" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); onOverlayDataUpdate(lastEncounter);">시각적 순위변화 사용</div>
+				<div select="no" vid="charDetailInfo" onclick="$(this).attr('select',$(this).attr('select')=='yes'?'no':'yes'); viewmode($(this).attr('select'));">상세 보기 모드</div>
+				<div select="no" vid="addSmn" onclick="setCharname(this);">소환수 강제 합산</div>
+				<div select="no" id="charv">&nbsp;</div>
+			</div>
+			<div class="bottom" style="display:none;line-height:20px; width:180px;background:rgba(0,0,0,0.75);z-index:9999;height:auto;overflow:auto;font-size:12px;font-family:'돋움';color:#FFF; padding:5px;right:auto; bottom:auto;" id="detailinfo">
+
+			</div>
+			<div class="bottom tth">
+				<div class="buttons" style="width:80px;">v 160903.0</div>
+			</div>
+		</div>
+		</div>
+	</body>
+	<script>
+		var lastEncounter = null;
+		var lastCombat = null;
+		var lastEncounterRecord = [];
+		var onPlayRecord =false;
+		var onRecord = false;
+		var jobKR = 
+		{
+			"Pld":"나이트",
+			"Gld":"검술사",
+			"War":"전사",
+			"Mrd":"도끼술사",
+			"Drk":"암흑기사",
+
+			"Whm":"백마도사",
+			"Cnj":"환술사",
+			"Sch":"학자",
+			"Ast":"점성술사",
+
+			"Pgl":"격투사",
+			"Mnk":"몽크",
+			"Lnc":"창술사",
+			"Drg":"용기사",
+			"Arc":"궁술사",
+			"Brd":"음유시인",
+			"Rog":"쌍검사",
+			"Nin":"닌자",
+			"Thm":"주술사",
+			"Blm":"흑마도사",
+			"Acn":"비술사",
+			"Smn":"소환사",
+			"Mch":"기공사",
+
+			"LMT":"리미트",
+			"EFE":"이프리트 에기",
+			"GRE":"가루다 에기",
+			"TIE":"타이탄 에기",
+			"CBT":"카벙클 토파즈",
+			"CBE":"카벙클 에메랄드",
+			"EOS":"요정 에오스",
+			"SLN":"요정 셀레네",
+			"ROK":"기공포탑 룩",
+			"BSH":"기공포탑 비숍",
+			"CBO":"초코보",
+			"NPC":"NPC"
+		};
+		
+		document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);
+		window.addEventListener('message', function (e) 
+		{
+			if (e.data.type === 'onOverlayDataUpdate') 
+			{
+				onOverlayDataUpdate(e.data);
+			}
+		});
+
+		function onOverlayDataUpdate(e)
+		{
+			encounterAct(e, false);
+		}
+
+		function deleteEncounters()
+		{
+			lastEncounterRecord = [];
+			
+			$(".option[data=encounters] div").each(function(){
+				if($(this).attr('selected')!="yes")
+				$(this).remove();
+			});
+		}
+
+		function mergeCombatantDetail(original, target, e)
+		{
+			original.swings += parseInt(target.swings);
+			original.dps = (parseFloat(original.dps) + parseFloat(target.dps)).toFixed(2);
+			original.encdps = (parseFloat(original.encdps) + parseFloat(target.encdps)).toFixed(2);
+			original.damage += parseInt(target.damage);
+			original['damage%'] = (parseInt(original.damage) / parseInt(e.damage) * 100).toFixed(2);
+			original.heals += parseInt(target.heals);
+			original.enchps = (parseFloat(original.enchps) + parseFloat(target.enchps)).toFixed(2);
+			original.healed += parseInt(target.healed);
+			original['healed%'] = (parseInt(original.healed) / parseInt(e.damage) * 100).toFixed(2);
+			original.misses += parseInt(target.misses);
+			original.crithits += parseInt(target.crithits);
+			original.critheals += parseInt(target.critheals);
+			original['crithit%'] = (parseInt(original.crithits) / parseInt(original.swings) * 100).toFixed(2);
+			original['critheal%'] = (parseInt(original.critheals) / parseInt(original.heals) * 100).toFixed(2);
+			original.damagetaken += parseInt(target.damagetaken);
+			original.healstaken += parseInt(target.healstaken);
+			original.OverHealPct += parseInt(target.OverHealPct);
+
+			return original;
+		}
+
+		function getCombatantDetail(c,e)
+		{
+			return {
+					"swings":parseInt(c.swings),
+					"dps":parseFloat(c.dps).toFixed(2),
+					"encdps":parseFloat(c.encdps).toFixed(2),
+					"damage":parseInt(c.damage),
+					"damage%":(parseInt(c.damage) / parseInt(e.damage) * 100).toFixed(2),
+					"heals":parseInt(c.heals),
+					"enchps":parseFloat(c.enchps).toFixed(2),
+					"healed":parseInt(c.healed),
+					"healed%":(parseInt(c.healed) / parseInt(e.healed) * 100).toFixed(2),
+					"misses":parseInt(c.misses),
+					"crithits":parseInt(c.crithits),
+					"critheals":parseInt(c.critheals),
+					"crithit%":(parseInt(c.crithits) / parseInt(c.swings) * 100).toFixed(2),
+					"critheal%":(parseInt(c.critheals) / parseInt(c.heals) * 100).toFixed(2),
+					"damagetaken":parseInt(c.damagetaken),
+					"healstaken":parseInt(c.healstaken),
+					"OverHealPct":parseInt(c.OverHealPct)
+				};
+		}
+
+		function encounterAct(e, v)
+		{
+			try
+			{
+				var combatant = [];
+				for(var user in e.detail.Combatant)
+				{
+					var c = e.detail.Combatant[user];
+					combatant.push(
+					{
+						"dps":c.encdps, 
+						"name":c.name,
+						"combat": getCombatantDetail(c, e.detail.Encounter),
+						"combatant":c,
+					});
+				}
+						
+				for(var n in combatant)
+				{
+					for(var u in combatant[n].combat)
+					{
+						combatant[n].combat[u] = convNumberFix(combatant[n].combat[u]);
+					}
+				}
+
+				for(var u in combatant)
+				{
+					var combat = combatant[u].combat;
+					if($(".option[data=multisort] div[vid=addSmn]").attr("select")=="yes")
+					{
+						for(var user in e.detail.Combatant)
+						{
+							var cbn = e.detail.Combatant[user];
+							if ((cbn.name.indexOf($("#charv").html())>-1 && combatant[u].combatant.name == "YOU" )||( cbn.name.indexOf(combatant[u].combatant.name) > -1 && cbn.name!=combatant[u].combatant.name))
+							{
+								combat = mergeCombatantDetail(combat, getCombatantDetail(cbn, e.detail.Encounter), e.detail.Encounter);
+							}
+						}
+					}
+
+					for(var n in combat)
+					{
+						combat[n] = convNumberFix(combat[n]);
+					}
+				}
+
+				combatant.sort(function(a, b){return parseInt(b.combat[$(".option[data=sort] div[select=yes]").attr("data")]) - parseInt(a.combat[$(".option[data=sort] div[select=yes]").attr("data")])});
+				lastEncounter = e;
+				lastCombat = combatant;
+
+				var idx=0;
+				for(var user in combatant)
+				{
+					if($(".option[data=multisort] div[vid=addSmn]").attr("select") == "yes")
+					{
+						if (combatant[user].combatant.name.indexOf("이프리트 에기")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("가루다 에기")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("타이탄 에기")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("카벙클 토파즈")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("카벙클 에메랄드")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("자동포탑 룩")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("자동포탑 비숍")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("요정 에오스")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("요정 셀레네")>-1) continue;
+						else if (combatant[user].combatant.name.indexOf("(")>-1) continue;
+					}
+					newlist(combatant[user], idx++);
+				}
+				var _a = e.detail.Encounter.title;
+				var _b = parseFloat(e.detail.Encounter.encdps).toFixed(0);
+				var _c = e.detail.Encounter.duration.replace(":","_");
+
+				$("#rdpshps").html(""+parseInt(e.detail.Encounter.encdps)+" <i>RDPS</i> / "+parseInt(e.detail.Encounter.enchps)+" <i>RHPS</i>");
+				
+				$(".encounter").html("[" + e.detail.Encounter.duration +"] "+e.detail.Encounter.title );
+				if($(".option[data=encounters]").find("div[data=\""+_a+"|"+_b+"|"+_c+"\"]").length == 0 && e.detail.Encounter.title != "Encounter")
+				{
+					$(".option[data=encounters]").prepend("<div select='no' data='"+_a+"|"+_b+"|"+_c+"' idx='"+(lastEncounterRecord+1)+"'>"+e.detail.Encounter.title+" ("+parseInt(e.detail.Encounter.encdps)+" RDPS)</div>");
+					lastEncounterRecord.push(e);
+					$(".option div[data=\""+_a+"|"+_b+"|"+_c+"\"]").attr("select","yes");
+
+					$(".option div[data=\""+_a+"|"+_b+"|"+_c+"\"]").click(function(){
+						if(lastEncounter.detail.Encounter.title != "Encounter")
+						{
+							encounterAct(e, false);
+							$(".option[data=encounters] div").each(function(){$(this).attr("select", "no")});
+							$(this).attr("select","yes");
+						}
+					});
+				}
+
+				if($(".option[data=encounters] div").length > 10)
+				{
+					$(".option[data=encounters] div")[10].remove();
+				}
+
+				if(e.detail.Encounter.title=="Encounter")
+				{
+					$(".option[data=encounters] div").each(function(){$(this).attr("select", "no")});
+				}
+
+				$("body .listcov").each
+				(function(){
+					var remove = true;
+					for(var user in e.detail.Combatant)
+					{
+						if ($(this).attr("data-id") == e.detail.Combatant[user].name)
+							remove = false;
+						if($(".option[data=multisort] div[vid=addSmn]").attr("select") == "yes")
+						{
+							if ($(this).attr("data-id").indexOf("이프리트 에기")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("가루다 에기")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("타이탄 에기")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("카벙클 토파즈")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("카벙클 에메랄드")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("자동포탑 룩")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("자동포탑 비숍")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("요정 에오스")>-1) $(this).remove();
+							else if ($(this).attr("data-id").indexOf("요정 셀레네")>-1) $(this).remove();
+						}
+					}
+					if(remove)
+						$(this).remove();
+				});
+			}
+			catch(ex)
+			{
+				console.log(ex);
+			}
+		}
+
+		function newlist(userdata, rank)
+		{
+			var combatant = userdata.combatant;
+			var sort = {
+				"sortkey":$(".option[data=sort] div[select=yes]").attr("data"),
+				"sortval":$(".buttons[data-id=sort]").html(),
+				"smnpass":$(".option[data=multisort] div[vid=addSmn]").attr("select"),
+			};
+
+			if (combatant.name=="Limit Break") combatant.Job = "LMT";
+			else if (combatant.name.indexOf("이프리트 에기")>-1) combatant.Job = "EFE";
+			else if (combatant.name.indexOf("가루다 에기")>-1) combatant.Job = "GRE";
+			else if (combatant.name.indexOf("타이탄 에기")>-1) combatant.Job = "TIE";
+			else if (combatant.name.indexOf("카벙클 토파즈")>-1) combatant.Job = "CBT";
+			else if (combatant.name.indexOf("카벙클 에메랄드")>-1) combatant.Job = "CBE";
+			else if (combatant.name.indexOf("자동포탑 룩")>-1) combatant.Job = "ROK";
+			else if (combatant.name.indexOf("자동포탑 비숍")>-1) combatant.Job = "BSH";
+			else if (combatant.name.indexOf("요정 에오스")>-1) combatant.Job = "EOS";
+			else if (combatant.name.indexOf("요정 셀레네")>-1) combatant.Job = "SLN";
+			else if (combatant.name.indexOf("(")>-1) combatant.Job = "CBO";
+			else if (jobKR[combatant.Job]===undefined) combatant.Job = "NPC";
+
+			if (sort.smnpass=="yes")
+			{
+				if (
+				combatant.Job=="CBT"||
+				combatant.Job=="CBE"||
+				combatant.Job=="EFE"||
+				combatant.Job=="GRE"||
+				combatant.Job=="TIE"||
+				combatant.Job=="ROK"||
+				combatant.Job=="BSH"||
+				combatant.Job=="CBO"||
+				combatant.Job=="NPC"||
+				combatant.Job=="EOS"||
+				combatant.Job=="SLN")
+				return;
+			}
+			
+			if ($("body .listcov[data-id=\""+combatant.name.replace(/'/gi, "\'")+"\"]").length <= 0)
+			{
+				var html="<div class=\"listcov "+combatant.Job+"\" job=\""+combatant.Job+"\" data-id=\""+combatant.name+"\" style=\"top:"+(rank*22)+"px; opacity:0;\">";
+				html+="<div class=\"jobicon\"><div></div></div>";
+				html+="<div class=\"listcontent\">";
+				html+="<div class=\"leftdeco\"><div></div></div>";
+				html+="<div class=\"cont_name\"><span class=\"namev\">"+(combatant.name=="YOU"?"ME ":"")+"</span><span data-id=\"jobid\" style=\"font-size:10px; font-weight:400;\">"+jobKR[combatant.Job]+"</span></div>";
+				html+="<div class=\"rightdeco\"></div>";
+				html+="<div class=\"dpsmeter\">---</div>";
+				html+="<div class=\"barometer\"></div>";
+				html+="</div>";
+				html+="</div>";
+
+				$("#totcov2").append(html);
+			}
+
+			var html = $(".listcov[data-id=\""+combatant.name.replace(/'/gi, "\'")+"\"]");
+			$(html).css("top", (rank*24)+42 + "px");
+
+			var combat = getCombatantDetail(combatant, lastEncounter.detail.Encounter);
+
+			if(sort.smnpass=="yes")
+			{
+				for(var user in lastEncounter.detail.Combatant)
+				{
+					var cbn = lastEncounter.detail.Combatant[user];
+					if ((cbn.name.indexOf($("#charv").html())>-1 && combatant.name == "YOU" && cbn.Job != "NPC")||( cbn.name.indexOf(combatant.name) > -1 && cbn.name!=combatant.name))
+					{
+						combat = mergeCombatantDetail(combat, getCombatantDetail(cbn, lastEncounter.detail.Encounter), lastEncounter.detail.Encounter);
+					}
+				}
+			}
+
+			for(var n in combat)
+			{
+				combat[n] = convNumberFix(combat[n]);
+			}
+
+			switch(sort.sortkey)
+			{
+				case "encdps":
+					$(html).find(".dpsmeter").html("<span class=\"hideable\" style=\"font-size:10px; font-weight:400;\">("+combat.swings+" swing, "+Math.floor(combat['damage%'])+ "%) </span>" +combat.encdps + "<span class=\"hideable\" style=\"font-size:10px; font-weight:400;\"> "+sort.sortval+"</span>");
+					break;
+				case "enchps":
+					$(html).find(".dpsmeter").html("<span class=\"hideable\" style=\"font-size:10px; font-weight:400;\">("+combat.heals+" heal, "+Math.floor(combat['healed%'])+ "%) </span>" +combat.enchps + "<span class=\"hideable\" style=\"font-size:10px; font-weight:400;\"> "+sort.sortval+"</span>");
+					break;
+				default:
+					$(html).find(".dpsmeter").html(combat[sort.sortkey] + "<span style=\"font-size:10px; font-weight:400;\"> "+sort.sortval+"</span>");
+					break;
+			}
+
+			var toprank = 0;
+			for(var i in lastCombat)
+			{
+				toprank=lastCombat[i].combat;
+				break;
+			}
+			var sortkeyD = sort.sortkey;
+
+			if(sortkeyD == "encdps")
+				sortkeyD = "damage";
+			else if(sortkeyD == "enchps")
+				sortkeyD = "healed";
+				
+			$(html).find(".barometer").width(((combat[sortkeyD] / toprank[sortkeyD])*100)+"%");
+
+			if((combat[sortkeyD] / toprank[sortkeyD])*100 == 100)
+				$(html).find(".barometer").addClass("dds");
+			else
+				$(html).find(".barometer").removeClass("dds");
+
+			if (combatant.Job!="CBT"&&combatant.Job!="CBE"&&combatant.Job!="EFE"&&combatant.Job!="GRE"&&combatant.Job!="TIE"&&combatant.Job!="ROK"&&combatant.Job!="BSH"&&combatant.Job!="NPC"&&combatant.Job!="EOS"&&combatant.Job!="SLN")
+				$(html).find(".jobicon div").css({"background-image":"url(./img/_"+combatant.Job.toUpperCase()+".png)", "background-repeat":"no-repeat", "background-position":"center 1px", "background-size":"auto 20px", "box-shadow":"inset 0px 0px 2px #000"});
+			else
+				$(html).find(".jobicon div").css({"background-image":"url(./img/_CRE.png)", "background-repeat":"no-repeat", "background-position":"center 1px", "background-size":"auto 20px", "background-color":"#999637", "box-shadow":"inset 0px 0px 2px #000"});
+			
+			if(parseInt(combat[sort.sortkey]) == 0)
+				$(html).css("opacity","0");
+			else
+				$(html).css("opacity","1");
+
+			if($(".option div[vid=nicknameview]").attr("select")=="no")
+				$(html).find(".cont_name .namev").html(combatant.name).css("margin-right","5px");
+			else
+				$(html).find(".cont_name .namev").html(combatant.name=="YOU"?"YOU&nbsp;&nbsp;":"").css("margin-right","0px");
+
+			if ($(".option div[vid=jobclasshide]").attr("select")=="yes")
+				$(html).find("span[data-id=jobid]").html("");
+			else
+			{
+				var str = "";
+				str += jobKR[combatant.Job];
+				if(parseInt(combatant.deaths)>0)
+					str += " ("+combatant.deaths+" D)";
+
+				$(html).find("span[data-id=jobid]").html(str);
+			}
+
+			$(html).removeClass();
+			
+			if ($(".option div[vid=useanimation]").attr("select")=="yes")
+				$(html).addClass("listcov anim " + combatant.Job.toUpperCase());
+			else
+				$(html).addClass("listcov " + combatant.Job.toUpperCase());
+
+			if (combatant.name == "YOU")
+				$(html).addClass("self");
+		}
+
+		function isNumber(value) 
+		{
+			return typeof isNaN(value) && isFinite(value);
+		}
+
+		function convNumberFix(val)
+		{
+			if(isNumber(val))
+				return val;
+			else
+				return 0;
+		}
+
+		function getMilliTick(time)
+		{
+			return (time.getTime()*1000) + time.getMilliseconds();
+		}
+		
+		$(".option[data=sort] div").click(function(){
+			$(".option[data=sort] div").each(function(){
+				$(this).attr("select", "no");
+			})
+			$(this).attr("select", "yes");
+			$(".buttons[data-id=sort]").html($(this).html());
+			onOverlayDataUpdate(lastEncounter);
+			allcloseoption("sort");
+		});
+
+		function viewmode(val)
+		{
+			if(val == "yes")
+			{
+				$(".detailview").show();
+			}
+			else
+			{
+				$(".detailview").hide();
+			}
+		}
+
+		function allcloseoption(target)
+		{
+			$(".option").each(function()
+			{
+				if($(this).attr("data") != target)
+				$(this).hide();
+			});
+			if($(".option[data='"+target+"']").css("display")=="none")
+				$(".option[data='"+target+"']").slideDown();
+			else
+				$(".option[data='"+target+"']").hide();
+		}
+
+		function setCharname(obj)
+		{
+			var sel = $(obj).attr('select')=="yes";
+			if(!sel)
+			{
+				var v=prompt('자신의 캐릭터명을 입력하세요','');
+				if(v=="")
+				{
+					$('#charv').html('&nbsp;');
+					$(obj).attr('select','no');
+					onOverlayDataUpdate(lastEncounter);
+				}
+				else
+				{
+					$('#charv').html(v);
+					$(obj).attr('select',$(obj).attr('select')=='yes'?'no':'yes');
+					onOverlayDataUpdate(lastEncounter);
+				};
+			}
+			else
+			{
+				$(obj).attr('select',$(obj).attr('select')=='yes'?'no':'yes');
+				onOverlayDataUpdate(lastEncounter);
+			}
+		}
+	</script>
+</html>

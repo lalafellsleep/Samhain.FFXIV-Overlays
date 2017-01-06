@@ -1,0 +1,94 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://code.jquery.com/jquery-2.2.4.js"  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+		crossorigin="anonymous"></script>
+		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
+		<script src="http://act.project.so/d/laiglinne/ffxiv_overlay_corejs/actwebsocket_core.js"></script>
+		<style>
+			* {font-family:"맑은 고딕";}
+			.back {position:fixed; left:0px; top:0px; right:0px; bottom:0px;}
+			.file {display:none;}
+			.back>div{transition:.25s; border:1px solid #FFF; overflow:hidden; position:absolute; left:0px; right:0px; border-radius:5px; font-size:12px; padding:2px; margin:2px; color:#FFF; height:16px; background:rgba(0,0,0,0.5);}
+			.back .text {position:absolute; left:2px;}
+			.back .tick {position:absolute; right:2px;}
+			.back .bar {position:absolute; top:0px; height:20px; background:rgba(0,192, 192, .5); transition:7s; right:0px;}
+		</style>
+	</head>
+	<body>
+		<div class="back">
+		</div>
+		<div class="file">
+		</div>
+	</body>
+	<script>
+		/*
+		var timeline = $(".file").html();
+		var linesplit = timeline.split("\n");
+		var v = 0;
+		for(var i in linesplit)
+		{
+			if(linesplit[i].trim() == "") continue;
+			if(linesplit[i][0] == "#") continue;
+
+			var data = linesplit[i];
+			var tick = data.split(" ")[0];
+			var text = "";
+			if(data.indexOf("\"") > -1)
+				text = data.match(/"(.*?)"/im)[1];
+			var tick_i = parseInt(tick);
+			if(tick == "0")
+				tick = "Action!";
+			//$(".back").append("<div style=\"top:"+(v * 23)+"px;\" data-index=\""+(v++)+"\" data-tick=\""+tick_i+"\"><div class=\"bar\" style=\"width:0%;\"></div><div class=\"text\">"+text+"</div><div class=\"tick\">"+tick+"</div></div>");
+			if(tick_i < 8)
+			{
+				//$(".back div[data-tick="+tick_i+"] .bar").css("width", ((1 - (tick_i / 7))*100).toFixed(1)+"%");
+			}
+		}
+
+		var curtop = 0;
+		setInterval(function(){
+			$(".back div").each(function(){
+				var tick = $(this).find(".tick").html();
+				if(tick == "Action!")
+				{
+					curtop ++;
+					$(this).hide();
+					$(this).find(".tick").html("-1");
+				}
+				else
+				{
+					tick = parseInt(tick);
+					if(tick == 1)
+					{
+						$(this).find(".tick").html("Action!");
+					}
+					else
+					{
+						if(tick <= 7)
+						{
+							$(this).find(".bar").css("width", "100%");
+						}
+						$(this).find(".tick").html(tick-1);
+					}
+				}
+
+				if($(this).css("display") != "none")
+				{
+					$(this).css("top", parseInt($(this).attr("data-index") * 23) - (curtop*23) +"px");
+				}
+			});
+		}, 1000);*/
+
+		function onOverlayDataUpdate(e) 
+		{ 
+			console.log(e);
+		}
+		function onOverlayStateUpdate(e) { }
+		function onLogLineRead(e) { }
+		function beforeLogLineRead(e) { }
+		function onScreenShotTaked(e) { }
+		function onEncounterEndExecuted(e) { }
+		function onZoomSizeChanged(e) { }
+	</script>
+</html>

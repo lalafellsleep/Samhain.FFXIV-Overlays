@@ -4,6 +4,8 @@ Read this [Issue](https://github.com/laiglinne-ff/ff14_overlayskin/issues/2) ple
 ## FFXIV_WS?
 
 Plugin Folder Name included "WS" using ACTWebSocket Project (Plugin)
+
+
 [ACTWebSocket](https://github.com/ZCube/ACTWebSocket) (Issue support Only Korean)
 
 ## FFXIV_Overlay_corejs

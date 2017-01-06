@@ -1,6 +1,6 @@
 # It's Rework now!
 
-read this [Issue](https://github.com/laiglinne-ff/ff14_overlayskin/issues/2) please :D 
+Read this [Issue](https://github.com/laiglinne-ff/ff14_overlayskin/issues/2) please :D 
 ## FFXIV_WS?
 
 Plugin Folder Name included "WS" using ACTWebSocket Project (Plugin)
@@ -8,5 +8,5 @@ Plugin Folder Name included "WS" using ACTWebSocket Project (Plugin)
 
 ## FFXIV_Overlay_corejs
 
-This Repository Support easier for create overlay.
+This Repository Support easier for create Overlay Skins.
 ( by Laiglinne_ff and [@HAERUHAERU](http://github.com/HAERUHAERU))

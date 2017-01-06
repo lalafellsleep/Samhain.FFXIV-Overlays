@@ -1,6 +1,22 @@
+#Randy Sample (Pink DPS)
+![](http://puu.sh/sFWfy/04c8439c71.jpg)
+
+#Regular Colours
+![](https://puu.sh/sFU3c/5caca5a424.jpg)
+
+#Class Specific Colours
+![](https://puu.sh/sFV5P/b99a5b9f1e.jpg)
+
+
+
+
+
+#ReadMe from laiglinne
+
 # ff14_overlayskin
 ## Issue
 https://github.com/laiglinne-ff/ff14_overlayskin/issues
+
 
 #Sample Image (Default Style)
 ![](https://github.com/laiglinne-ff/ff14_overlayskin/blob/master/images/preview_3.PNG?raw=true)

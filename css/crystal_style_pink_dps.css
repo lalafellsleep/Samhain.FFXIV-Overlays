@@ -288,7 +288,7 @@ ul
 .target-name 
 {
     cursor: pointer;
-    font-weight: 400;
+    font-weight: bold;
     margin-right: 12px;
     padding: 2px 4px;
     position: relative;
@@ -405,32 +405,32 @@ li:last-child
 .show-job-colors .에오스 .bar,
 .show-job-colors .학자 .bar 
 {
-    background: linear-gradient(to right, rgb(60, 60, 170) 0%, transparent 50%, transparent 50%, rgb(60, 60, 170) 100%);
-    box-shadow: inset 0px 0px 7px rgb(60, 60, 170);
+    background: linear-gradient(to right, rgb(105, 224, 145) 0%, transparent 50%, transparent 50%, rgb(105, 224, 145) 100%);
+    box-shadow: inset 0px 0px 7px rgb(105, 224, 145);
 }
 .show-job-colors .학자 .bar::after 
 {
-    border-color: transparent rgb(60, 60, 170) transparent transparent;
+    border-color: transparent rgb(105, 224, 145) transparent transparent;
 }
 .show-job-colors .학자 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(60, 60, 170);
+    border-color: transparent transparent transparent rgb(105, 224, 145);
 }
 .show-job-colors .격투사 .bar,
 .show-job-colors .몽크 .bar 
 {
-    background: linear-gradient(to right, rgb(180, 140, 20) 0%, transparent 50%, transparent 50%, rgb(180, 140, 20) 100%);
-    box-shadow: inset 0px 0px 7px #b38915;
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgb(229, 144, 187);
 }
 .show-job-colors .격투가 .bar::after,
 .show-job-colors .몽크 .bar::after 
 {
-    border-color: transparent rgb(180, 140, 20) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .격투가 .bar::before,
 .show-job-colors .몽크 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(180, 140, 20);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .비술사 .bar,
 .show-job-colors .소환사 .bar,
@@ -439,173 +439,173 @@ li:last-child
 .show-job-colors .이프리트 .bar,
 .show-job-colors .카벙클 .bar 
 {
-    background: linear-gradient(to right, rgb(40, 150, 0) 0%, transparent 50%, transparent 50%, rgb(40, 150, 0) 100%);
-    box-shadow: inset 0px 0px 7px rgb(40, 150, 0);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgb(229, 144, 187);
 }
 .show-job-colors .비술사 .bar::after,
 .show-job-colors .소환사 .bar::after 
 {
-    border-color: transparent rgb(40, 150, 0) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .비술사 .bar::before,
 .show-job-colors .소환사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(40, 150, 0);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .창술사 .bar,
 .show-job-colors .용기사 .bar 
 {
-    background: linear-gradient(to right, rgb(84, 96, 240) 0%, transparent 50%, transparent 50%, rgb(84, 96, 240) 100%);
-    box-shadow: inset 0px 0px 7px rgb(84, 96, 240);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgb(229, 144, 187);
 }
 .show-job-colors .창술사 .bar::after,
 .show-job-colors .용기사 .bar::after 
 {
-    border-color: transparent rgb(84, 96, 240) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .창술사 .bar::before,
 .show-job-colors .용기사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(84, 96, 240);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .환술사 .bar,
 .show-job-colors .백마도사 .bar 
 {
-    background: linear-gradient(to right, rgb(220, 210, 180) 0%, transparent 50%, transparent 50%, rgb(220, 210, 180) 100%);
-    box-shadow: inset 0px 0px 7px rgba(220, 215, 180, 1);
+    background: linear-gradient(to right, rgb(105, 224, 145) 0%, transparent 50%, transparent 50%, rgb(105, 224, 145) 100%);
+    box-shadow: inset 0px 0px 7px rgba(105, 224, 145, 1);
 }
 .show-job-colors .환술사 .bar::after,
 .show-job-colors .백마도사 .bar::after 
 {
-    border-color: transparent rgb(220, 215, 180) transparent transparent;
+    border-color: transparent rgb(105, 224, 145) transparent transparent;
 }
 .show-job-colors .환술사 .bar::before,
 .show-job-colors .백마도사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(220, 215, 180);
+    border-color: transparent transparent transparent rgb(105, 224, 145);
 }
 .show-job-colors .주술사 .bar,
 .show-job-colors .흑마도사 .bar 
 {
-    background: linear-gradient(to right, rgb(100, 70, 150) 0%, transparent 50%, transparent 50%, rgb(100, 70, 150) 100%);
-    box-shadow: inset 0px 0px 7px rgba(100, 70, 150, 1);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
 .show-job-colors .주술사 .bar::after,
 .show-job-colors .흑마도사 .bar::after 
 {
-    border-color: transparent rgb(100, 70, 150) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .주술사 .bar::before,
 .show-job-colors .흑마도사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(100, 70, 150);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .닌자 .bar,
 .show-job-colors .쌍검사 .bar 
 {
-    background: linear-gradient(to right, rgb(50, 50, 60) 0%, transparent 50%, transparent 50%, rgb(50, 50, 60) 100%);
-    box-shadow: inset 0px 0px 7px rgba(140, 50, 50, 1);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
 .show-job-colors .쌍검사 .bar::after,
 .show-job-colors .닌자 .bar::after 
 {
-    border-color: transparent rgb(140, 50, 50) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .쌍검사 .bar::before,
 .show-job-colors .닌자 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(140, 50, 50);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .궁술사 .bar,
 .show-job-colors .음유시인 .bar 
 {
     /*background: rgb(180, 200, 80);*/
-    background: linear-gradient(to right, rgb(180, 200, 80) 0%, transparent 50%, transparent 50%, rgb(180, 200, 80) 100%);
-    box-shadow: inset 0px 0px 7px rgba(180, 200, 80, 1);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(229, 144, 187, 1);
 }
 .show-job-colors .궁술사 .bar::after,
 .show-job-colors .음유시인 .bar::after 
 {
-    border-color: transparent rgb(180, 200, 80) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .궁술사 .bar::before,
 .show-job-colors .음유시인 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(180, 200, 80);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .검술사 .bar,
 .show-job-colors .나이트 .bar 
 {
-    background: linear-gradient(to right, rgb(210, 255, 255) 0%, transparent 50%, transparent 50%, rgb(210, 255, 255) 100%);
-    box-shadow: inset 0px 0px 7px rgba(210, 255, 255, 1);
+    background: linear-gradient(to right, rgb(112, 165, 249) 0%, transparent 50%, transparent 50%, rgb(112, 165, 249) 100%);
+    box-shadow: inset 0px 0px 7px rgba(112, 165, 249, 1);
 }
 .show-job-colors .검술사 .bar::after,
 .show-job-colors .나이트 .bar::after 
 {
-    border-color: transparent rgb(210, 255, 255) transparent transparent;
+    border-color: transparent rgb(112, 165, 249) transparent transparent;
 }
 .show-job-colors .검술사 .bar::before,
 .show-job-colors .나이트 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(210, 255, 255);
+    border-color: transparent transparent transparent rgb(112, 165, 249);
 }
 .show-job-colors .도끼술사 .bar,
 .show-job-colors .전사 .bar 
 {
-    background: linear-gradient(to right, rgb(170, 25, 25) 0%, transparent 50%, transparent 50%, rgb(170, 25, 25) 100%);
-    box-shadow: inset 0px 0px 7px rgba(170, 26, 22, 1);
+    background: linear-gradient(to right, rgb(112, 165, 249) 0%, transparent 50%, transparent 50%, rgb(112, 165, 249) 100%);
+    box-shadow: inset 0px 0px 7px rgba(112, 165, 249, 1);
 }
 .show-job-colors .도끼술사 .bar::after,
 .show-job-colors .전사 .bar::after 
 {
-    border-color: transparent rgb(170, 26, 22) transparent transparent;
+    border-color: transparent rgb(112, 165, 249) transparent transparent;
 }
 .show-job-colors .도끼술사 .bar::before,
 .show-job-colors .전사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(170, 26, 22);
+    border-color: transparent transparent transparent rgb(112, 165, 249);
 }
 .show-job-colors .점성술사 .bar 
 {
-    background: linear-gradient(to right, rgb(250, 210, 100) 0%, transparent 50%, transparent 50%, rgb(250, 210, 100) 100%);
-    box-shadow: inset 0px 0px 7px rgba(250, 210, 100, 1);
+    background: linear-gradient(to right, rgb(105, 224, 145) 0%, transparent 50%, transparent 50%, rgb(105, 224, 145) 100%);
+    box-shadow: inset 0px 0px 7px rgba(105, 224, 145, 1);
 }
 .show-job-colors .점성술사 .bar::after 
 {
-    border-color: transparent rgb(250, 210, 100) transparent transparent;
+    border-color: transparent rgb(105, 224, 145) transparent transparent;
 }
 .show-job-colors .점성술사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(250, 210, 100);
+    border-color: transparent transparent transparent rgb(105, 224, 145);
 }
 .show-job-colors .기공사 .bar,
 .show-job-colors .포탑 .bar 
 {
-    background: linear-gradient(to right, rgb(130, 255, 240) 0%, transparent 50%, transparent 50%, rgb(130, 255, 240) 100%);
-    box-shadow: inset 0px 0px 7px rgba(130, 255, 240, 1);
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
 .show-job-colors .기공사 .bar::after,
 .show-job-colors .포탑 .bar::after 
 {
-    border-color: transparent rgb(130, 255, 240) transparent transparent;
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .기공사 .bar::before,
 .show-job-colors .포탑 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(130, 255, 240);
+    border-color: transparent transparent transparent rgb(229, 144, 187);
 }
 .show-job-colors .암흑기사 .bar 
 {
-    background: linear-gradient(to right, rgb(150, 50, 50) 0%, transparent 50%, transparent 50%, rgb(150, 50, 50) 100%);
-    box-shadow: inset 0px 0px 7px rgba(150, 50, 50, 1);
+    background: linear-gradient(to right, rgb(112, 165, 249) 0%, transparent 50%, transparent 50%, rgb(112, 165, 249) 100%);
+    box-shadow: inset 0px 0px 7px rgba(112, 165, 249, 1);
 }
 .show-job-colors .암흑기사 .bar::after 
 {
-    border-color: transparent rgb(150, 50, 50) transparent transparent;
+    border-color: transparent rgb(112, 165, 249) transparent transparent;
 }
 .show-job-colors .암흑기사 .bar::before 
 {
-    border-color: transparent transparent transparent rgb(150, 50, 50);
+    border-color: transparent transparent transparent rgb(112, 165, 249);
 }
 /* JOB ONLY (no class) */
 .job-icon *
@@ -699,6 +699,7 @@ li:last-child
 }
 .row .stats 
 {
+    font-weight: bold;
     float: right;
     margin-left: 4px;
     white-space: nowrap;

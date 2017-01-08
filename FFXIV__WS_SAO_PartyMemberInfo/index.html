@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <style>
+            * {font-family:'맑은 고딕';}
+            html, body{margin:0px; padding:0px;}
+            .myhp {position:Absolute; left:20px; top:20px;}
+            .myhp .opacityarea { opacity:.3}
+            .myhp .partyadd{height:50px; width:24px; overflow:hidden; position:absolute;}
+            .myhp .partyadd .border {border:32px solid #FFF; border-radius: 37px; position:absolute; margin-left:-48px; margin-top:-21px; box-sizing:border-box; width:92px; height:92px;}
+        
+            .myhp .hparea {position:absolute; left:27px;}
+            .myhp .hpbar {position:absolute; left:27px;}
+
+            .myhp .nickname {position:absolute; left:27px; top:14px; color:#FFF; width:100px; font-size:16px; transform:scaleX(0.9); transform-origin:left; font-weight:bold; text-align:center;}
+        </style>
+    </head>
+    <body>
+        <div class="myhp">
+            <div class="opacityarea">
+                <div class="partyadd">
+                    <div class="border"></div>
+                </div>
+                <div class="hparea">
+                    <svg style="width:450px; height:50px;">
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:.1" />
+                        </linearGradient>
+                        <polyline points="0,0 450,0 425,50 410,28 419,12 100,12 100,38 260,38 265,28 420,28 425,50 0, 50" Fill="url(#grad1)"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="hpbar">
+                <svg style="width:450px; height:50px; opacity:.9">
+                    <polyline points="414,27 421,13 99,13 99,37 260,37 265,27 415,27" Fill="none" stroke="#FFF" stroke-width="2px"/>
+                    <polyline points="413,26 419,14 100,14 100,36 259,36 264,26 414,26" Fill="rgba(255,255,255,.15)" stroke="#555" stroke-width="2px"/>
+                    <mask id="hpmask">
+						<rect fill="#000" x="101" y="15" width="316" height="22"></rect>
+                        <polyline points="413,25 418,15 101,15 101,35 259,35 264,25 413,25" Fill="rgb(255,255,255)" style="transform:skew(25deg);"/>
+                    </mask>
+                    <rect fill="rgb(0,230,0)" x="91" y="15" width="336" height="22" mask="url(#hpmask)" style="transition:.5s; transform:skew(-25deg);" id="hpbar">
+                    </rect>
+                </svg>
+            </div>
+            <div class="nickname" id="myname">
+                Sync...
+            </div>
+        </div>
+        <script>
+            var maxhp = 100;
+            var curhp = 100;
+            var myID = 0;
+            var myName = "";
+            var combatants = [];
+
+            var wsUri = "ws://127.0.0.1:10501/MiniParse";
+            // ACTWebSocket 적용
+            function connectWebSocket(uri)
+            {
+                websocket = new WebSocket(uri);
+                websocket.onmessage = function(evt)
+                {
+                    if (evt.data == ".")
+                    {
+                        // ping pong
+                        websocket.send(".");
+                    }
+                    else
+                    {
+                        try{
+                            var obj = JSON.parse(evt.data);
+                            var type = obj["type"];
+                            if(type == "broadcast")
+                            {
+                                var from = obj["from"];
+                                var type = obj["msgtype"];
+                                var msg = obj["msg"];
+                                document.dispatchEvent(new CustomEvent('onBroadcastMessage', { detail: obj }));
+                            }
+                            if(type == "send")
+                            {
+                                var from = obj["from"];
+                                var type = obj["msgtype"];
+                                var msg = obj["msg"];
+                                document.dispatchEvent(new CustomEvent('onRecvMessage', { detail: obj }));
+                            }
+                            if(type == "set_id")
+                            {
+                                //document.dispatchEvent(new CustomEvent('onIdChanged', { detail: obj }));
+                            }
+                        }
+                        catch(e)
+                        {
+
+                        }
+                    }
+                };
+
+                websocket.onclose = function(evt) 
+                { 
+                    setTimeout(function(){connectWebSocket(uri)}, 5000);
+                };
+
+                websocket.onerror = function(evt) 
+                {
+                    websocket.close();
+                };
+            }    
+
+            $(document).ready(function() 
+            {
+                connectWebSocket(wsUri);
+            });
+
+            function broadcast(type, msg)
+            {
+                var obj = {};
+                obj["type"] = "broadcast";
+                obj["msgtype"] = type;
+                obj["msg"] = msg;
+                websocket.send(JSON.stringify(obj));
+            };
+
+            function send(to, type, msg)
+            {
+                var obj = {};
+                obj["type"] = "send";
+                obj["to"] = to;
+                obj["msgtype"] = type;
+                obj["msg"] = msg;
+                websocket.send(JSON.stringify(obj));
+            };
+
+            function set_id(id)
+            {
+                var obj = {};
+                obj["type"] = "set_id";
+                obj["id"] = id;
+                websocket.send(JSON.stringify(obj));
+            };
+
+            document.addEventListener('onBroadcastMessage', onBroadcastMessage);
+            document.addEventListener('onRecvMessage', onRecvMessage);
+            window.addEventListener('message', function (e) 
+            {
+                if (e.data.type === 'onBroadcastMessage') 
+                {
+                    onBroadcastMessage(e.data);
+                }
+                if (e.data.type === 'onRecvMessage') 
+                {
+                    onRecvMessage(e.data);
+                }
+            });
+
+            function onRecvMessage(e)
+            {
+
+            }
+
+            function onBroadcastMessage(e)
+            {
+                if(e.detail.msgtype == "CombatData")
+                {
+                    document.dispatchEvent(new CustomEvent('onOverlayDataUpdate', { detail: e.detail.msg }));
+                }
+                else
+                {
+                    console.log(e.detail);
+                    switch(e.detail.msgtype)
+                    {
+                        case "SendCharName":
+                            myID = e.detail.msg.charID;
+                            myName = e.detail.msg.charName;
+                            $("#myname").html(myName);
+                            if (combatants[myID] !== undefined && combatants[myID] !== null)
+                            {
+                                var max = combatants[myID].max_hp;
+                                myhpconvert(max, max);
+                            }
+                            break;
+                        case "AddCombatant":
+                            combatants[e.detail.msg.id] = e.detail.msg;
+                            if (e.detail.msg.id == myID)
+                            {
+                                var max = combatants[e.detail.msg.id].max_hp;
+                                myhpconvert(max, max);
+                            }
+                            break;
+                        case "RemoveCombatant":
+                            combatants[e.detail.msg.id] = null;
+                            break;
+                        case "AbilityUse":
+                            if (e.detail.msg.id == myID)
+                            {
+                                var max = e.detail.msg.max_hp;
+                                var cur = e.detail.msg.cur_hp;
+                                myhpconvert(cur, max);
+                            }
+                            break;
+                    }
+                }
+                console.log(myHP);
+            }
+
+            function myhpconvert(cur, max)
+            {
+                var color = "rgb(0,224,0)";
+                maxhp = max;
+                curhp = cur;
+
+                perc = (curhp / (maxhp * 1.0)).toFixed(2);
+                if(perc > 0.75) color = "rgb(0,224,0)";
+                else if(perc > 0.35 && perc <= 0.75) color = "rgb(255, 192, 0)";
+                else color = "rgb(192, 0, 0)";
+
+                $("#hpbar").css({"width":((320 * perc)+16)+"px", "fill":color});
+            }
+        </script>
+    </body>
+</html>

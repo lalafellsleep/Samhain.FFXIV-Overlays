@@ -14,7 +14,7 @@
             .myhp .hparea {position:absolute; left:27px;}
             .myhp .hpbar {position:absolute; left:27px;}
 
-            .myhp .nickname {position:absolute; left:27px; top:14px; color:#FFF; width:100px; font-size:16px; transform:scaleX(0.9); transform-origin:left; font-weight:bold; text-align:center;}
+            .myhp .nickname {text-shadow:0px 0px 3px rgba(0,0,0,0.5); position:absolute; left:27px; top:14px; color:#FFF; width:100px; font-size:16px; transform:scaleX(0.9); transform-origin:left; font-weight:bold; text-align:center;}
         </style>
     </head>
     <body>
@@ -50,12 +50,6 @@
             </div>
         </div>
         <script>
-            var maxhp = 100;
-            var curhp = 100;
-            var myID = 0;
-            var myName = "";
-            var combatants = [];
-
             var wsUri = "ws://127.0.0.1:10501/MiniParse";
             // ACTWebSocket 적용
             function connectWebSocket(uri)
@@ -73,6 +67,7 @@
                         try{
                             var obj = JSON.parse(evt.data);
                             var type = obj["type"];
+
                             if(type == "broadcast")
                             {
                                 var from = obj["from"];
@@ -80,6 +75,7 @@
                                 var msg = obj["msg"];
                                 document.dispatchEvent(new CustomEvent('onBroadcastMessage', { detail: obj }));
                             }
+
                             if(type == "send")
                             {
                                 var from = obj["from"];
@@ -87,6 +83,7 @@
                                 var msg = obj["msg"];
                                 document.dispatchEvent(new CustomEvent('onRecvMessage', { detail: obj }));
                             }
+
                             if(type == "set_id")
                             {
                                 //document.dispatchEvent(new CustomEvent('onIdChanged', { detail: obj }));
@@ -101,7 +98,7 @@
 
                 websocket.onclose = function(evt) 
                 { 
-                    setTimeout(function(){connectWebSocket(uri)}, 5000);
+                    setTimeout(function(){connectWebSocket(uri)}, 2000);
                 };
 
                 websocket.onerror = function(evt) 
@@ -203,14 +200,22 @@
                             break;
                     }
                 }
-                console.log(myHP);
             }
+
+            setInterval(function(){
+                // Battle Auto Recovery
+                curhp = curhp + (maxhp / 100);
+                myhpconvert(curhp, maxhp);
+            }, 3000);
 
             function myhpconvert(cur, max)
             {
                 var color = "rgb(0,224,0)";
                 maxhp = max;
                 curhp = cur;
+
+                if (maxhp < curhp)
+                    curhp = maxhp;
 
                 perc = (curhp / (maxhp * 1.0)).toFixed(2);
                 if(perc > 0.75) color = "rgb(0,224,0)";
@@ -219,6 +224,12 @@
 
                 $("#hpbar").css({"width":((320 * perc)+16)+"px", "fill":color});
             }
+
+            var maxhp = 100;
+            var curhp = 100;
+            var myID = 0;
+            var myName = "";
+            var combatants = [];
         </script>
     </body>
 </html>

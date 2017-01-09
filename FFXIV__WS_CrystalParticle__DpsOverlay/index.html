@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <style>
+            /* GLOBAL */
+            * {font-family:"맑은 고딕";}
+            html, body {margin:0px; padding:0px;}
+
+            /* TAB */
+            body>.menu {position:fixed; left:8px; bottom:8px; right:8px; height:20px;}
+            body>.menu>.tabs {position:absolute; min-width:0px; height:20px; border-radius:10px; padding:0px 20px 0px 20px; line-height:19px; font-size:12px; color:#EDDFC1; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #383838 50%, #404040 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000);}
+            body>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
+            body>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
+            body>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
+            body>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
+            body>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
+            body>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
+
+            /* DATA */
+            body>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
+            body>.data:after {position:absolute; z-index:-1; left:1px; right:1px; top:1px; bottom:1px; content:" "; background:#000; -webkit-filter:blur(4px); opacity:.5;border-radius:8px;}
+            body>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; bottom:0px; color:#FFF; font-size:12px; padding:8px;}
+            body>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; box-shadow:0px 0px 1px rgba(0,0,0,0.25);}
+            body>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
+        </style>
+    </head>
+    <body>
+        <div class="data">
+            <div class="cont">
+                <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span>▼</span></div>
+            </div>
+        </div>
+        <div class="menu">
+            <!-- TAB CUSTOMIZE Find "function createTabs"-->
+            <div class="tabs">
+                <div class="tab">DPS</div>
+                <div class="tab">HPS</div>
+                <div class="tab">ACC&amp;CRIT</div>
+            </div>
+        </div>
+    </body>
+    <script>
+        var wsUri = "ws://127.0.0.1:10501/MiniParse";
+    </script>
+    <script>
+// string : StringObject.format(ObjectArray a)
+// 사용예 : "{abc}{def}".format({abc:"wow", def:" awesome!"}); => return "wow awesome!";
+String.prototype.format = function(a)
+{
+	var reg = /(\{([^}]+)\})/im;
+	var matches = this.match(reg);
+	var result = this;
+
+	for(var i in a)
+		result = result.replace("{"+i+"}", a[i]);
+
+	return result;
+}
+
+String.prototype.contains = function(a)
+{
+	if(this.indexOf(a) > -1) return true;
+	else return false;
+}
+
+String.prototype.replaceArray = function(a)
+{
+	var r = this;
+	for(var i in a)
+		while(r.contains(a[i].target))
+			r = r.replace(a[i].target, a[i].replacement);
+
+	return r;
+}
+
+Number.prototype.nanFix = function()
+{
+	return parseFloat(isNaN(this)?0:this);
+}
+
+// 이벤트 리스너를 자동으로 추가하도록 지정합니다.
+// 사용할 스크립트의 맨 위에 선언해야 정상적으로 작동을 보장합니다.
+if (document.addEventListener) 
+{
+	// Mozilla, Opera, Webkit 
+	document.addEventListener("DOMContentLoaded", function () 
+	{
+		document.removeEventListener("DOMContentLoaded", arguments.callee, false);
+		domReady();
+	}, false);
+}
+else if (document.attachEvent) 
+{
+	// Internet Explorer
+	document.attachEvent("onreadystatechange", function () 
+	{
+		if (document.readyState === "complete") 
+		{
+			document.detachEvent("onreadystatechange", arguments.callee);
+			domReady();
+		}
+	});
+}
+
+window.addEventListener('message', function (e) 
+{
+    if (e.data.type === 'onBroadcastMessage') 
+    {
+        onBroadcastMessage(e.data);
+    }
+    if (e.data.type === 'onRecvMessage') 
+    {
+        onRecvMessage(e.data);
+    }
+});
+
+function domReady() 
+{
+    document.addEventListener('onBroadcastMessage', onBroadcastMessage);
+    document.addEventListener('onRecvMessage', onRecvMessage);
+
+    connectWebSocket(wsUri);
+
+	// Logline
+	try { document.addEventListener('beforeLogLineRead', beforeLogLineRead); } catch (ex) { }
+	try { document.addEventListener('onLogLineRead', onLogLineRead); } catch (ex) { }
+
+	// On
+	try { document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate); } catch (ex) { console.log("Core Error : onOverlayUpdate is not defined."); }
+	try { document.addEventListener('onOverlayStateUpdate', onOverlayStateUpdate); } catch (ex) { }
+
+    // ReadyEvent
+    try { onDocumentLoad(); } catch(ex) { }
+}
+
+// ACTWebSocket 적용
+function connectWebSocket(uri)
+{
+    websocket = new WebSocket(uri);
+    websocket.onmessage = function(evt)
+    {
+        if (evt.data == ".")
+        {
+            // ping pong
+            websocket.send(".");
+        }
+        else
+        {
+            try{
+                var obj = JSON.parse(evt.data);
+                var type = obj["type"];
+
+                if(type == "broadcast")
+                {
+                    var from = obj["from"];
+                    var type = obj["msgtype"];
+                    var msg = obj["msg"];
+                    document.dispatchEvent(new CustomEvent('onBroadcastMessage', { detail: obj }));
+                }
+
+                if(type == "send")
+                {
+                    var from = obj["from"];
+                    var type = obj["msgtype"];
+                    var msg = obj["msg"];
+                    document.dispatchEvent(new CustomEvent('onRecvMessage', { detail: obj }));
+                }
+
+                if(type == "set_id")
+                {
+                    //document.dispatchEvent(new CustomEvent('onIdChanged', { detail: obj }));
+                }
+            }
+            catch(e)
+            {
+
+            }
+        }
+    };
+
+    websocket.onclose = function(evt) 
+    { 
+        setTimeout(function(){connectWebSocket(uri)}, 2000);
+    };
+
+    websocket.onerror = function(evt) 
+    {
+        websocket.close();
+    };
+}    
+
+function broadcast(type, msg)
+{
+    var obj = {};
+    obj["type"] = "broadcast";
+    obj["msgtype"] = type;
+    obj["msg"] = msg;
+    websocket.send(JSON.stringify(obj));
+};
+
+function send(to, type, msg)
+{
+    var obj = {};
+    obj["type"] = "send";
+    obj["to"] = to;
+    obj["msgtype"] = type;
+    obj["msg"] = msg;
+    websocket.send(JSON.stringify(obj));
+};
+
+function set_id(id)
+{
+    var obj = {};
+    obj["type"] = "set_id";
+    obj["id"] = id;
+    websocket.send(JSON.stringify(obj));
+};
+
+function onRecvMessage(e)
+{
+
+}
+
+function onBroadcastMessage(e)
+{
+    console.log(e.detail);
+    if(e.detail.msgtype == "CombatData")
+    {
+        document.dispatchEvent(new CustomEvent('onOverlayDataUpdate', { detail: e.detail.msg }));
+    }
+    else
+    {
+        switch(e.detail.msgtype)
+        {
+            case "SendCharName":
+                myID = e.detail.msg.charID;
+                myName = e.detail.msg.charName;
+                $("#myname").html(myName);
+                if (combatants[myID] !== undefined && combatants[myID] !== null)
+                {
+                    var max = combatants[myID].max_hp;
+                    myhpconvert(max, max);
+                }
+                break;
+            case "AddCombatant":
+                combatants[e.detail.msg.id] = e.detail.msg;
+                if (e.detail.msg.id == myID)
+                {
+                    var max = combatants[e.detail.msg.id].max_hp;
+                    myhpconvert(max, max);
+                }
+                break;
+            case "RemoveCombatant":
+                combatants[e.detail.msg.id] = null;
+                break;
+            case "AbilityUse":
+                if (e.detail.msg.id == myID)
+                {
+                    var max = e.detail.msg.max_hp;
+                    var cur = e.detail.msg.cur_hp;
+                    myhpconvert(cur, max);
+                }
+                break;
+        }
+    }
+}
+
+function onOverlayDataUpdate(e)
+{
+    lastCombat = new Combatant(e);
+}
+
+function Person(e)
+{
+    this.parent = null;
+    for(var i in e)
+    {
+        if (i.indexOf("NAME") > -1) continue;
+        if (i == "t" || i == "n") continue;
+        var onlyDec = e[i].replace(/[0-9.,%]+/ig, "");
+        if (onlyDec != "")
+        {
+            if (onlyDec == "---" || onlyDec == "--")
+            {
+                this[i] = 0;
+            }
+            else
+                this[i] = e[i];
+        }
+        else
+        {
+            var tmp = parseFloat(e[i].replace(/[,%]+/ig, "")).nanFix().toFixed(underDot);
+
+            if (e[i].indexOf("%") > 0)
+            {
+                this[i] = (tmp / 100);
+            }
+            else if (Math.floor(tmp) != tmp || e[i].indexOf(".") > 0)
+            {
+                this[i] = parseFloat(tmp);
+            }
+            else
+            {
+                this[i] = parseInt(tmp).nanFix();
+            }
+        }
+    }
+
+    try
+    {
+        this.maxhitstr = this.maxhit.substring(0, this.maxhit.indexOf("-"));
+        this.maxhitval = parseInt(this.maxhit.substring(this.maxhit.indexOf("-") + 1).replace(/,/, "")).nanFix();
+    }
+    catch (ex)
+    {
+        this.maxhit = "?-0";
+        this.maxhitstr = "";
+        this.maxhitval = 0;
+    }
+
+    try
+    {
+        this.maxhealstr = this.maxheal.substring(0, this.maxheal.indexOf("-"));
+        this.maxhealval = parseInt(this.maxheal.substring(this.maxheal.indexOf("-") + 1).replace(/,/, "")).nanFix();
+    }
+    catch (ex)
+    {
+        this.maxheal = "?-0";
+        this.maxhealstr = "";
+        this.maxhealval = 0;
+    }
+
+    this.Class = this.Job.toUpperCase();
+
+    switch(this.Job)
+    {
+        case "GLD" : this.Class = "PLD"; break;
+        case "MRD" : this.Class = "WAR"; break;
+        case "PUG" : this.Class = "MNK"; break;
+        case "LNC" : this.Class = "DRG"; break;
+        case "ROG" : this.Class = "NIN"; break;
+        case "ARC" : this.Class = "BRD"; break;
+        case "THM" : this.Class = "BLM"; break;
+        case "ACN" : this.Class = "SMN"; break;
+        case "CNJ" : this.Class = "WHM"; break;
+    }
+    console.log(this);
+}
+
+function Combatant(e)
+{
+    this.persons = [];    
+    // 모든 Encounter 값을 가지고 있게끔
+    for(var i in e.detail.Encounter)
+    {
+        if (i == "t" || i == "n") continue;
+        var onlyDec = e.detail.Encounter[i].replace(/[0-9.,%]+/ig, "");
+        if (onlyDec != "")
+        {
+            if (onlyDec == "---" || onlyDec == "--")
+            {
+                this[i] = 0;
+            }
+            else
+                this[i] = e.detail.Encounter[i];
+        }
+        else
+        {
+            var tmp = parseFloat(e.detail.Encounter[i].replace(/[,%]+/ig, "")).nanFix().toFixed(underDot);
+
+            if (e.detail.Encounter[i].indexOf("%") > 0)
+            {
+                this[i] = (tmp / 100);
+            }
+            else if (Math.floor(tmp) != tmp || e.detail.Encounter[i].indexOf(".") > 0)
+            {
+                this[i] = parseFloat(tmp);
+            }
+            else
+            {
+                this[i] = parseInt(tmp).nanFix();
+            }
+        }
+    }
+
+    for(var i in e.detail.Combatant)
+    {
+        this.persons[i] = new Person(e.detail.Combatant[i]);
+    }
+
+    for(var i in e.detail.Combatant)
+    {
+        this.persons[i].parent = this;
+    }
+}
+
+// 소환수 합산 상태와 비합산 상태의 가져올 값을 변환해 줍니다.
+// 직접 호출하기 위한 함수로, 호출 시 소환수와 합산할 것인지 결정해야 합니다.
+// 몇가지 ACT 플러그인 자체가 전달하는 data 가 추가/변경 되었으나 일부 유저가 혼동하지 않도록 바꾸어 준다.
+// string : activeSort (string sortKey, bool summonerMerge)
+function activeSort(sortKey, summonerMerge)
+{
+	var sortkey = sortKey;
+
+	if (sortkey == "encdps") sortkey = "damage";
+	if (sortkey == "enchps") sortkey = "healed";
+	if (sortkey == "maxhit") sortkey = "maxHit";
+	if (sortkey == "maxheal") sortkey = "maxHeal";
+
+	switch(sortkey)
+	{
+		case "damage" : 
+			sortkey = "mergedDamage"; break;
+		case "healed" : 
+			sortkey = "mergedHealed"; break;
+		case "hits" : 
+			sortkey = "mergedHits"; break;
+		case "misses" : 
+			sortkey = "mergedHits"; break;
+		case "swings" : 
+			sortkey = "mergedSwings"; break;
+		case "heals" : 
+			sortkey = "mergedHeals"; break;
+		case "crithits" : 
+			sortkey = "mergedCrithits"; break;
+		case "critheals" : 
+			sortkey = "mergedCritheals"; break;
+		case "damagetaken" : 
+			sortkey = "mergedDamagetaken"; break;
+		case "healstaken" : 
+			sortkey = "mergedHealstaken"; break;
+		case "Last10DPS" : 
+			sortkey = "mergedLast10DPS"; break;
+		case "Last30DPS" : 
+			sortkey = "mergedLast30DPS"; break;
+		case "Last60DPS" : 
+			sortkey = "mergedLast60DPS"; break;
+		case "Last180DPS" : 
+			sortkey = "mergedLast180DPS"; break;
+		case "damage%":
+			sortkey = "dmgPct"; break;
+		case "crithit%":
+			sortkey = "crithitPct"; break;
+		case "critheal%":
+			sortkey = "crithealPct"; break;
+		case "healed%":
+			sortkey = "healedPct"; break;
+		case "overHeal%":
+		case "overHealPct":
+			sortkey = "OverHealPct"; break;
+	}
+
+	return sortkey;
+}
+
+// bool : getLog(string e)
+// e : combatKey
+function getLog(e)
+{
+	for(var i in CombatLog)
+	{
+		if(CombatLog[i].combatKey == e && lastCombat.encounter.title != "Encounter")
+		{
+			lastCombat = CombatLog[i];
+			document.dispatchEvent(new CustomEvent('onSuccessGetLog', {detail:{ combatant:CombatLog[i] }}));
+			return true;
+		}
+	}
+	return false;
+}
+
+// void : saveLog(Combatant e)
+function saveLog(e)
+{
+	var exists = false;
+	for(var i in CombatLog)
+	{
+		if(CombatLog[i].combatKey == e.combatKey)
+			exists = true;
+	}
+
+	if(!exists)
+	{
+		CombatLog.push(e);
+		document.dispatchEvent(new CustomEvent('onSuccessSaveLog', {detail:{ combatant:e }}));
+	}
+}
+
+var combatLog = [];
+var combatants = [];
+var curhp = 100;
+var delayOK = true;
+var jobColors = {
+	"PLD":[200, 255, 255],
+	"WAR":[200, 40, 30],
+	"DRK":[130, 40, 50],
+	
+	"MNK":[180, 140, 20],
+	"DRG":[50, 90, 240],
+	"NIN":[80, 70, 90],
+	"BRD":[180, 200, 80],
+	"MCH":[130, 255, 240],
+	"SMN":[40, 150, 0],
+	"BLM":[100, 70, 150],
+	
+	"WHM":[200, 195, 170],
+	"SCH":[60, 60, 160],
+	"AST":[200, 130, 90],
+	"LMB":[255, 204, 0]
+};
+var lastCombat = null;
+var maxhp = 100;
+var myID = 0;
+var myName = "";
+var underDot = 1;
+var sortKey = "encdps";
+    </script>
+    <script>
+        function myhpconvert(cur, max)
+        {
+            var color = "rgb(0,224,0)";
+            maxhp = max;
+            curhp = cur;
+
+            if (maxhp < curhp)
+                curhp = maxhp;
+
+            perc = (curhp / (maxhp * 1.0)).toFixed(2);
+            if(perc > 0.75) color = "rgb(0,224,0)";
+            else if(perc > 0.35 && perc <= 0.75) color = "rgb(255, 192, 0)";
+            else color = "rgb(192, 0, 0)";
+
+            $("#hpbar").css({"width":((320 * perc)+16)+"px", "fill":color});
+        }
+
+        setInterval(function(){
+            // Battle Auto Recovery
+            curhp = curhp + (maxhp / 100);
+            myhpconvert(curhp, maxhp);
+        }, 3000);
+    </script>
+</html>

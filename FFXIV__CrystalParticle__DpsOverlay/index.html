@@ -1,245 +1,226 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-		<script src="http://act.project.so/r/laiglinne/ffxiv_overlay_corejs/app.js"></script>
-    	<link rel="stylesheet" type="text/css" href="css/main.css" />
-		<style>
-			/* CHANGE FONT HERE! */
-			* {font-family:'malgun gothic';}
-			/* if you want css customization refer look below */
+    <head>
+        <meta charset="UTF-8">
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <style>
+            /* GLOBAL */
+            * {font-family:"맑은 고딕";}
+            html, body {margin:0px; padding:0px;}
 
-			/* case div */
-			div.chatstyle div.data .cover>div
-			{font-size:12px; color:#FFF; position:absolute; left:15px; right:15px; height:20px;}
+            /* TAB */
+            body>.menu {position:fixed; left:8px; bottom:8px; right:8px; height:20px;}
+            body>.menu>.tabs {position:absolute; min-width:0px; height:20px; border-radius:10px; padding:0px 20px 0px 20px; line-height:19px; font-size:12px; color:#EDDFC1; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #383838 50%, #404040 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000);}
+            body>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
+            body>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
+            body>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
+            body>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
+            body>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
+            body>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
 
-			/* unknown job(class) default style*/
-			div.chatstyle div.data>.cover>div>.bar
-			{box-shadow:inset 0px 0px 10px rgba(192, 192, 192, .5); height:20px; line-height:20px;	
-			background:radial-gradient(rgba(192, 192, 192, 0) 0%, rgba(192, 192, 192, 1)  75%, rgba(192, 192, 192, 1) 100%);
-			text-shadow:0px 0px 3px rgba(0,0,0,.3),
-			3px 3px 5px rgba(0,0,0,.3),
-			3px 0px 5px rgba(0,0,0,.3),
-			3px -3px 5px rgba(0,0,0,.3),
+            /* DATA */
+            body>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
+            body>.data:after {position:absolute; z-index:-1; left:1px; right:1px; top:1px; bottom:1px; content:" "; background:#000; -webkit-filter:blur(4px); opacity:.5;border-radius:8px;}
+            body>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; bottom:0px; color:#FFF; font-size:12px; padding:8px;}
+            body>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; box-shadow:0px 0px 1px rgba(0,0,0,0.25);}
+            body>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
+        </style>
+    </head>
+    <body>
+        <div class="data">
+            <div class="cont">
+                <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span>▼</span></div>
+            </div>
+        </div>
+        <div class="menu">
+            <!-- TAB CUSTOMIZE Find "function createTabs"-->
+            <div class="tabs">
+                <div class="tab">DPS</div>
+                <div class="tab">HPS</div>
+                <div class="tab">ACC&amp;CRIT</div>
+            </div>
+        </div>
+    </body>
+    <script>
+        var wsUri = "ws://127.0.0.1:10501/MiniParse";
+        // ACTWebSocket 적용
+        function connectWebSocket(uri)
+        {
+            websocket = new WebSocket(uri);
+            websocket.onmessage = function(evt)
+            {
+                if (evt.data == ".")
+                {
+                    // ping pong
+                    websocket.send(".");
+                }
+                else
+                {
+                    try{
+                        var obj = JSON.parse(evt.data);
+                        var type = obj["type"];
 
-			0px 3px 5px rgba(0,0,0,.3),
-			0px -3px 5px rgba(0,0,0,.3),
-			
-			-3px 3px 5px rgba(0,0,0,.3),
-			-3px 0px 5px rgba(0,0,0,.3),
-			-3px -3px 5px rgba(0,0,0,.3);
-			}
+                        if(type == "broadcast")
+                        {
+                            var from = obj["from"];
+                            var type = obj["msgtype"];
+                            var msg = obj["msg"];
+                            document.dispatchEvent(new CustomEvent('onBroadcastMessage', { detail: obj }));
+                        }
 
-			div.chatstyle div.data>.cover>div>.bar:after, div.chatstyle div.data>.cover>div>.bar:before
-			{
-				width:0px; height:0px; content:' '; float:left; border-width:10px 6px 10px 6px; 
-				border-color:transparent rgba(192, 192, 192, 1) transparent transparent; border-style:solid; margin-left:-12px;
-			}
+                        if(type == "send")
+                        {
+                            var from = obj["from"];
+                            var type = obj["msgtype"];
+                            var msg = obj["msg"];
+                            document.dispatchEvent(new CustomEvent('onRecvMessage', { detail: obj }));
+                        }
 
-			div.chatstyle div.data>.cover>div>.bar:before
-			{
-				float:right; margin-left:0px; margin-right:-12px;
-				border-color:transparent transparent transparent rgba(192, 192, 192, 1);
-			}
+                        if(type == "set_id")
+                        {
+                            //document.dispatchEvent(new CustomEvent('onIdChanged', { detail: obj }));
+                        }
+                    }
+                    catch(e)
+                    {
 
-			div.chatstyle div.data>.cover>div>.content
-			{
-				position:absolute;
-				top:0px;
-				height:20px; line-height:20px;
-				padding-left:22px;
-				left:0px; right:0px;
-			}
+                    }
+                }
+            };
 
-			div.chatstyle div.data>.cover>div>.content>.name>.namecover>.job
-			{
-				padding-left:5px;
-				font-size:11px;
-				opacity:.75;
-			}
+            websocket.onclose = function(evt) 
+            { 
+                setTimeout(function(){connectWebSocket(uri)}, 2000);
+            };
 
-			div.chatstyle div.data>.cover>div>.content>.value
-			{
-				position:absolute;
-				right:5px;
-			}
-			/* inner data(s) */
-		</style>
-	</head>
-	<body>
-		<div class="chatstyle">
-			<div class="data">
-				<div class="cover">
+            websocket.onerror = function(evt) 
+            {
+                websocket.close();
+            };
+        }    
 
-				</div>
-			</div>
-			<div class="controls">
-				<div class="cover">
-					<div data-id="0" class="focus">
-						<span>DPS</span>
-					</div>
-					<div data-id="1">
-						<span>HPS</span>
-					</div>
-					<div data-id="2">
-						<span>DEF</span>
-					</div>
-					<div data-id="3">
-						<span>ACC/CRIT</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
-	<script>
-		var curopt = 0;
-		var lastCombat = null;
-		var sortkey = "mergedDamage";
-		var underDot = 0;
-		var combatlog = [];
-		var lang = new Language("en");
-		/* IF you want edit data view and tabs  */
-		var options = [
-			{v:"{encdps} DPS", k:"mergedDamage"},
-		];
+        $(document).ready(function() 
+        {
+            connectWebSocket(wsUri);
+        });
 
-		$("div.controls>div.cover>div>span").click(function(){
-			$("div.controls>div.cover>div").removeClass("focus");
-			$(this).parent().addClass("focus");
-			curopt = $(this).parent().attr("data-id");
-		});
+        function broadcast(type, msg)
+        {
+            var obj = {};
+            obj["type"] = "broadcast";
+            obj["msgtype"] = type;
+            obj["msg"] = msg;
+            websocket.send(JSON.stringify(obj));
+        };
 
-		$(document).ready(function()
-		{
-			document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);
-		});
+        function send(to, type, msg)
+        {
+            var obj = {};
+            obj["type"] = "send";
+            obj["to"] = to;
+            obj["msgtype"] = type;
+            obj["msg"] = msg;
+            websocket.send(JSON.stringify(obj));
+        };
 
-		function existsCombatlog(key)
-		{
-			var r = false;
-			for(var i in combatlog)
-			{
-				if(combatlog[i].key == key) r = true; 
-			}
-			return r;
-		}
+        function set_id(id)
+        {
+            var obj = {};
+            obj["type"] = "set_id";
+            obj["id"] = id;
+            websocket.send(JSON.stringify(obj));
+        };
 
-		function getCombatlog(key)
-		{
-			for(var i in combatlog)
-			{
-				if(combatlog[i].key == key) return combatlog[i].value;
-			}
-		}
+        document.addEventListener('onBroadcastMessage', onBroadcastMessage);
+        document.addEventListener('onRecvMessage', onRecvMessage);
+        window.addEventListener('message', function (e) 
+        {
+            if (e.data.type === 'onBroadcastMessage') 
+            {
+                onBroadcastMessage(e.data);
+            }
+            if (e.data.type === 'onRecvMessage') 
+            {
+                onRecvMessage(e.data);
+            }
+        });
 
-		function addcombatlog(c)
-		{
-			combatlog.push({key:c.combatKey, value:c});
-			$("section.combatlog .cover").prepend("<div onclick=\"getrecalc('"+c.combatKey+"');\">"+c.encounter.title+" ("+c.encounter.encdps+"D, "+c.encounter.enchps+"H)</div>");
-		}
+        function onRecvMessage(e)
+        {
 
-		function guageSizer()
-		{
-			$(".data>.cover>div").each(function(){
-				var obj = $(".data>.cover>div[data-id=\""+$(this).attr("data-id")+"\"]");
-				var size = $(obj).find(".value").width();
-				if(size !== null)
-				{
-					size += 34;
-					$(obj).find(".name").width($(this).width() - size);
-				}
-			});
-		}
+        }
 
-		function onOverlayDataUpdate(e)
-		{
-			lastCombat = new Combatant(e, sortkey);
-			printUsers();
-		}
+        function onBroadcastMessage(e)
+        {
+            if(e.detail.msgtype == "CombatData")
+            {
+                document.dispatchEvent(new CustomEvent('onOverlayDataUpdate', { detail: e.detail.msg }));
+            }
+            else
+            {
+                console.log(e.detail);
+                switch(e.detail.msgtype)
+                {
+                    case "SendCharName":
+                        myID = e.detail.msg.charID;
+                        myName = e.detail.msg.charName;
+                        $("#myname").html(myName);
+                        if (combatants[myID] !== undefined && combatants[myID] !== null)
+                        {
+                            var max = combatants[myID].max_hp;
+                            myhpconvert(max, max);
+                        }
+                        break;
+                    case "AddCombatant":
+                        combatants[e.detail.msg.id] = e.detail.msg;
+                        if (e.detail.msg.id == myID)
+                        {
+                            var max = combatants[e.detail.msg.id].max_hp;
+                            myhpconvert(max, max);
+                        }
+                        break;
+                    case "RemoveCombatant":
+                        combatants[e.detail.msg.id] = null;
+                        break;
+                    case "AbilityUse":
+                        if (e.detail.msg.id == myID)
+                        {
+                            var max = e.detail.msg.max_hp;
+                            var cur = e.detail.msg.cur_hp;
+                            myhpconvert(cur, max);
+                        }
+                        break;
+                }
+            }
+        }
 
-		function printUsers()
-		{
-			if(lastCombat === null) return;
-			var d = lastCombat;
-			if(curopt == 1 || curopt == 2)
-				d["summonerMerge"] = false;
-			else
-				d["summonerMerge"] = true;
-			
+        setInterval(function(){
+            // Battle Auto Recovery
+            curhp = curhp + (maxhp / 100);
+            myhpconvert(curhp, maxhp);
+        }, 3000);
 
-			d.sortkeyChange(options[curopt].k);
-			//$("header .zonearea").html(d.zone + " - " + parseFloat(d.encounter.encdps).toFixed(0) + " RD / " + parseFloat(d.encounter.enchps).toFixed(0) + " RH");
-			//$("header .wordarea").html("[--:--] ".concat(d.title).replace("--:--", d.duration));
+        function myhpconvert(cur, max)
+        {
+            var color = "rgb(0,224,0)";
+            maxhp = max;
+            curhp = cur;
 
-			$(".data>.cover>div").each(function()
-			{
-				var remove = true;
-				for(var i in d.persons)
-				{
-					var a = d.persons[i];
-					if(a.name == $(this).attr("data-id"))
-					{
-						remove = false;
-						break;
-					}
-				}
+            if (maxhp < curhp)
+                curhp = maxhp;
 
-				if(d["summonerMerge"] && $(this).attr("class") == "AVA")
-					remove = true;
+            perc = (curhp / (maxhp * 1.0)).toFixed(2);
+            if(perc > 0.75) color = "rgb(0,224,0)";
+            else if(perc > 0.35 && perc <= 0.75) color = "rgb(255, 192, 0)";
+            else color = "rgb(192, 0, 0)";
 
-				if(remove) {$(this).remove(); }
-			});
+            $("#hpbar").css({"width":((320 * perc)+16)+"px", "fill":color});
+        }
 
-			d.sortkeyChange(options[curopt].k);
-
-			for(var p in d.persons)
-			{
-				var a = d.persons[p];
-				if(a.Job == "AVA" && a.petType != "Chocobo" && d["summonerMerge"]) continue;
-
-				var name = " "+(a.rank+1)+". ";
-				var top = a.rank*22;
-				if(!(localStorage.getItem("metro_qhd")=="true"?true:false))
-					top = a.rank*30;
-				var job = a.Job;
-				var alpha = 0.8;
-				var value = options[curopt].v.format(a);
-				var aclass = a.Job;
-				if(a.isPet)
-					aclass = a.petType;
-
-				var meperc = parseFloat(a[activeSort(d.sortkey, d.summonerMerge)]/a.maxdamage*100).toFixed(underDot);
-				console.log(a.maxdamage);
-				if($(".data>.cover>div[data-id=\""+a.name+"\"]").length > 0)
-				{
-				}
-				else
-				{
-					$(".data>.cover").append("<div style=\"top:"+top+"px;\" class=\""+job+"\" data-id=\""+a.name+"\" data-rank=\""+a.rank
-					+"\"><div class=\"bar\" style=\"width:"+meperc+"%;\"></div><div class=\"content\" style=\"background-image:url(img/"
-					+a.Job+".png);\"><span class=\"name\"><span class=\"namecover\"><i>"+name+"</i><span class=\"i\">"
-					+a.name+"</span><span class=\"job\">"+lang.get(aclass)+"</span></span></span><span class=\"value\">"+value+"</span></div></div>");
-				}
-
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").css("top", top+"px");
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").find("i").html(name);
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".job").html(lang.get(aclass));
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").attr("data-rank", a.rank);
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".bar").css({"width":meperc+"%"});
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").find(".content span.value").html(value);
-				$(".data>.cover>div[data-id=\""+a.name+"\"]").find("div.content").css("background-image","url(img/"+a.Job+".png)");
-			
-				if(!(localStorage.getItem("metro_nameview")=="true"?true:false) && a.name != "YOU" && a.name != "Limit Break")
-				{
-					$(".data>.cover>div[data-id=\""+a.name+"\"] .i").css("-webkit-filter", "blur(4px)");
-				}
-			}
-			guageSizer();
-
-			if(!existsCombatlog(d.combatKey) && d.encounter.title != "Encounter")
-			{
-				addcombatlog(lastCombat);
-			}
-		}
-	</script>
+        var maxhp = 100;
+        var curhp = 100;
+        var myID = 0;
+        var myName = "";
+        var combatants = [];
+    </script>
 </html>

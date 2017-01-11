@@ -295,32 +295,6 @@ function onMessage(e)
 		onOverlayDataUpdate(e.data);
 }
 
-// ACTWebSocket 적용
-function connectWebSocket(uri)
-{
-	if(uri.indexOf("@HOST_PORT@") > -1) return;
-	websocket = new WebSocket(uri);
-
-	websocket.onmessage = function(evt) 
-	{
-		if (evt.data == ".") 
-			websocket.send(".");
-		else 
-			document.dispatchEvent(new CustomEvent('onOverlayDataUpdate', { detail: JSON.parse(evt.data) }));
-	};
-
-	websocket.onclose = function(evt) 
-	{ 
-		setTimeout(function(){connectWebSocket(uri)}, 5000);
-	};
-
-	websocket.onerror = function(evt) 
-	{
-		websocket.close();
-	};
-}    
-connectWebSocket(wsUri);
-
 function getItem(id)
 {
 	if($(".content .item[data-id=\""+id+"\"]").length > 0)

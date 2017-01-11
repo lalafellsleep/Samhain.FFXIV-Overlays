@@ -280,7 +280,6 @@ var onRecord = false;
 var sortkey = "encdps";
 var sorttype = "asc";
 var lastCombat = null;
-var websoket = null;
 $(document).ready(function() 
 {
 	document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);

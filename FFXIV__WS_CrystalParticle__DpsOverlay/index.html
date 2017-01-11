@@ -80,6 +80,29 @@ Number.prototype.nanFix = function()
 	return parseFloat(isNaN(this)?0:this);
 }
 
+Number.prototype.numFormat = new function()
+{
+    var str = "";
+    var data = 0;
+
+    try
+    {
+        if (data != Infinity && data != 0 && data != NaN)
+        {
+            var reg = /(^[+-]?\d+)(\d{3})/;
+            var n = (this + "");
+            while (reg.test(n)) n = n.replace(reg, "$1,$2");
+            return n;
+        }
+        else
+            return "0";
+    }
+    catch (ex)
+    {
+        return "0";
+    }
+}
+
 // 이벤트 리스너를 자동으로 추가하도록 지정합니다.
 // 사용할 스크립트의 맨 위에 선언해야 정상적으로 작동을 보장합니다.
 if (document.addEventListener) 
@@ -225,7 +248,6 @@ function onRecvMessage(e)
 
 function onBroadcastMessage(e)
 {
-    console.log(e.detail);
     if(e.detail.msgtype == "CombatData")
     {
         document.dispatchEvent(new CustomEvent('onOverlayDataUpdate', { detail: e.detail.msg }));
@@ -272,9 +294,10 @@ function onOverlayDataUpdate(e)
     lastCombat = new Combatant(e);
 }
 
-function Person(e)
+function Person(e, p)
 {
-    this.parent = null;
+    this.parent = p;
+    this.Class = "";
     for(var i in e)
     {
         if (i.indexOf("NAME") > -1) continue;
@@ -283,28 +306,19 @@ function Person(e)
         if (onlyDec != "")
         {
             if (onlyDec == "---" || onlyDec == "--")
-            {
                 this[i] = 0;
-            }
             else
                 this[i] = e[i];
         }
         else
         {
             var tmp = parseFloat(e[i].replace(/[,%]+/ig, "")).nanFix().toFixed(underDot);
-
             if (e[i].indexOf("%") > 0)
-            {
                 this[i] = (tmp / 100);
-            }
             else if (Math.floor(tmp) != tmp || e[i].indexOf(".") > 0)
-            {
                 this[i] = parseFloat(tmp);
-            }
             else
-            {
                 this[i] = parseInt(tmp).nanFix();
-            }
         }
     }
 
@@ -332,8 +346,34 @@ function Person(e)
         this.maxhealval = 0;
     }
 
-    this.Class = this.Job.toUpperCase();
+    if (this.DURATION <= 0)
+    {
+        // 
+        this.dps = parseFloat((this.damage / this.parent.DURATION).nanFix().toFixed(underDot));
+        this.hps = parseFloat((this.healed / this.parent.DURATION).nanFix().toFixed(underDot));
 
+        this.DPS = Math.floor(this.dps);
+        this.HPS = Math.floor(this.hps);
+
+        this["DPS-k"] = Math.floor(this.dps / 1000);
+        this["HPS-k"] = Math.floor(this.hps / 1000);
+
+        for(var i in this)
+        {
+            if (this[i] == "∞")
+                this[i] = 0;
+        }
+    }
+
+    /* Jobname refactoring */
+    if (this.Job != "")
+        this.Class = this.Job.toUpperCase();
+
+	this.petType = "Chocobo";
+    this.isPet = false;
+    this.role = "DPS";
+
+    // Give Job
     switch(this.Job)
     {
         case "GLD" : this.Class = "PLD"; break;
@@ -346,12 +386,122 @@ function Person(e)
         case "ACN" : this.Class = "SMN"; break;
         case "CNJ" : this.Class = "WHM"; break;
     }
-    console.log(this);
+
+	if(this.Class != "")
+	{
+		switch(this.Class)
+		{
+			case "SCH": case "WHM": case "AST": this.role = "Healer"; break;
+			case "PLD": case "WAR": case "DRK": this.role = "Tanker"; break;
+		}
+	}
+
+	// globalization
+	if(this.Class == "")
+	{
+		if(
+			this.name.indexOf("에기") > -1 || this.name.indexOf("카벙클") > -1|| // KOR
+			this.name.toUpperCase().indexOf("EGI") > -1|| this.name.toUpperCase().indexOf("CARBUNCLE") > -1|| // ENG
+			this.name.indexOf("エギ") > -1|| this.name.indexOf("カーバンクル")> -1 // JPN
+		)
+		{
+			this.Job = "AVA";
+			this.Class = "SMN";
+			this.isPet = true;
+			this.petType = "Egi";
+		}
+		
+		if(this.name.indexOf("요정") > -1 || // KOR
+			this.name.toUpperCase().indexOf("EOS") > -1|| this.name.toUpperCase("SELENE") > -1 || // ENG
+			this.name.indexOf("フェアリー") > -1 // JPN
+		)
+		{
+			this.Job = "AVA";
+			this.Class = "SCH";
+			this.isPet = true;
+			this.role = "Healer";
+			this.petType = "Fairy";
+		}
+
+		if(this.name.indexOf("자동포탑") > -1 || // KOR 
+			this.name.toUpperCase().indexOf("AUTOTURRET") > -1 || // ENG
+			this.name.indexOf("オートタレット") > -1 // JPN
+		)
+		{
+			this.Job = "AVA";
+			this.Class = "MCH";
+			this.isPet = true;
+			this.petType = "AutoTurret";
+		}
+
+		if(this.name.toUpperCase().indexOf("LIMIT BREAK") > -1|| this.name.indexOf("リミット") > -1)
+		{
+			this.Job = "LMB";
+			this.Class = "LMB";
+		}
+	}
+	
+	if(this.isPet)
+	{
+		var regex = /(?:.*?)\((.*?)\)/im;
+		var matches = this.name.match(regex);
+		if(regex.test(this.name)) // do not use Array.length 
+		{
+			this.petOwner = matches[1];
+		}
+    }
+
+    /* DPS RECALCULATE */
+    if(this.overHeal != undefined)
+    {
+        
+    }
+
+	this.color = {
+		R:this.getColor().R,
+		G:this.getColor().G,
+		B:this.getColor().B
+	}
+
+	if(this.petType != "Chocobo")
+	{
+		this.color.R+= parseInt(this.color.R/3);
+		this.color.G+= parseInt(this.color.G/3);
+		this.color.B+= parseInt(this.color.B/3);
+	}
+}
+
+// 해당 유저의 직업에 따른 기본 지정 소울 크리스탈 색을 가져옵니다. 재정의하여 사용할 수도 있습니다.
+// object : PersonObject.getColor(int r, int g, int b)
+Person.prototype.getColor = function(r, g, b)
+{
+	if(jobColors[this.Class] != undefined)
+	{
+		if(r==undefined) var r = 0;
+		if(g==undefined) var g = 0;
+		if(b==undefined) var b = 0;
+		return {"R":(jobColors[this.Class][0]+r), "G":(jobColors[this.Class][1]+g), "B":(jobColors[this.Class][2]+b)};
+	}
+	else
+	{
+		return {"R":240, "G":220, "B":110};
+	}
 }
 
 function Combatant(e)
 {
-    this.persons = [];    
+	this.zone = this.encounter.CurrentZoneName;
+	this.title = this.encounter.title;
+	this.sortvector = true;
+	this.duration = this.encounter.duration;
+	this.summonerMerge = true;
+	this.sortkey = sortkey;
+	this.langpack = new Language(lang);
+    this.Encounter = {};
+    this.Combatant = {};
+	this.maxdamage = 0; // for old versions
+	this.maxValue = 0; // please use this value
+    
     // 모든 Encounter 값을 가지고 있게끔
     for(var i in e.detail.Encounter)
     {
@@ -360,99 +510,33 @@ function Combatant(e)
         if (onlyDec != "")
         {
             if (onlyDec == "---" || onlyDec == "--")
-            {
-                this[i] = 0;
-            }
+                this.Encounter[i] = 0;
             else
-                this[i] = e.detail.Encounter[i];
+                this.Encounter[i] = e.detail.Encounter[i];
         }
         else
         {
             var tmp = parseFloat(e.detail.Encounter[i].replace(/[,%]+/ig, "")).nanFix().toFixed(underDot);
-
             if (e.detail.Encounter[i].indexOf("%") > 0)
-            {
-                this[i] = (tmp / 100);
-            }
+                this.Encounter[i] = (tmp / 100);
             else if (Math.floor(tmp) != tmp || e.detail.Encounter[i].indexOf(".") > 0)
-            {
-                this[i] = parseFloat(tmp);
-            }
+                this.Encounter[i] = parseFloat(tmp);
             else
-            {
-                this[i] = parseInt(tmp).nanFix();
-            }
+                this.Encounter[i] = parseInt(tmp).nanFix();
         }
     }
 
     for(var i in e.detail.Combatant)
     {
-        this.persons[i] = new Person(e.detail.Combatant[i]);
+        this.Combatant[i] = new Person(e.detail.Combatant[i], this);
     }
 
     for(var i in e.detail.Combatant)
     {
-        this.persons[i].parent = this;
+        this.Combatant[i].parent = this;
     }
-}
 
-// 소환수 합산 상태와 비합산 상태의 가져올 값을 변환해 줍니다.
-// 직접 호출하기 위한 함수로, 호출 시 소환수와 합산할 것인지 결정해야 합니다.
-// 몇가지 ACT 플러그인 자체가 전달하는 data 가 추가/변경 되었으나 일부 유저가 혼동하지 않도록 바꾸어 준다.
-// string : activeSort (string sortKey, bool summonerMerge)
-function activeSort(sortKey, summonerMerge)
-{
-	var sortkey = sortKey;
-
-	if (sortkey == "encdps") sortkey = "damage";
-	if (sortkey == "enchps") sortkey = "healed";
-	if (sortkey == "maxhit") sortkey = "maxHit";
-	if (sortkey == "maxheal") sortkey = "maxHeal";
-
-	switch(sortkey)
-	{
-		case "damage" : 
-			sortkey = "mergedDamage"; break;
-		case "healed" : 
-			sortkey = "mergedHealed"; break;
-		case "hits" : 
-			sortkey = "mergedHits"; break;
-		case "misses" : 
-			sortkey = "mergedHits"; break;
-		case "swings" : 
-			sortkey = "mergedSwings"; break;
-		case "heals" : 
-			sortkey = "mergedHeals"; break;
-		case "crithits" : 
-			sortkey = "mergedCrithits"; break;
-		case "critheals" : 
-			sortkey = "mergedCritheals"; break;
-		case "damagetaken" : 
-			sortkey = "mergedDamagetaken"; break;
-		case "healstaken" : 
-			sortkey = "mergedHealstaken"; break;
-		case "Last10DPS" : 
-			sortkey = "mergedLast10DPS"; break;
-		case "Last30DPS" : 
-			sortkey = "mergedLast30DPS"; break;
-		case "Last60DPS" : 
-			sortkey = "mergedLast60DPS"; break;
-		case "Last180DPS" : 
-			sortkey = "mergedLast180DPS"; break;
-		case "damage%":
-			sortkey = "dmgPct"; break;
-		case "crithit%":
-			sortkey = "crithitPct"; break;
-		case "critheal%":
-			sortkey = "crithealPct"; break;
-		case "healed%":
-			sortkey = "healedPct"; break;
-		case "overHeal%":
-		case "overHealPct":
-			sortkey = "OverHealPct"; break;
-	}
-
-	return sortkey;
+    console.log(this);
 }
 
 // bool : getLog(string e)
@@ -514,7 +598,7 @@ var lastCombat = null;
 var maxhp = 100;
 var myID = 0;
 var myName = "";
-var underDot = 1;
+var underDot = 2;
 var sortKey = "encdps";
     </script>
     <script>

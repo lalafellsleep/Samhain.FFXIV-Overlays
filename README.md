@@ -12,3 +12,7 @@ Overlay Skin Folder Name included "WS" using ACTWebSocket Project (Plugin)
 
 This Repository Support easier for create Overlay Skins.
 ( by Laiglinne_ff and [@HAERUHAERU](http://github.com/HAERUHAERU))
+
+## Bug report
+
+go to issues!

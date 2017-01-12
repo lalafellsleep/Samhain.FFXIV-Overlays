@@ -4,22 +4,22 @@
 		<link rel="stylesheet" type="text/css" href="./css/content.css">
 		<link rel="stylesheet" type="text/css" href="./css/job.css">
 		<script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
-		<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
-		<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket_compat.js"></script>
 		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
+		<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+		<script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
 	</head>
 	<body class="resizable">
 		<script>
 			/* Start sorting value [default = encdps] */
 			var defaultSort = "encdps";
 
-			/* Start display tab [default = 기본] */
-			var selectTab = "기본";
+			/* Start display tab [default = Main] */
+			var selectTab = "Main";
 
 			/* SortKey(please ref /ffxiv_overlay_corejs/app.js):{col name, col width, visible(true, false)} */
 			var sortObject = 
 			{
-				"기본": /* 이 항목의 탭 이름을 수정하면 selectTab도 동일하게 수정하셔야 합니다. */
+				"Main": /* 이 항목의 탭 이름을 수정하면 selectTab도 동일하게 수정하셔야 합니다. */
 				{
 					"encdps":{label:"DPS", width:45, display:true,},
 					"damage":{label:"DMG", width:56, display:false},

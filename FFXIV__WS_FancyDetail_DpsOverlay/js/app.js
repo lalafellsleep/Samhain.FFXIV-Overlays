@@ -3,7 +3,6 @@ var languagepack =
 	"Attack":"공격",
 	"Shot":"공격",
 	"Volley Fire":"집중 사격",
-
 	"Mage's Balled":"현자의 담시곡",
 	"Foe Requiem":"마인의 진혼곡",
 	"Army's Paeon":"군신의 찬가",
@@ -287,8 +286,7 @@ function saveSetting()
 {
 	var setting = {
 		nicknamehide:$("#nicknamehide").attr("data-checked"),
-		mergeAvatar:$("#mergeAvatar").attr("data-checked"),
-		magnify:$("#magnify").attr("data-checked"),
+		mergeAvatar:$("#mergeAvatar").attr("data-checked")
 	};
 
 	localStorage.setItem("fancy_setting", JSON.stringify(setting));
@@ -315,34 +313,24 @@ function encounterAct()
 		s = "damage";
 	else if(s == "enchps" && !isAvatarMerge())
 		s = "healed";
-	else if(s == "maxhit")
-		s = "maxHit";
-	else if(s == "maxheal")
-		s = "maxHeal";
 
-	$(".duration").html(c.encounter.duration);
-	$(".title").html(c.encounter.title);
+	$(".duration").html(c.Encounter.duration);
+	$(".title").html(c.Encounter.title);
 
-	$(".rdps").html(c.encounter.encdps+" RD");
-	$(".rhps").html(c.encounter.enchps+" RH");
-	$(".rdamage").html(c.encounter.damage+" TD");
-	$(".rhealed").html(c.encounter.healed+" TH");
+	$(".rdps").html(c.Encounter.encdps+" RD");
+	$(".rhps").html(c.Encounter.enchps+" RH");
+	$(".rdamage").html(c.Encounter.damage+" TD");
+	$(".rhealed").html(c.Encounter.healed+" TH");
 
-	c.sortkeyChange(s);
 
-	for(var i in c.persons)
-	{
-		if(parseInt(c.persons[i][s]) > c.maxdamage)
-		{
-			c.maxdamage = parseInt(c.persons[i].mergedDamage);
-		}
-	}
+	if (sorttype == "desc")
+		c.sortkeyChangeDesc(s);
+	else
+		c.sortkeyChange(s);
 	
 	for(var i in c.persons)
 	{
-		c.persons[i].maxdamage = c.maxdamage;
 		if(isAvatarMerge() && c.persons[i].isPet) continue;
-
 		addItem(c.persons[i]);
 	}
 
@@ -357,11 +345,13 @@ function encounterAct()
 		if(rm) $(this).remove();
 	});
 
-	if(getCombatant(c) == false && c.encounter.title != "Encounter")
+	if(getCombatant(c) == false && c.Encounter.title != "Encounter")
 	{
 		setCombatant(c);
-		$(".battlelog").prepend("<div data-id=\""+c.combatKey+"\" onclick=\"loadCombat($(this).attr('data-id'));\">"+c.encounter.title+"</div>");
+		$(".battlelog").prepend("<div data-id=\""+c.combatKey+"\" onclick=\"loadCombat($(this).attr('data-id'));\">"+c.Encounter.title+"</div>");
 	}
+
+	resize();
 }
 
 function loadCombat(combatid)
@@ -450,9 +440,9 @@ function modifyItem(e)
 		{
 			var targ = e[i];
 			if(i == "maxhit")
-				targ = e.maxhit+" - "+e.maxHit;
+				targ = e.maxhitstr+" - "+e.maxhitval;
 			if(i == "maxheal")
-				targ = e.maxheal+" - "+e.maxHeal;
+				targ = e.maxhealstr+" - "+e.maxhealval;
 			
 			$(item).find(".datas>.values>.vv").append(
 				"<span style=\"float:left; overflow:hidden; margin-left:3px; text-align:center; font-family:'돋움체';"+
@@ -461,7 +451,7 @@ function modifyItem(e)
 	}
 
 	$(item).css({"top":(e.rank*24), "z-index":(25-e.rank), "opacity":1});
-	$(item).find(".bar").width(parseFloat(e[e.combatant.sortkey] / e.maxdamage * 100).toFixed(2)+"%");
+	$(item).find(".bar").width(parseFloat(e[e.parent.sortkey] / e.maxdamage * 100).toFixed(2)+"%");
 }
 
 function showBattleLog()
@@ -602,7 +592,7 @@ function init()
 	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'left':'auto', 'right':'0px', 'top':'25px'}); $('.tooltip').html('<div>스크린샷</div><div>현재 미터기 화면을 저장합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/camera.png) no-repeat center center; background-size:80% auto;\" onclick=\"execScr();\"></div>"+
 	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>소환수 합산</div><div>소환수와 플레이어의 값을 합산합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/account-multiple-plus.png) no-repeat center center; background-size:90% auto;\" data-checked=\"true\" id=\"mergeAvatar\"></div>"+
 	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>이름 모자이크</div><div>유저의 이름을 블러 처리 합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/dns.png) no-repeat center center; background-size:90% auto;\" data-checked=\"true\" id=\"nicknamehide\"></div>"+
-	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>125% 확대</div><div>화면이 작은 유저를 위한 기능입니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/fullscreen.png) no-repeat center center; background-size:90% auto;\" data-checked=\"false\" id=\"magnify\" onclick=\"magnify(false);\"></div></div>";
+	"</div>";
 	
 	if(isFullscreen())
 	{
@@ -636,8 +626,6 @@ function init()
 		{
 			$("#"+i).attr("data-checked", setting[i]);
 		}
-
-		magnify();
 		encounterAct();
 	},1000);
 
@@ -699,16 +687,6 @@ function execScr()
 	setTimeout(function(){takeScreenshot();}, 200);
 	setTimeout(function(){$(".tooltip").show();}, 1000);
 	
-}
-
-function magnify(v)
-{
-	if(v == undefined) var v = true;
-
-	if($("#magnify").attr("data-checked") == (v?"false":"true"))
-		zoomResize("10");
-	else
-		zoomResize("11");
 }
 
 function removeItem(id)
@@ -788,4 +766,12 @@ function fadeOutLbl(string)
 	$("div.messagearea span").css("opacity", "1");
 	setTimeout(function(){$("div.messagearea span").css("opacity", "0");}, 1000);
 	setTimeout(function(){$("div.messagearea span").remove(); delayOK = true;}, 1500);
+}
+
+$(window).resize(function(){resize()});
+
+function resize()
+{
+	var vwidth = $(".item>.datas>.values").width() - $(".item>.datas>.values>.vv").width() ;
+	$(".item>.datas>.values>i").css({"display":"inline-block", "width":vwidth, "overflow":"hidden"});
 }

@@ -41,9 +41,8 @@
             </div>
         </div>
     </body>
-    <script>
-        var wsUri = "ws://127.0.0.1:10501/MiniParse";
-    </script>
+    <script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+    <script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
     <script>
 // string : StringObject.format(ObjectArray a)
 // 사용예 : "{abc}{def}".format({abc:"wow", def:" awesome!"}); => return "wow awesome!";
@@ -121,8 +120,6 @@ function domReady()
     document.addEventListener('onBroadcastMessage', onBroadcastMessage);
     document.addEventListener('onRecvMessage', onRecvMessage);
 
-    connectWebSocket(wsUri);
-
 	// Logline
 	try { document.addEventListener('beforeLogLineRead', beforeLogLineRead); } catch (ex) { }
 	try { document.addEventListener('onLogLineRead', onLogLineRead); } catch (ex) { }
@@ -136,87 +133,38 @@ function domReady()
 }
 
 // ACTWebSocket 적용
-function connectWebSocket(uri)
+class WebSocketImpl extends ActWebsocketInterface
 {
-    websocket = new WebSocket(uri);
-    websocket.onmessage = function(evt)
-    {
-        if (evt.data == ".")
-        {
-            // ping pong
-            websocket.send(".");
-        }
-        else
-        {
-            try{
-                var obj = JSON.parse(evt.data);
-                var type = obj["type"];
+  constructor(uri, path = "MiniParse") {
+      super(uri, path);
+  }
+  //send(to, type, msg)
+  //broadcast(type, msg)
+  onRecvMessage(e)
+  {
+    onRecvMessage(e);
+  }
 
-                if(type == "broadcast")
-                {
-                    var from = obj["from"];
-                    var type = obj["msgtype"];
-                    var msg = obj["msg"];
-                    document.dispatchEvent(new CustomEvent('onBroadcastMessage', { detail: obj }));
-                }
-
-                if(type == "send")
-                {
-                    var from = obj["from"];
-                    var type = obj["msgtype"];
-                    var msg = obj["msg"];
-                    document.dispatchEvent(new CustomEvent('onRecvMessage', { detail: obj }));
-                }
-
-                if(type == "set_id")
-                {
-                    //document.dispatchEvent(new CustomEvent('onIdChanged', { detail: obj }));
-                }
-            }
-            catch(e)
-            {
-
-            }
-        }
-    };
-
-    websocket.onclose = function(evt) 
-    { 
-        setTimeout(function(){connectWebSocket(uri)}, 2000);
-    };
-
-    websocket.onerror = function(evt) 
-    {
-        websocket.close();
-    };
-}    
-
-function broadcast(type, msg)
-{
-    var obj = {};
-    obj["type"] = "broadcast";
-    obj["msgtype"] = type;
-    obj["msg"] = msg;
-    websocket.send(JSON.stringify(obj));
+  onBroadcastMessage(e)
+  {
+    onBroadcastMessage(e);
+  }
 };
 
-function send(to, type, msg)
-{
-    var obj = {};
-    obj["type"] = "send";
-    obj["to"] = to;
-    obj["msgtype"] = type;
-    obj["msg"] = msg;
-    websocket.send(JSON.stringify(obj));
-};
+var webs = null;
+$(document).ready(function() {
+  webs = new WebSocketImpl(wsUri);
+  webs.connect();
+});
+if (document.addEventListener) {
+  window.onbeforeunload = function() {
+      webs.close();
+  };
+  window.addEventListener("unload", function() {
+      webs.close();
+  }, false);
+}
 
-function set_id(id)
-{
-    var obj = {};
-    obj["type"] = "set_id";
-    obj["id"] = id;
-    websocket.send(JSON.stringify(obj));
-};
 
 function onRecvMessage(e)
 {
@@ -266,6 +214,7 @@ function onBroadcastMessage(e)
         }
     }
 }
+// ACTWebSocket 적용 끝
 
 function onOverlayDataUpdate(e)
 {

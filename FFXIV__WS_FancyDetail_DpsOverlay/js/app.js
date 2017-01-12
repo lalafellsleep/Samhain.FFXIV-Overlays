@@ -272,27 +272,149 @@ var languagepack =
 	"Angel Feathers":"천사의 깃털[학자]",
 	"Astral Stasis":"천궁의 문[점성]",
 };
+
 var combatants = [];
-var lastEncounter = null;
 var lastEncounterRecord = [];
-var onPlayRecord =false;
-var onRecord = false;
-var sortkey = "encdps";
 var sorttype = "asc";
-var lastCombat = null;
-var websoket = null;
-var mixeddps = null;
+
 $(document).ready(function() 
 {
 	init();
-	document.addEventListener('onOverlayDataUpdate', onOverlayDataUpdate);
 	window.addEventListener('message', onMessage);
 });
+
+function saveSetting()
+{
+	var setting = {
+		nicknamehide:$("#nicknamehide").attr("data-checked"),
+		mergeAvatar:$("#mergeAvatar").attr("data-checked"),
+		magnify:$("#magnify").attr("data-checked"),
+	};
+
+	localStorage.setItem("fancy_setting", JSON.stringify(setting));
+}
+
+function loadSetting()
+{
+	return JSON.parse(localStorage.getItem("fancy_setting"));
+}
+
+function encounterAct()
+{
+	if(lastCombat == null) return;
+	var c = lastCombat;
+	c.summonerMerge = isAvatarMerge();
+
+	var s = sortKey;
+
+	if(s == "encdps" && isAvatarMerge())
+		s = "mergedDamage";
+	else if(s == "enchps" && isAvatarMerge())
+		s = "mergedHealed";
+	else if(s == "encdps" && !isAvatarMerge())
+		s = "damage";
+	else if(s == "enchps" && !isAvatarMerge())
+		s = "healed";
+	else if(s == "maxhit")
+		s = "maxHit";
+	else if(s == "maxheal")
+		s = "maxHeal";
+
+	$(".duration").html(c.encounter.duration);
+	$(".title").html(c.encounter.title);
+
+	$(".rdps").html(c.encounter.encdps+" RD");
+	$(".rhps").html(c.encounter.enchps+" RH");
+	$(".rdamage").html(c.encounter.damage+" TD");
+	$(".rhealed").html(c.encounter.healed+" TH");
+
+	c.sortkeyChange(s);
+
+	for(var i in c.persons)
+	{
+		if(parseInt(c.persons[i][s]) > c.maxdamage)
+		{
+			c.maxdamage = parseInt(c.persons[i].mergedDamage);
+		}
+	}
+	
+	for(var i in c.persons)
+	{
+		c.persons[i].maxdamage = c.maxdamage;
+		if(isAvatarMerge() && c.persons[i].isPet) continue;
+
+		addItem(c.persons[i]);
+	}
+
+	$(".content .item").each(function(){
+		var n = $(this).attr("data-id");
+		var rm = true;
+		for(var i in c.persons)
+		{
+			if(isAvatarMerge() && c.persons[i].isPet) continue;
+			if(c.persons[i].name == n) rm = false;
+		}
+		if(rm) $(this).remove();
+	});
+
+	if(getCombatant(c) == false && c.encounter.title != "Encounter")
+	{
+		setCombatant(c);
+		$(".battlelog").prepend("<div data-id=\""+c.combatKey+"\" onclick=\"loadCombat($(this).attr('data-id'));\">"+c.encounter.title+"</div>");
+	}
+}
+
+function loadCombat(combatid)
+{
+	for(var i in combatants)
+	{
+		if(combatants[i].combatKey == combatid) 
+		{
+			lastCombat = combatants[i];
+			break;
+		}
+	}
+	encounterAct();
+	showBattleLog();
+}
+
+function getCombatant(c)
+{
+	for(var i in combatants)
+	{
+		if(combatants[i].combatKey == c.combatKey) return true;
+	}
+	return false;
+}
+
+function setCombatant(c)
+{
+	for(var i in combatants)
+	{
+		if(combatants[i].combatKey == c.combatKey) return false;
+	}
+
+	combatants.push(c);
+	return true;
+}
+
+function isAvatarMerge()
+{
+	return $("#mergeAvatar").attr("data-checked")=="true";
+}
 
 function onMessage(e) 
 {
 	if (e.data.type === 'onOverlayDataUpdate') 
 		onOverlayDataUpdate(e.data);
+}
+
+function addItem(e)
+{
+	if(!getItem(e.name))
+		$(".content").append("<div class=\"item\" data-job=\""+e.Class+"\" data-id=\""+e.name+"\" style=\"top:"+((e.rank+2)*27)+"px; opacity:0;\"><div class=\"icon\"></div><div class=\"leftdeco d\"></div><div class=\"leftdeco\"></div><div class=\"datas\"><div class=\"values\"><div class=\"vv\"></div></div><div class=\"bar\"></div></div></div>");
+	
+	modifyItem(e);
 }
 
 function getItem(id)
@@ -310,7 +432,7 @@ function modifyItem(e)
 	if(e.avatar)
 		$(item).find(".icon").css({"background-image":"url(./icon/AVA.png)", "background-size":"20px auto", "background-position":"0px 3px"});
 
-	$(item).attr("data-job", e.combatant.Job.toUpperCase());
+	$(item).attr("data-job", e.Class.toUpperCase());
 	$(item).find(".datas>.values>.vv>span").remove();
 
 	if($(item).find(".datas>.values>i").length == 0)
@@ -325,352 +447,21 @@ function modifyItem(e)
 	{
 		var text = i;
 		if(sortObject[selectTab][i].display)
-			$(item).find(".datas>.values>.vv").append("<span style=\"float:left; overflow:hidden; margin-left:3px; text-align:center; font-family:'돋움체';"+(sortObject[selectTab][i].width===undefined?" width:38px;":" width:"+sortObject[selectTab][i].width+"px;")+"\">"+e.combat[i]+"</div>");
-	}
-
-	var toprank = 0;
-	var isallzero = true;
-
-	var sortkeyD = sortkey;
-
-	if(sortkeyD == "encdps")
-		sortkeyD = "damage";
-	else if(sortkeyD == "enchps")
-		sortkeyD = "healed";
-
-	for(var i in lastCombat)
-	{
-		if(sorttype=="asc")
 		{
-			toprank=lastCombat[i].combat;
-			if(lastCombat[i].combat[sortkeyD] != 0) isallzero = false;
-			break;
+			var targ = e[i];
+			if(i == "maxhit")
+				targ = e.maxhit+" - "+e.maxHit;
+			if(i == "maxheal")
+				targ = e.maxheal+" - "+e.maxHeal;
+			
+			$(item).find(".datas>.values>.vv").append(
+				"<span style=\"float:left; overflow:hidden; margin-left:3px; text-align:center; font-family:'돋움체';"+
+				(sortObject[selectTab][i].width===undefined?" width:38px;":" width:"+sortObject[selectTab][i].width+"px;")+"\">"+targ+"</div>");
 		}
-		else
-			toprank=lastCombat[i].combat;
 	}
-
-	var mixed = (e.combat[sortkeyD] / toprank[sortkeyD])*100;
-	if(sortkeyD=="maxhit"||sortkeyD=="maxheal")
-	{
-		mixed = (e.combat[sortkeyD].split("-")[1] / toprank[sortkeyD].split("-")[1])*100;
-	}
-
-	if(toprank[sortkeyD] == 0 && isallzero)
-		mixed = 100;
-
-	if(mixed == 0)
-		mixed = 1;
 
 	$(item).css({"top":(e.rank*24), "z-index":(25-e.rank), "opacity":1});
-	$(item).find(".bar").width(mixed+"%");
-}
-
-function encounterAct(e, n)
-{
-	if(e==null) return;
-	var _a = e.detail.Encounter.title;
-	var _b = parseFloat(e.detail.Encounter.encdps).toFixed(0);
-	var _c = e.detail.Encounter.duration.replace(":","_");
-	var combatant = [];
-	var reg = /(.*?)\s\((.*?)\)/im;
-	var idx=0;
-	var avatars = 
-	{
-		"자동포탑 룩":"MCH",
-		"자동포탑 비숍":"MCH",
-		"요정 에오스":"SCH",
-		"요정 셀레네":"SCH",
-		"카벙클 에메랄드":"SMN",
-		"카벙클 토파즈":"SMN",
-		"가루다 에기":"SMN",
-		"타이탄 에기":"SMN",
-		"이프리트 에기":"SMN"
-	}
-
-	$("header .title").html(e.detail.Encounter.title=="Encounter"?"집계 중...":e.detail.Encounter.title);
-	$("header .duration").html(e.detail.Encounter.duration);
-	$("header .rdps").html(parseInt(e.detail.Encounter.encdps)+" RD");
-	$("header .rhps").html(parseInt(e.detail.Encounter.enchps)+ " RH");
-	$("header .rdamage").html(parseInt(e.detail.Encounter.damage)+" TD");
-	$("header .rhealed").html(parseInt(e.detail.Encounter.healed)+ " TH");
-
-	for(var user in e.detail.Combatant)
-	{
-		var c = e.detail.Combatant[user];
-		combatant.push(
-		{
-			"dps":c.encdps, 
-			"name":c.name,
-			"rank":0,
-			"combat": getCombatantDetail(c, e.detail.Encounter),
-			"combatant":c,
-			"avatar":false,
-		});
-	}
-	
-	lastEncounter = e;
-	lastCombat = combatant;
-
-	for(var user in combatant)
-	{
-		var find = false;
-		var matches = combatant[user].name.match(reg);
-		for(var i in combatants)
-		{
-			if(combatants[i]==combatant[user].name)
-			{
-				find = true;
-			}
-		}
-
-		if(!find && combatant[user].combatant.Job != "" && combatant[user].name != "YOU")
-		{
-			combatants.push(combatant[user].name);
-		}
-
-		if(combatant[user].name == "Limit Break")
-			combatant[user].combatant.Job = "LMB";
-			
-		try
-		{
-			var iscombat = false;
-			if(reg.test(combatant[user].name))
-			{
-				isAvatar = true;
-				for(var j in avatars)
-				{
-					if(j==matches[1])
-					{
-						isAvatar = true;
-						break;
-					}
-				}
-			}
-
-			switch(matches[1])
-			{
-				case "자동포탑 룩": combatant[user].combatant.Job = "Mch"; combatant[user].avatar = true; break;
-				case "자동포탑 비숍": combatant[user].combatant.Job = "Mch"; combatant[user].avatar = true; break;
-				case "요정 에오스": combatant[user].combatant.Job = "Sch"; combatant[user].avatar = true; break;
-				case "요정 셀레네": combatant[user].combatant.Job = "Sch"; combatant[user].avatar = true; break;
-				case "카벙클 에메랄드": combatant[user].combatant.Job = "Smn"; combatant[user].avatar = true; break;
-				case "카벙클 토파즈": combatant[user].combatant.Job = "Smn"; combatant[user].avatar = true; break;
-				case "가루다 에기": combatant[user].combatant.Job = "Smn"; combatant[user].avatar = true; break;
-				case "타이탄 에기": combatant[user].combatant.Job = "Smn"; combatant[user].avatar = true; break;
-				case "이프리트 에기": combatant[user].combatant.Job = "Smn"; combatant[user].avatar = true; break;
-			}
-
-			for(var i in combatants)
-			{
-				if(combatants[i]==matches[2])
-				{
-					iscombat = true;
-				}
-			}
-
-			if(iscombat && $("#mergeAvatar").attr("data-checked") == "true")
-			{
-				var finduser = -1;
-				for(var i in combatant)
-				{
-					if(combatant[i].name == matches[2] || (combatant[i].name == "YOU" && myname.find(function(e){return e == matches[2]}) != null))
-					{
-						finduser = i;
-					}
-				}
-
-				if(finduser>-1)
-				{
-					combatant[finduser].combat = mergeCombatantDetail(combatant[finduser].combat, combatant[user].combat, e);
-					delete combatant[user];
-				}
-			}
-		}
-		catch(ex)
-		{
-			
-		}
-	}
-
-	for(var n in combatant)
-	{
-		for(var u in combatant[n].combat)
-		{
-			if(u=="maxhit" || u=="maxheal") continue;
-			combatant[n].combat[u] = convNumberFix(combatant[n].combat[u]);
-		}
-	}
-
-	if(sortkey=="maxhit" || sortkey=="maxheal")
-	{
-		if(sorttype == "desc")
-		{
-			combatant.sort(function(b, a){return parseFloat(b.combat[sortkey].split("-")[1]) - parseFloat(a.combat[sortkey].split("-")[1])});
-		}
-		else
-		{
-			combatant.sort(function(a, b){return parseFloat(b.combat[sortkey].split("-")[1]) - parseFloat(a.combat[sortkey].split("-")[1])});
-		}
-	}
-	else
-	{
-		if(sorttype == "desc")
-		{
-			combatant.sort(function(b, a){return parseFloat(b.combat[sortkey]) - parseFloat(a.combat[sortkey])});
-		}
-		else
-		{
-			combatant.sort(function(a, b){return parseFloat(b.combat[sortkey]) - parseFloat(a.combat[sortkey])});
-		}
-	}
-
-	mixeddps = combatant;
-
-	if($(".battlelog").find("div[data=\""+_a+"|"+_b+"|"+_c+"\"]").length == 0 && e.detail.Encounter.title != "Encounter")
-	{
-		$(".battlelog").prepend("<div select='no' data='"+_a+"|"+_b+"|"+_c+"' idx='"+(lastEncounterRecord+1)+"'>"+e.detail.Encounter.title+" ("+parseInt(e.detail.Encounter.encdps)+" RDPS)</div>");
-		lastEncounterRecord.push(e);
-		$(".battlelog div[data=\""+_a+"|"+_b+"|"+_c+"\"]").attr("select","yes");
-
-		$(".battlelog div[data=\""+_a+"|"+_b+"|"+_c+"\"]").click(function(){
-			if(lastEncounter.detail.Encounter.title != "Encounter")
-			{
-				encounterAct(e, false);
-				$(".battlelog div").each(function(){$(this).attr("select", "no")});
-				$(this).attr("select","yes");
-				showBattleLog();
-			}
-		});
-	}
-
-	if($(".battlelog div").length > 20)
-	{
-		$(".battlelog div")[20].remove();
-	}
-		
-	for(var user in combatant)
-	{
-		combatant[user].rank = idx++;
-		addItem(combatant[user]);
-	}
-
-	$(".content .item").each(function()
-	{
-		var remove = true;
-		for(var i in combatant)
-		{
-			if($(this).attr("data-id") == combatant[i].name) remove = false;
-		}
-	
-		if(remove)
-			$(this).remove();
-	});
-}
-
-function mergeCombatantDetail(original, target, e)
-{
-	original.swings += parseInt(target.swings);
-	original.dps = (parseFloat(original.dps) + parseFloat(target.dps)).toFixed(1);
-	original.encdps = (parseFloat(original.encdps) + parseFloat(target.encdps)).toFixed(1);
-	original.damage += parseInt(target.damage);
-	original['damage%'] = (parseInt(original.damage) / parseInt(e.detail.Encounter.damage) * 100).toFixed(1);
-	original.heals += parseInt(target.heals);
-	original.enchps = (parseFloat(original.enchps) + parseFloat(target.enchps)).toFixed(1);
-	original.healed += parseInt(target.healed);
-	original['healed%'] = (parseInt(original.healed) / parseInt(e.detail.Encounter.healed) * 100).toFixed(1);
-	original.misses += parseInt(target.misses);
-	original.crithits += parseInt(target.crithits);
-	original.critheals += parseInt(target.critheals);
-	original['crithit%'] = (parseInt(original.crithits) / parseInt(original.swings) * 100).toFixed(1);
-	original['critheal%'] = (parseInt(original.critheals) / parseInt(original.heals) * 100).toFixed(1);
-	original.damagetaken += parseInt(target.damagetaken);
-	original.healstaken += parseInt(target.healstaken);
-	original.OverHealPct += parseInt(target.OverHealPct);
-	original.kills += parseInt(target.kills);
-	original.cures += parseInt(target.cures);
-
-	original.Last60DPS += parseFloat(target.Last60DPS);
-	original.Last30DPS += parseFloat(target.Last30DPS);
-	original.Last10DPS += parseFloat(target.Last10DPS);
-	
-	original.ParryPct += target.ParryPct;
-	original.BlockPct += target.BlockPct;
-
-	return original;
-}
-
-function getCombatantDetail(c,e)
-{
-	return {
-			"Job":c.Job,
-			"swings":parseInt(c.swings),
-			"dps":parseFloat(c.dps).toFixed(1),
-			"encdps":parseFloat(c.encdps).toFixed(1),
-			"damage":parseInt(c.damage),
-			"damage%":(parseInt(c.damage) / parseInt(e.damage) * 100).toFixed(1),
-			"heals":parseInt(c.heals),
-			"enchps":parseFloat(c.enchps).toFixed(1),
-			"healed":parseInt(c.healed),
-			"healed%":(parseInt(c.healed) / parseInt(e.healed) * 100).toFixed(1),
-			"misses":parseInt(c.misses),
-			"crithits":parseInt(c.crithits),
-			"critheals":parseInt(c.critheals),
-			"crithit%":(parseInt(c.crithits) / parseInt(c.swings) * 100).toFixed(1),
-			"critheal%":(parseInt(c.critheals) / parseInt(c.heals) * 100).toFixed(1),
-			"damagetaken":parseInt(c.damagetaken),
-			"healstaken":parseInt(c.healstaken),
-			"OverHealPct":parseInt(c.OverHealPct),
-			"kills":parseInt(c.kills),
-			"deaths":c.deaths,
-			"maxhit":getMaxhit(c),
-			"maxheal":c.maxheal,
-			"duration":c.duration,
-			"ParryPct":removePerc(c.ParryPct),
-			"BlockPct":removePerc(c.BlockPct),
-			"powerdrain":c.powerdrain,
-			"powerheal":c.powerheal,
-			"cures":c.cures,
-			"Last60DPS":parseFloat(c.Last60DPS),
-			"Last30DPS":parseFloat(c.Last30DPS),
-			"Last10DPS":parseFloat(c.Last10DPS)
-		};
-}
-
-function getMaxhit(c)
-{
-	var str = c.maxhit.replace(/\s\(\*\)/ig, "");
-
-	var splitedtext = str.split("-");
-	if(languagepack[splitedtext[0]] != undefined)
-	{
-		str = languagepack[splitedtext[0]]+"-"+splitedtext[1];
-	}
-
-	return str;
-}
-
-function removePerc(v)
-{
-	return parseInt(v.replace(/%/ig,""));
-}
-
-function isNumber(value) 
-{
-	return typeof isNaN(value) && isFinite(value);
-}
-
-function convNumberFix(val)
-{
-	if(isNumber(val))
-		return val;
-	else
-		return 0;
-}
-
-function getMilliTick(time)
-{
-	return (time.getTime()*1000) + time.getMilliseconds();
+	$(item).find(".bar").width(parseFloat(e[e.combatant.sortkey] / e.maxdamage * 100).toFixed(2)+"%");
 }
 
 function showBattleLog()
@@ -747,10 +538,10 @@ function resort(obj)
 	$(".tabs").html(tabs);
 	$(".datasort").html(temp);
 
-	defaultSort = sortkey = sort;
+	defaultSort = sortKey = sort;
 
 	$(".datasort div[data=\""+defaultSort+"\"]").attr("data-sort","asc");
-	encounterAct(lastEncounter, false);
+	encounterAct();
 	
 	$(".datasort div").click(function(){
 		sorttype="asc";
@@ -770,16 +561,17 @@ function resort(obj)
 			$(".datasort div").attr("data-sort","none");
 			$(this).attr("data-sort","asc");
 		}
-		sortkey = $(this).attr("data");
-		encounterAct(lastEncounter, false);
+		sortKey = $(this).attr("data");
+		encounterAct();
 	});
 }
 
 function init()
 {
-	var version = "2016.12.01";
+	var version = "2016.12.21";
 	var temp = "";
 	var tabs = "";
+	console.log("Isloaded");
 	for(var i in sortObject)
 	{
 		tabs += "<div class=\"tab";
@@ -793,7 +585,7 @@ function init()
 			temp += "<div data-sort=\"none\" data=\""+i+"\" "+(sortObject[selectTab][i].width===undefined?"":"style=\"width:"+sortObject[selectTab][i].width+"px;\"")+">"+sortObject[selectTab][i].label+"</div>";
 	}
 
-	var html = "<div class=\"tooltip\"></div>"+
+	var html = "<div class=\"tooltip\"></div><div class=\"messagearea\"></div>"+
 	"<header>"+
 	"<div class=\"tabs\">"+
 	tabs+
@@ -806,10 +598,11 @@ function init()
 	"<div class=\"rdamage\">0 Tot.Dmg</div>"+
 	"<div class=\"rhealed\">0 Tot.Heal</div></div>"+
 	"<div class=\"icons\">"+
-	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'left':'auto', 'right':'0px', 'top':'25px'}); $('.tooltip').html('<div>새로고침</div><div>데이터를 리셋합니다</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/refresh.png) no-repeat center center; background-size:100% auto;\" onclick=\"location.href=location.href;\"></div>"+
-	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>소환수 합산</div><div>소환수와 플레이어의 값을 합산합니다. (※자신은 파일 수정 필요)</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/account-multiple-plus.png) no-repeat center center; background-size:90% auto;\" data-checked=\"true\" id=\"mergeAvatar\"></div>"+
+	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'left':'auto', 'right':'0px', 'top':'25px'}); $('.tooltip').html('<div>인카운터 종료</div><div>진행중인 인카운터를 끝내고 새 인카운터를 시작합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/update.png) no-repeat center center; background-size:100% auto;\" onclick=\"endEncounter();\"></div>"+
+	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'left':'auto', 'right':'0px', 'top':'25px'}); $('.tooltip').html('<div>스크린샷</div><div>현재 미터기 화면을 저장합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/camera.png) no-repeat center center; background-size:80% auto;\" onclick=\"execScr();\"></div>"+
+	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>소환수 합산</div><div>소환수와 플레이어의 값을 합산합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/account-multiple-plus.png) no-repeat center center; background-size:90% auto;\" data-checked=\"true\" id=\"mergeAvatar\"></div>"+
 	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>이름 모자이크</div><div>유저의 이름을 블러 처리 합니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/dns.png) no-repeat center center; background-size:90% auto;\" data-checked=\"true\" id=\"nicknamehide\"></div>"+
-	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>125% 확대</div><div>화면이 작은 유저를 위한 기능입니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/fullscreen.png) no-repeat center center; background-size:90% auto;\" data-checked=\"false\" id=\"magnify\" onclick=\"magnify();\"></div></div>";
+	"<div class=\"icon\" onmouseover=\"$('.tooltip').show(); $('.tooltip').css({'right':'0px', 'left':'auto', 'top':'25px'}); $('.tooltip').html('<div>125% 확대</div><div>화면이 작은 유저를 위한 기능입니다.</div>');\" onmouseleave=\"$('.tooltip').hide();\" style=\"background:url(img/fullscreen.png) no-repeat center center; background-size:90% auto;\" data-checked=\"false\" id=\"magnify\" onclick=\"magnify(false);\"></div></div>";
 	
 	if(isFullscreen())
 	{
@@ -833,9 +626,21 @@ function init()
 	"</div>"+
 	"</div>"+
 	"<div class=\"battlelog\" style=\"display:none;\">"+
-	"</div><div class=\"versions\">"+version+"</div>";
+	"</div>";
 
 	$("body").append(html);
+
+	setTimeout(function(){
+		var setting = loadSetting();
+		for(var i in setting)
+		{
+			$("#"+i).attr("data-checked", setting[i]);
+		}
+
+		magnify();
+		encounterAct();
+	},1000);
+
 	if (document.addEventListener) 
 	{
 		window.onbeforeunload = function() 
@@ -851,7 +656,6 @@ function init()
 		}, false);
 	}
 
-	for(var i in myname){combatants.push(myname[i]);}
 	$(".datasort div[data=\""+defaultSort+"\"]").attr("data-sort","asc");
 
 	$(".content *").remove();
@@ -862,7 +666,8 @@ function init()
 		else
 			$(this).attr("data-checked", "true");
 		
-		encounterAct(lastEncounter, false);
+		encounterAct();
+		saveSetting();
 	});
 
 	$(".datasort div").click(function(){
@@ -883,35 +688,27 @@ function init()
 			$(".datasort div").attr("data-sort","none");
 			$(this).attr("data-sort","asc");
 		}
-		sortkey = $(this).attr("data");
-		encounterAct(lastEncounter, false);
+		sortKey = $(this).attr("data");
+		encounterAct();
 	});
 }
 
-function magnify()
+function execScr()
 {
-	if($("#magnify").attr("data-checked") == "false")
-		$("body").css({
-						"transform":"scale(1.25)",
-						"left":"11%",
-						"right":"11%",
-						"top":"11%",
-						"bottom":"11%"});
-	else
-		$("body").css({
-						"transform":"scale(1)",
-						"left":"5px",
-						"right":"5px",
-						"top":"5px",
-						"bottom":"5px"});
+	$(".tooltip").hide();
+	setTimeout(function(){takeScreenshot();}, 200);
+	setTimeout(function(){$(".tooltip").show();}, 1000);
+	
 }
 
-function addItem(e)
+function magnify(v)
 {
-	if(!getItem(e.name))
-		$(".content").append("<div class=\"item\" data-job=\""+e.combatant.Job.toUpperCase()+"\" data-id=\""+e.name+"\" style=\"top:"+((e.rank+2)*27)+"px; opacity:0;\"><div class=\"icon\"></div><div class=\"leftdeco d\"></div><div class=\"leftdeco\"></div><div class=\"datas\"><div class=\"values\"><div class=\"vv\"></div></div><div class=\"bar\"></div></div></div>");
-	
-	modifyItem(e);
+	if(v == undefined) var v = true;
+
+	if($("#magnify").attr("data-checked") == (v?"false":"true"))
+		zoomResize("10");
+	else
+		zoomResize("11");
 }
 
 function removeItem(id)
@@ -921,6 +718,74 @@ function removeItem(id)
 
 function onOverlayDataUpdate(e)
 {
-	encounterAct(e, false);
+	lastCombat = new Combatant(e);
+	encounterAct(e);
 	$(".loading").fadeOut();
+}
+
+function onOverlayStateUpdate(e)
+{
+
+}
+
+function onLogLineRead(e)
+{
+
+}
+
+function beforeLogLineRead(e)
+{
+
+}
+
+// called takeScreenshot()
+function onScreenShotTaked(e)
+{
+	if(e.detail.take == true)
+	{
+		fadeOutLbl("스크린샷을 촬영했습니다.");
+	}
+	else
+	{
+		fadeOutLbl("현재 플러그인이 스크린샷 기능을 지원하지 않습니다.");
+	}
+}
+
+function onEncounterEndExecuted(e)
+{
+	if(e.detail.take == true)
+	{
+		if(lastCombat == null || lastCombat.encounter.title != "Encounter")
+			fadeOutLbl("진행된 전투가 없습니다.");
+		else
+			fadeOutLbl("인카운터가 종료되었습니다.");
+	}
+	else
+	{
+		fadeOutLbl("현재 플러그인이 인카운터 종료 기능을 지원하지 않습니다.");
+	}
+}
+
+function onZoomSizeChanged(e)
+{
+	if(e.detail.take == true)
+	{
+		delayOK = true;
+	}
+	else
+	{
+		fadeOutLbl("현재 플러그인이 줌 크기 변경을 지원하지 않습니다.");
+	}
+}
+
+var delayOK = true;
+function fadeOutLbl(string)
+{
+	if(!delayOK) return;
+	delayOK = false;
+	$("div.messagearea span").remove();
+	$("div.messagearea").append("<span style='opacity:0;'>"+string+"</span>");
+	$("div.messagearea span").css("opacity", "1");
+	setTimeout(function(){$("div.messagearea span").css("opacity", "0");}, 1000);
+	setTimeout(function(){$("div.messagearea span").remove(); delayOK = true;}, 1500);
 }

@@ -1,0 +1,3512 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>[FFXIV:ACT]HAERUSKIN REBOOT</title>
+    <script src="myData.txt"></script> 
+    <link rel="stylesheet" type="text/css" href="https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/HaeruSkin.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <script src="lib/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="lib/jquery-latest.js" type="text/javascript"></script>
+    <script src="lib/jquery.marquee.js" type="text/javascript"></script>
+		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
+		<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+    <script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
+    <script type="text/javascript">
+      jQuery.browser = {};
+(function() {
+	jQuery.browser.msie = !1;
+	jQuery.browser.version = 0;
+	if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+		jQuery.browser.msie = !0;
+		jQuery.browser.version = RegExp.$1
+	}
+})();
+(function(d) {
+	var g, c, f;
+	g = {
+		speed: 700,
+		pause: 4E3,
+		showItems: 1,
+		mousePause: !0,
+		height: 0,
+		animate: !0,
+		margin: 0,
+		padding: 0,
+		startPaused: !1,
+		autoAppend: !0
+	};
+	c = {
+		moveUp: function(a, b) {
+			return c.showNextItem(a, b, "up")
+		},
+		moveDown: function(a, b) {
+			return c.showNextItem(a, b, "down")
+		},
+		nextItemState: function(a, b) {
+			var e, c;
+			c = a.element.children("ul");
+			e = a.itemHeight;
+			0 < a.options.height && (e = c.children("li:first").height());
+			e += a.options.margin + 2 * a.options.padding;
+			return {
+				height: e,
+				options: a.options,
+				el: a.element,
+				obj: c,
+				selector: "up" === b ? "li:first" : "li:last",
+				dir: b
+			}
+		},
+		showNextItem: function(a, b, e) {
+			var d;
+			d = c.nextItemState(a, e);
+			d.el.trigger("vticker.beforeTick");
+			e = d.obj.children(d.selector).clone(!0);
+			"down" === d.dir && d.obj.css("top", "-" + d.height + "px").prepend(e);
+			b && b.animate ? a.animating || c.animateNextItem(d, a) : c.nonAnimatedNextItem(d);
+			"up" === d.dir && a.options.autoAppend && e.appendTo(d.obj);
+			return d.el.trigger("vticker.afterTick")
+		},
+		animateNextItem: function(a, b) {
+			b.animating = !0;
+			return a.obj.animate("up" === a.dir ? {
+				top: "-=" + a.height + "px"
+			} : {
+				top: 0
+			}, b.options.speed, function() {
+				d(a.obj).children(a.selector).remove();
+				d(a.obj).css("top", "0px");
+				return b.animating = !1
+			})
+		},
+		nonAnimatedNextItem: function(a) {
+			a.obj.children(a.selector).remove();
+			return a.obj.css("top", "0px")
+		},
+		nextUsePause: function() {
+			var a, b;
+			b = d(this).data("state");
+			a = b.options;
+			if (!b.isPaused && !c.hasSingleItem(b)) return f.next.call(this, {
+				animate: a.animate
+			})
+		},
+		startInterval: function() {
+			var a, b;
+			b = d(this).data("state");
+			a = b.options;
+			return b.intervalId = setInterval(function(a) {
+				return function() {
+					return c.nextUsePause.call(a)
+				}
+			}(this), a.pause)
+		},
+		stopInterval: function() {
+			var a;
+			if (a = d(this).data("state")) return a.intervalId && clearInterval(a.intervalId), a.intervalId = void 0
+		},
+		restartInterval: function() {
+			c.stopInterval.call(this);
+			return c.startInterval.call(this)
+		},
+		getState: function(a, b) {
+			var c;
+			if (!(c = d(b).data("state"))) throw Error("vTicker: No state available from " + a);
+			return c
+		},
+		isAnimatingOrSingleItem: function(a) {
+			return a.animating || this.hasSingleItem(a)
+		},
+		hasMultipleItems: function(a) {
+			return 1 < a.itemCount
+		},
+		hasSingleItem: function(a) {
+			return !c.hasMultipleItems(a)
+		},
+		bindMousePausing: function(a) {
+			return function(a, e) {
+				return a.bind("mouseenter", function() {
+					if (!e.isPaused) return e.pausedByCode = !0, c.stopInterval.call(this), f.pause.call(this, !0)
+				}).bind("mouseleave", function() {
+					if (!e.isPaused || e.pausedByCode) return e.pausedByCode = !1, f.pause.call(this, !1), c.startInterval.call(this)
+				})
+			}
+		}(this),
+		setItemLayout: function(a, b, c) {
+			var f;
+			a.css({
+				overflow: "hidden",
+				position: "relative"
+			}).children("ul").css({
+				position: "absolute",
+				margin: 0,
+				padding: 0
+			}).children("li").css({
+				margin: c.margin,
+				padding: c.padding
+			});
+			return isNaN(c.height) || 0 === c.height ? (a.children("ul").children("li").each(function() {
+				if (d(this).height() > b.itemHeight) return b.itemHeight = d(this).height()
+			}), a.children("ul").children("li").each(function() {
+				return d(this).height(b.itemHeight)
+			}), f = c.margin + 2 * c.padding, a.height((b.itemHeight + f) * c.showItems + c.margin)) : a.height(c.height)
+		},
+		defaultStateAttribs: function(a, b) {
+			return {
+				itemCount: a.children("ul").children("li").length,
+				itemHeight: 0,
+				itemMargin: 0,
+				element: a,
+				animating: !1,
+				options: b,
+				isPaused: b.startPaused,
+				pausedByCode: !1
+			}
+		}
+	};
+	f = {
+		init: function(a) {
+			var b, e;
+			d(this).data("state") && f.stop.call(this);
+			b = jQuery.extend({}, g);
+			a = d.extend(b, a);
+			b = d(this);
+			e = c.defaultStateAttribs(b, a);
+			d(this).data("state", e);
+			c.setItemLayout(b, e, a);
+			a.startPaused || c.startInterval.call(this);
+			if (a.mousePause) return c.bindMousePausing(b, e)
+		},
+		pause: function(a) {
+			var b;
+			b = c.getState("pause", this);
+			if (!c.hasMultipleItems(b)) return !1;
+			b.isPaused = a;
+			b = b.element;
+			if (a) return d(this).addClass("paused"), b.trigger("vticker.pause");
+			d(this).removeClass("paused");
+			return b.trigger("vticker.resume")
+		},
+		next: function(a) {
+			var b;
+			b = c.getState("next", this);
+			if (c.isAnimatingOrSingleItem(b)) return !1;
+			c.restartInterval.call(this);
+			return c.moveUp(b, a)
+		},
+		prev: function(a) {
+			var b;
+			b = c.getState("prev", this);
+			if (c.isAnimatingOrSingleItem(b)) return !1;
+			c.restartInterval.call(this);
+			return c.moveDown(b, a)
+		},
+		stop: function() {
+			c.getState("stop", this);
+			return c.stopInterval.call(this)
+		},
+		remove: function() {
+			var a;
+			a = c.getState("remove", this);
+			c.stopInterval.call(this);
+			a = a.element;
+			a.unbind();
+			return a.remove()
+		}
+	};
+	return d.fn.vTicker = function(a) {
+		return f[a] ? f[a].apply(this, Array.prototype.slice.call(arguments, 1)) : "object" !== typeof a && a ? d.error("Method " + a + " does not exist on jQuery.vTicker") : f.init.apply(this, arguments)
+	}
+})(jQuery);
+errorFlag = 0;
+error = [];
+setFlag = 0;
+menuFlag = 2;
+historyOnFlag = 0;
+editFlag = 0;
+createArr = !0;
+RowNum = 0;
+RowDataNum = 0;
+RowClick = 0;
+nowData = 0;
+nowPoints = 0;
+oldGraphSize = [];
+points = [];
+initFlag = !1;
+blockFlag = 0;
+EncountersArrayIndex = 1;
+EncountersArray = [];
+languageList = [];
+notice = "";
+rollingFlag = !1;
+updateStart = 0;
+initMyData = [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0];
+if (typeof inputFontNameSmall != 'undefined') {
+	if (inputFontNameSmall == 'NanumGothic') fontNameSmall = 'Nanum Gothic';
+	else fontNameSmall = "'" + inputFontNameSmall + "'"
+} else fontNameSmall = 0;
+if (typeof inputFontNameBig != 'undefined') {
+	if (inputFontNameBig == 'NanumGothic') fontNameBig = 'Nanum Gothic';
+	else fontNameBig = "'" + inputFontNameBig + "'"
+} else fontNameBig = 0;
+if (typeof inputFontNameBar != 'undefined') {
+	if (inputFontNameBar == 'NanumGothic') fontNameBar = 'Nanum Gothic';
+	else fontNameBar = "'" + inputFontNameBar + "'"
+} else fontNameBar = 0;
+if (typeof inputFontNameMini != 'undefined') {
+	if (inputFontNameMini == 'NanumGothic') fontNameMini = 'Nanum Gothic';
+	else fontNameMini = "'" + inputFontNameMini + "'"
+} else fontNameMini = 0;
+if (!localStorage.getItem('inputModeView')) {
+	localStorage.setItem('inputModeView', 1);
+	modeFlag = localStorage.getItem('inputModeView')
+} else modeFlag = localStorage.getItem('inputModeView');
+if (!localStorage.getItem('inputFirstView')) {
+	localStorage.setItem('inputFirstView', 1);
+	tabFlag = localStorage.getItem('inputFirstView')
+} else tabFlag = localStorage.getItem('inputFirstView');
+if (!localStorage.getItem('inputResolution')) {
+	localStorage.setItem('inputResolution', 2);
+	dpiFlag = localStorage.getItem('inputResolution')
+} else dpiFlag = localStorage.getItem('inputResolution');
+if (!localStorage.getItem('inputToFixed2')) {
+	localStorage.setItem('inputToFixed2', 1);
+	numberFlag = localStorage.getItem('inputToFixed2')
+} else numberFlag = localStorage.getItem('inputToFixed2');
+if (!localStorage.getItem('inputColorGraph')) {
+	localStorage.setItem('inputColorGraph', 2);
+	colorFlag = localStorage.getItem('inputColorGraph')
+} else colorFlag = localStorage.getItem('inputColorGraph');
+if (!localStorage.getItem('inputPetCombine')) {
+	localStorage.setItem('inputPetCombine', 1);
+	petFlag = localStorage.getItem('inputPetCombine')
+} else petFlag = localStorage.getItem('inputPetCombine');
+if (!localStorage.getItem('inputCellWidth')) {
+	localStorage.setItem('inputCellWidth', 2);
+	cellWidthFlag = localStorage.getItem('inputCellWidth')
+} else cellWidthFlag = localStorage.getItem('inputCellWidth');
+if (!localStorage.getItem('inputOpacity')) {
+	localStorage.setItem('inputOpacity', 3);
+	opacityFlag = localStorage.getItem('inputOpacity')
+} else opacityFlag = localStorage.getItem('inputOpacity');
+if (!localStorage.getItem('inputLanguage')) {
+	localStorage.setItem('inputLanguage', 1);
+	languageFlag = localStorage.getItem('inputLanguage')
+} else languageFlag = localStorage.getItem('inputLanguage');
+for (var i = 1; i <= 33; i++) {
+	if (!localStorage.getItem("myData" + i)) {
+		localStorage.setItem("myData" + i, initMyData[i])
+	}
+}
+$(document).ready(function() {
+	errorCheck();
+	updateUI();
+	if (fontNameBar != 0) $('.mobList').css('font-family', fontNameBar);
+	else $('.mobList').css('font-family', 'Nanum Gothic');
+	$('#tableHeader').addClass('hidden');
+	$('#tableContents').addClass('hidden');
+	$('#barContents').addClass('hidden');
+	$('#soloTable').addClass('hidden');
+	$('#block').find('#text1').html("<h2>HAERUSKIN REBOOT</h2>v.1.2.Yellow.161212");
+	$('#block').find('#text2').text("파이널판타지14 시바서버 해루 / FFXIVHAERU@gmail.com");
+	setTimeout(function() {
+		$('.mobList').text("myData.txt 파일 유효성 체크 중입니다...")
+	}, 100);
+	setTimeout(function() {
+		$('.mobList').text('인터페이스 초기화 중입니다...')
+	}, 500);
+	setTimeout(function() {
+		$('.mobList').text("서버 연결 중입니다...")
+	}, 800);
+	setTimeout(function() {
+		$('#header').html("<div class='mainList'><div id='nav-icon'> <span></span> <span></span><span></span> <span></span></div><input class='toggle__input' id='toggle-mainMenu' type='checkbox'></div><div class='mobList'><input class='toggle__input' id='toggle-mobList' type='checkbox'></div>  <div class='toggleBtn'><div class='toggle'><input class='toggle__input' id='toggle-checkbox' type='checkbox'><div class='div_label'></div><div class='after_div_label'></div></div></div>");
+		callLanguageData();
+		$('#block').fadeOut("slow");
+		if (errorFlag == 1) {
+			$('#wrap').fadeOut('slow');
+			$('#error').fadeIn('slow');
+			$('#error').bind('click', function() {
+				$(this).fadeOut('slow');
+				$('#wrap').fadeIn('slow');
+				buttonControl(2)
+			})
+		} else buttonControl(2);
+		blockFlag = 1;
+		if (opacityFlag == 1) {
+			$(".mainList").css("background", 'rgba(0,0,0,0.2)');
+			$(".mobList").css("background", 'rgba(0,0,0,0.2)');
+			$(".toggleBtn").css("background", 'rgba(0,0,0,0.2)');
+			$("#headerRows").css("background", 'rgba(0,0,0,0.2)')
+		} else if (opacityFlag == 2) {
+			$(".mainList").css("background", 'rgba(0,0,0,0.45)');
+			$(".mobList").css("background", 'rgba(0,0,0,0.45)');
+			$(".toggleBtn").css("background", 'rgba(0,0,0,0.45)');
+			$("#headerRows").css("background", 'rgba(0,0,0,0.45)')
+		} else if (opacityFlag == 3) {
+			$(".mainList").css("background", 'rgba(0,0,0,0.7)');
+			$(".mobList").css("background", 'rgba(0,0,0,0.7)');
+			$(".toggleBtn").css("background", 'rgba(0,0,0,0.7)');
+			$("#headerRows").css("background", 'rgba(0,0,0,0.7)')
+		} else if (opacityFlag == 4) {
+			$(".mainList").css("background", 'rgba(0,0,0,0.95)');
+			$(".mobList").css("background", 'rgba(0,0,0,0.95)');
+			$(".toggleBtn").css("background", 'rgba(0,0,0,0.95)');
+			$("#headerRows").css("background", 'rgba(0,0,0,0.95)')
+		} else {
+			$(".mainList").css("background", 'rgba(0,0,0,1)');
+			$(".mobList").css("background", 'rgba(0,0,0,1)');
+			$(".toggleBtn").css("background", 'rgba(0,0,0,1)');
+			$("#headerRows").css("background", 'rgba(0,0,0,1)')
+		}
+	}, 2400)
+});
+window.onload = function blockUI() {
+	$loading = $(".loading");
+	var svgStrokeLength = 380;
+
+	function loading(percent, delay) {
+		var percent = svgStrokeLength - (svgStrokeLength * percent / 100)
+		$loading.find("circle.circle-color").animate({
+			'stroke-dashoffset': percent
+		}, delay, function() {
+			if (percent == 0) {
+				setTimeout(function() {
+					$loading.addClass("isComplated");
+					$(".reload").addClass("show")
+				}, delay)
+			}
+		})
+	}
+
+	function run() {
+		$loading.removeClass("isComplated");
+		$(".reload").removeClass("show");
+		$loading.find("circle.circle-color").css('stroke-dashoffset', svgStrokeLength)
+		loading(10, 100);
+		loading(42, 200);
+		loading(86, 500);
+		loading(100, 200)
+	};
+	run()
+}
+$(document).ready(function() {
+	$('#Header').find('.mainList').click(function() {
+		$('#menu').addClass('animated SlideInDown');
+		var check = $("#toggle-mainMenu").is(":checked");
+		if (check == !1) {
+			$("#toggle-mainMenu").attr('checked', !0);
+			menuFlag = 1;
+			buttonControl(menuFlag);
+			if (nowData != 0) {
+				$('.mobList').text("HAERUSKIN REBOOT TABS & SETTINGS")
+			}
+		} else {
+			$("#toggle-mainMenu").attr('checked', !1);
+			menuFlag = 2;
+			buttonControl(menuFlag);
+			if (editFlag == 2 && modeFlag == 2) {
+				if (nowData == 0) {
+					if (rollingFlag == !0)
+						$('#news-container').vTicker('remove');
+					$('.mobList').html(notice);
+					rolling();
+					$("#tableContents").addClass('hidden')
+				}
+				menuTabSwap(3);
+				modeFlag = 1;
+				$("#toggle-checkbox").attr('checked', !1);
+				buttonToggle(!1);
+				buttonControl(2);
+				editFlag = 1
+			}
+			if (historyOnFlag != 0) historyOnFlag = 0
+		}
+		if (nowData != 0) {
+			update(nowData);
+			$("#headerRows").css("background", '#0f0f0f')
+		} else $("#tableContents").addClass('hidden')
+	})
+});
+$(document).ready(function() {
+	$('#Header').find('.toggleBtn').click(function() {
+		var check = $("#toggle-checkbox").is(":checked");
+		if (tabFlag == 5 || menuFlag == 1 || historyOnFlag != 0) {} else {
+			if (check == !0) {
+				$("#toggle-checkbox").attr('checked', !1);
+				buttonToggle(!1);
+				buttonControl(2);
+				if (editFlag == 2) {
+					$("#toggle-mainMenu").attr('checked', !1);
+					if (nowData != 0) update(nowData);
+					else $("#tableContents").addClass('hidden')
+				}
+			} else {
+				$("#toggle-checkbox").attr('checked', !0);
+				buttonToggle(!0);
+				buttonControl(2);
+				if (tabFlag == 4) callCustomPage()
+			}
+			if (nowData != 0) update(nowData);
+			else if (tabFlag != 4) $("#tableContents").addClass('hidden')
+		}
+	})
+});
+$(document).ready(function() {
+	$('#Header').find('.mobList').click(function() {
+		if (tabFlag == 4 && modeFlag == 2 || menuFlag == 1 || historyOnFlag != 0) {} else {
+			if (nowData != 0) {
+				if (nowData.Encounter.title != 'Encounter') {
+					historyOnFlag = 1;
+					$('.mobList').text('전투 로그 모아보기 ( 최대 15개 / ' + new Date().toLocaleTimeString() + ' 기준 )');
+					var foldFlag = new Array();
+					inputHistoryData();
+					historyControl();
+					autoMapFold(foldFlag);
+					$("#toggle-mainMenu").attr('checked', !0);
+					$('#nav-icon').addClass('open')
+				}
+			} else {
+				if (tabFlag == 5) $('#soloTable').addClass('hidden')
+			}
+			$('#tableContents').find('#contentsEncRows').click(function() {
+				RowNum = $(this).attr('name');
+				if (isNaN(RowNum) == !1) {
+					RowClick = 1;
+					if (modeFlag == 2) {
+						$('#tableHeader').addClass('hidden');
+						$('#barContents').addClass('hidden')
+					}
+					buttonControl(2);
+					$("#toggle-mainMenu").attr('checked', !1);
+					$('#nav-icon').removeClass('open');
+					RowDataNum = RowNum;
+					nowPoints = EncountersArray[RowNum].Points;
+					nowData = EncountersArray[RowNum].Data;
+					update(nowData)
+				} else {
+					mapRowClick(this, foldFlag, RowNum);
+					RowNum = RowDataNum
+				}
+			})
+		}
+	})
+});
+$(document).ready(function() {
+	$('#menu').find("td:eq(4)").click(function() {
+		$("#menu").find("td:eq(4)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(5)").click(function() {
+		$("#menu").find("td:eq(5)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(6)").click(function() {
+		$("#menu").find("td:eq(6)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(7)").click(function() {
+		$("#menu").find("td:eq(7)").find("img").addClass('animated rotateIn')
+	});
+	$('#menu').find("td:eq(8)").click(function() {
+		$("#menu").find("td:eq(8)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(9)").click(function() {
+		$("#menu").find("td:eq(9)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(10)").click(function() {
+		$("#menu").find("td:eq(10)").find("img").addClass('animated flipInX')
+	});
+	$('#menu').find("td:eq(11)").click(function() {
+		$("#menu").find("td:eq(11)").find("img").addClass('animated flipInX')
+	})
+});
+$(document).ready(function() {
+	$('[rel=tooltip]').mouseover(function(e) {
+		var tip = $(this).attr('title');
+		$("#menu td").mouseover(function() {
+			$(this).css("background", "rgba(77,77,77,0.5)")
+		});
+		$("#menu td").mouseout(function() {
+			if (opacityFlag == 1) $(this).css("background", "rgba(0,0,0,0)");
+			else if (opacityFlag == 2) $(this).css("background", "rgba(0,0,0,0.25)");
+			else if (opacityFlag == 3) $(this).css("background", "rgba(0,0,0,0.5)");
+			else if (opacityFlag == 4) $(this).css("background", "rgba(0,0,0,0.75)");
+			else $(this).css("background", "rgba(0,0,0,1)")
+		});
+		$(this).attr('title', '');
+		$(this).append('<div id="tooltip"><div class="tipBody">' + tip + '</div></div>')
+	}).mousemove(function(e) {
+		$('#tooltip').css('top', e.pageY - 15);
+		$('#tooltip').css('left', e.pageX)
+	}).mouseout(function() {
+		$(this).attr('title', $('.tipBody').html());
+		$(this).children('div#tooltip').remove()
+	})
+});
+
+function rolling() {
+	$("#news-container").vTicker({
+		speed: 300,
+		pause: 5000,
+		animate: !0,
+		mousePause: !0,
+		showItems: 1
+	});
+	rollingFlag = !0
+}
+
+function buttonToggle(flag) {
+	if (flag == !0) {
+		localStorage.setItem('inputModeView', 2);
+		$(".div_label").css('background', '#ffbb00');
+		$(".after_div_label").css('background', '#ffbb00');
+		$(".after_div_label").css('left', '1.5rem')
+	} else {
+		localStorage.setItem('inputModeView', 1);
+		$(".div_label").css('background', '#ffffff');
+		$(".after_div_label").css('background', '#ffffff');
+		$(".after_div_label").css('left', '0rem')
+	}
+	modeFlag = localStorage.getItem('inputModeView')
+}
+
+function buttonControl(num) {
+	if (num == 1) {
+		if (blockFlag == 1)
+			$('#nav-icon').addClass('open');
+		$('#menu').removeClass('hidden');
+		$('#Contents').addClass('hidden');
+		$('#tableHeader').addClass('hidden');
+		$('#soloTable').addClass('hidden')
+	} else if (num == 2) {
+		if (blockFlag == 1)
+			$('#nav-icon').removeClass('open');
+		$('#menu').addClass('hidden');
+		$('#Contents').removeClass('hidden');
+		if (modeFlag == 1) {
+			$("#toggle-checkbox").attr('checked', !1);
+			buttonToggle(!1);
+			if (tabFlag == 5) {
+				$('#tableHeader').addClass('hidden');
+				$('#Contents').addClass('hidden');
+				$('#tableContents').addClass('hidden');
+				$('#barContents').addClass('hidden');
+				$('#soloTable').removeClass('hidden')
+			} else {
+				$('#Contents').removeClass('hidden');
+				$('#tableHeader').removeClass('hidden');
+				$('#tableContents').removeClass('hidden');
+				$('#barContents').removeClass('hidden');
+				$('#soloTable').addClass('hidden')
+			}
+		} else {
+			$('#tableHeader').addClass('hidden');
+			$('#tableContents').removeClass('hidden');
+			$('#barContents').addClass('hidden');
+			$('#soloTable').addClass('hidden')
+		}
+	}
+}
+
+function historyControl() {
+	$('#menu').addClass('hidden');
+	$('#Contents').removeClass('hidden');
+	$("#toggle-mainMenu").attr('checked', !1);
+	if (modeFlag == 1) {
+		$('#tableHeader').removeClass('hidden');
+		$('#tableContents').removeClass('hidden');
+		$('#barContents').removeClass('hidden');
+		$('#soloTable').addClass('hidden')
+	} else {
+		$('#tableHeader').removeClass('hidden');
+		$('#tableContents').removeClass('hidden');
+		$('#barContents').removeClass('hidden')
+	}
+}
+
+function mapRowClick(RowValue, foldFlag, RowNum) {
+	var mapCount = $('#tableContents').find("#contentsEncRows[name=" + RowNum + "]").find(".cell_narrow").attr('name');
+	if (foldFlag[RowNum] == !0) {
+		$('#tableContents').find("#contentsMap[name=" + RowNum + "]").show();
+		$('#barContents').find("#barMap[name=" + RowNum + "]").show();
+		$(RowValue).find(".cell_icon").html("<img src='images/menu/up.svg' style='width:2rem;height:2rem;'/>");
+		$('#tableContents').find("#contentsEncRows[name=" + RowNum + "]").find(".cell_narrow").html("");
+		foldFlag[RowNum] = !1
+	} else {
+		$('#tableContents').find("#contentsMap[name=" + RowNum + "]").hide();
+		$('#barContents').find("#barMap[name=" + RowNum + "]").hide();
+		$(RowValue).find(".cell_icon").html("<img src='images/menu/down.svg' style='width:2rem;height:2rem;'/>");
+		$('#tableContents').find("#contentsEncRows[name=" + RowNum + "]").find(".cell_narrow").html(mapCount);
+		foldFlag[RowNum] = !0
+	}
+}
+
+function autoMapFold(foldFlag) {
+	for (var i = 0; i < EncountersArray.length; i++) {
+		$('#tableContents').find("#contentsMap[name=map" + i + "]").hide();
+		$('#barContents').find("#barMap[name=map" + i + "]").hide();
+		$('#tableContents').find("#contentsEncRows[name=map" + i + "]").find(".cell_icon").html("<img src='images/menu/down.svg' style='width:2rem;height:2rem;'/>");
+		var mapCount = $('#tableContents').find("#contentsEncRows[name=map" + i + "]").find(".cell_narrow").attr('name');
+		$('#tableContents').find("#contentsEncRows[name=map" + i + "]").find(".cell_narrow").html(mapCount);
+		foldFlag['map' + i] = !0
+	}
+	for (var i = RowNum; i >= 0; i--) {
+		if ($('#tableContents').find("#contentsMap[name=map" + i + "]").is(".map" + i) == !0) {
+			$('#tableContents').find("#contentsMap[name=map" + i + "]").show();
+			$('#barContents').find("#barMap[name=map" + i + "]").show();
+			$('#tableContents').find("#contentsEncRows[name=map" + i + "]").find(".cell_icon").html("<img src='images/menu/up.svg' style='width:2rem;height:2rem;'/>");
+			$('#tableContents').find("#contentsEncRows[name=map" + i + "]").find(".cell_narrow").html("");
+			foldFlag["map" + i] = !1;
+			break
+		}
+	}
+}
+
+function toggle_img(name, src_a, src_b) {
+	var img = eval('document.' + name);
+	if (name == "Pet") $("#menu").find("td:eq(7)").find("img").removeClass('animated rotateIn');
+	else if (name == "Language") $("#menu").find("td:eq(10)").find("img").removeClass('animated flipInX');
+	else if (name == "Cells") $("#menu").find("td:eq(8)").find("img").removeClass('animated flipInX');
+	else $("#menu").find("td:eq(6)").find("img").removeClass('animated flipInX');
+	if (img.length == 0) return;
+	if (img.src.indexOf(src_a) >= 0) {
+		if (name == "Pet") {
+			if (setFlag == 1) {
+				localStorage.setItem('inputPetCombine', 2);
+				petFlag = localStorage.getItem('inputPetCombine')
+			}
+			$('#menu').find("td:eq(7)").find(".tipBody").text("소환수 분리")
+		} else if (name == "Language") {
+			$('#menu').find("td:eq(10)").find(".tipBody").text("번역 (영어)");
+			if (setFlag == 1) {
+				localStorage.setItem('inputLanguage', 2);
+				languageFlag = localStorage.getItem('inputLanguage')
+			}
+		} else if (name == "Cells") {
+			$('#menu').find("td:eq(8)").find(".tipBody").text("셀 너비 넓게");
+			if (setFlag == 1) {
+				localStorage.setItem('inputCellWidth', 1);
+				cellWidthFlag = localStorage.getItem('inputCellWidth');
+				cellWidthClass(cellWidthFlag)
+			}
+		} else {
+			$('#menu').find("td:eq(6)").find(".tipBody").text("정수 표기");
+			if (setFlag == 1) {
+				localStorage.setItem('inputToFixed2', 2);
+				numberFlag = localStorage.getItem('inputToFixed2');
+				dpsCellWidthClass(numberFlag)
+			}
+		}
+		if (nowData != 0) update(nowData);
+		img.src = src_b;
+		return
+	}
+	if (img.src.indexOf(src_b) >= 0) {
+		if (name == "Pet") {
+			$('#menu').find("td:eq(7)").find(".tipBody").text("소환수 합산");
+			if (setFlag == 1) {
+				localStorage.setItem('inputPetCombine', 1);
+				petFlag = localStorage.getItem('inputPetCombine')
+			}
+		} else if (name == "Language") {
+			$('#menu').find("td:eq(10)").find(".tipBody").text("번역 (한국어)");
+			if (setFlag == 1) {
+				localStorage.setItem('inputLanguage', 1);
+				languageFlag = localStorage.getItem('inputLanguage')
+			}
+		} else if (name == "Cells") {
+			$('#menu').find("td:eq(8)").find(".tipBody").text("셀 너비 좁게");
+			if (setFlag == 1) {
+				localStorage.setItem('inputCellWidth', 2);
+				cellWidthFlag = localStorage.getItem('inputCellWidth');
+				cellWidthClass(cellWidthFlag)
+			}
+		} else {
+			$('#menu').find("td:eq(6)").find(".tipBody").text("소수 표기");
+			if (setFlag == 1) {
+				localStorage.setItem('inputToFixed2', 1);
+				numberFlag = localStorage.getItem('inputToFixed2');
+				dpsCellWidthClass(numberFlag)
+			}
+		}
+		if (nowData != 0) update(nowData);
+		img.src = src_a;
+		return
+	}
+	return
+}
+
+function toggle_img_Opacity(name, src_1, src_2, src_3, src_4) {
+	toggle_img_Opacity_Add('Opacity', 'bg1.svg', 'bg2.svg', 'bg3.svg', 'bg4.svg', 'bg5.svg')
+}
+
+function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
+	var img = eval('document.' + name);
+	$("#menu").find("td:eq(9)").find("img").removeClass('animated flipInX');
+	if (img.length == 0) return;
+	if (img.src.indexOf(src_4) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputOpacity', 5);
+			opacityFlag = localStorage.getItem('inputOpacity');
+			opacity(opacityFlag)
+		}
+		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (100%)");
+		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg5.svg';
+		return
+	}
+	if (img.src.indexOf(src_5) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputOpacity', 1);
+			opacityFlag = localStorage.getItem('inputOpacity');
+			opacity(opacityFlag)
+		}
+		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (0%)");
+		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg1.svg';
+		return
+	}
+	if (img.src.indexOf(src_1) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputOpacity', 2);
+			opacityFlag = localStorage.getItem('inputOpacity');
+			opacity(opacityFlag)
+		}
+		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (25%)");
+		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg2.svg';
+		return
+	}
+	if (img.src.indexOf(src_2) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputOpacity', 3);
+			opacityFlag = localStorage.getItem('inputOpacity');
+			opacity(opacityFlag)
+		}
+		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (50%)");
+		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg3.svg';
+		return
+	}
+	if (img.src.indexOf(src_3) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputOpacity', 4);
+			opacityFlag = localStorage.getItem('inputOpacity');
+			opacity(opacityFlag)
+		}
+		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (75%)");
+		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg4.svg';
+		return
+	}
+	return
+}
+
+function toggle_img_Resolution(name, src_1, src_2, src_3, src_4) {
+	var img = eval('document.' + name);
+	$("#menu").find("td:eq(4)").find("img").removeClass('animated flipInX');
+	if (img.length == 0) return;
+	if (img.src.indexOf(src_4) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputResolution', 1);
+			dpiFlag = localStorage.getItem('inputResolution');
+			$('#menu').find("td:eq(4)").find(".tipBody").text("HD (1366 × 768)");
+			dpiAddClass(dpiFlag)
+		}
+		img.src = src_1;
+		return
+	}
+	if (img.src.indexOf(src_1) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputResolution', 2);
+			dpiFlag = localStorage.getItem('inputResolution');
+			$('#menu').find("td:eq(4)").find(".tipBody").text("FHD (1920 × 1080)");
+			dpiAddClass(dpiFlag)
+		}
+		img.src = src_2;
+		return
+	}
+	if (img.src.indexOf(src_2) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputResolution', 3);
+			dpiFlag = localStorage.getItem('inputResolution');
+			$('#menu').find("td:eq(4)").find(".tipBody").text("QHD (2560 × 1440)");
+			dpiAddClass(dpiFlag)
+		}
+		img.src = src_3;
+		return
+	}
+	if (img.src.indexOf(src_3) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputResolution', 4);
+			dpiFlag = localStorage.getItem('inputResolution');
+			$('#menu').find("td:eq(4)").find(".tipBody").text("UHD (3840 × 2160)");
+			dpiAddClass(dpiFlag)
+		}
+		img.src = src_4;
+		return
+	}
+	return
+}
+
+function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
+	var img = eval('document.' + name);
+	$("#menu").find("td:eq(5)").find("img").removeClass('animated flipInX');
+	if (img.length == 0) return;
+	if (img.src.indexOf(src_5) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputColorGraph', 1);
+			colorFlag = localStorage.getItem('inputColorGraph');
+			colorGraph(colorFlag);
+			if (nowData != 0) update(nowData)
+		}
+		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (기본)");
+		img.src = src_1;
+		return
+	}
+	if (img.src.indexOf(src_1) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputColorGraph', 2);
+			colorFlag = localStorage.getItem('inputColorGraph');
+			colorGraph(colorFlag);
+			if (nowData != 0) update(nowData)
+		}
+		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (반투명)");
+		img.src = src_2;
+		return
+	}
+	if (img.src.indexOf(src_2) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputColorGraph', 3);
+			colorFlag = localStorage.getItem('inputColorGraph');
+			colorGraph(colorFlag);
+			if (nowData != 0) update(nowData)
+		}
+		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (투명)");
+		img.src = src_3;
+		return
+	}
+	if (img.src.indexOf(src_3) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputColorGraph', 4);
+			colorFlag = localStorage.getItem('inputColorGraph');
+			colorGraph(colorFlag);
+			if (nowData != 0) update(nowData)
+		}
+		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (My 1)");
+		img.src = src_4;
+		return
+	}
+	if (img.src.indexOf(src_4) >= 0) {
+		if (setFlag == 1) {
+			localStorage.setItem('inputColorGraph', 5);
+			colorFlag = localStorage.getItem('inputColorGraph');
+			colorGraph(colorFlag);
+			if (nowData != 0) update(nowData)
+		}
+		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (My 2)");
+		img.src = src_5;
+		return
+	}
+	return
+}
+
+function menuTabSwap(cell) {
+	var btn0 = document.getElementById("DPS");
+	var btn1 = document.getElementById("HPS");
+	var btn2 = document.getElementById("User");
+	var btn3 = document.getElementById("Settings");
+	var btn4 = document.getElementById("Solo");
+	$(document).scrollTop(0);
+	if (cell == 1) {
+		localStorage.setItem('inputFirstView', 1);
+		tabFlag = localStorage.getItem('inputFirstView');
+		btn0.src = "https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/tabDPS_hover.svg";
+		btn1.src = "images/menu/tabHPS.svg";
+		btn2.src = "images/menu/user.svg";
+		btn3.src = "images/menu/settings.svg";
+		btn4.src = "images/menu/meter.svg";
+		$("#toggle-mainMenu").attr('checked', !1);
+		buttonControl(2);
+		menuFlag = 2
+	} else if (cell == 2) {
+		localStorage.setItem('inputFirstView', 2);
+		tabFlag = localStorage.getItem('inputFirstView');
+		btn0.src = "images/menu/tabDPS.svg";
+		btn1.src = "https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/tabHPS_hover.svg";
+		btn2.src = "images/menu/user.svg";
+		btn3.src = "images/menu/settings.svg";
+		btn4.src = "images/menu/meter.svg";
+		$("#toggle-mainMenu").attr('checked', !1);
+		buttonControl(2);
+		menuFlag = 2
+	} else if (cell == 3) {
+		localStorage.setItem('inputFirstView', 3);
+		tabFlag = localStorage.getItem('inputFirstView');
+		btn0.src = "images/menu/tabDPS.svg";
+		btn1.src = "images/menu/tabHPS.svg";
+		btn2.src = "https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/user_hover.svg";
+		btn3.src = "images/menu/settings.svg";
+		btn4.src = "images/menu/meter.svg";
+		$("#toggle-mainMenu").attr('checked', !1);
+		buttonControl(2);
+		menuFlag = 2
+	} else if (cell == 4) {
+		localStorage.setItem('inputFirstView', 4);
+		tabFlag = localStorage.getItem('inputFirstView');
+		btn0.src = "images/menu/tabDPS.svg";
+		btn1.src = "images/menu/tabHPS.svg";
+		btn2.src = "images/menu/user.svg";
+		btn3.src = "https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/settings_hover.svg";
+		btn4.src = "images/menu/meter.svg";
+		$("#toggle-mainMenu").attr('checked', !0);
+		$("#toggle-checkbox").attr('checked', !0);
+		buttonToggle(!0);
+		buttonControl(2);
+		menuFlag = 2;
+		callCustomPage()
+	} else {
+		localStorage.setItem('inputFirstView', 5);
+		tabFlag = localStorage.getItem('inputFirstView');
+		btn0.src = "images/menu/tabDPS.svg";
+		btn1.src = "images/menu/tabHPS.svg";
+		btn2.src = "images/menu/user.svg";
+		btn3.src = "images/menu/settings.svg";
+		btn4.src = "https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/meter_hover.svg";
+		modeFlag = 1;
+		$("#toggle-mainMenu").attr('checked', !1);
+		buttonControl(2);
+		menuFlag = 2
+	}
+	if (nowData != 0) update(nowData);
+	else if (tabFlag != 4) $("#tableContents").addClass('hidden')
+}
+
+function soloMode(FinalData) {
+	for (var i = 0; i < FinalData.length; i++) {
+		if (FinalData[i][2] == 'YOU') {
+			var me = i;
+			break
+		}
+	}
+	if (isNaN(me) == !1) {
+		var myHit = FinalData[me][18].split('-');
+		var tempDmg = parseInt(delComma(FinalData[me][10]));
+		$('#soloTable').find('td:eq(0)').find('#text4').text(FinalData[me][6]);
+		$('#soloTable').find('td:eq(1)').find('#text4').text(FinalData[me][7]);
+		$('#soloTable').find('td:eq(2)').find('#text4').text(FinalData[me][8]);
+		$('#soloTable').find('td:eq(3)').find('#text4').text(FinalData[me][3]);
+		$('#soloTable').find('td:eq(4)').find('#text4').text(FinalData[me][5]);
+		$('#soloTable').find('td:eq(3)').find('#text3').text('P.DPS (' + FinalData[me][4] + ')');
+		if (tempDmg < 10000000)
+			$('#soloTable').find('td:eq(8)').find('#text4').text(formatNumberDMG_K(tempDmg) + ' (' + FinalData[me][10] + ')');
+		else $('#soloTable').find('td:eq(8)').find('#text4').text(FinalData[me][10]);
+		$('#soloTable').find('td:eq(9)').find('#text4').text(FinalData[me][12]);
+		$('#soloTable').find('td:eq(10)').find('#text4').text(FinalData[me][14]);
+		$('#soloTable').find('td:eq(11)').find('#text4').text(FinalData[me][17]);
+		$('#soloTable').find('td:eq(12)').find('#text2').text(FinalData[0][5]);
+		$('#soloTable').find('td:eq(12)').find('#text4').text((me + 1) + ' / ' + FinalData.length);
+		$('#soloTable').find('td:eq(13)').find('#text2').text(myHit[0]);
+		$('#soloTable').find('td:eq(13)').find('#text4').text(myHit[1]);
+		updateGraph(nowPoints);
+
+		function updateGraph(points) {
+			var numPoints = 300;
+			var xMult = 500.0 / numPoints;
+			var yMax = 100.0;
+			if (nowData.Encounter.title == 'Encounter') {
+				var num = delComma(FinalData[me][6]);
+				var value = parseFloat(num);
+				if (value != '∞' && value != '---' && value != 'NaN' && value != '')
+					points.push(value);
+				points = points.slice(-numPoints)
+			}
+			var max = Math.max.apply(null, points);
+			var svgPoints = "";
+			for (var i = 0; i < points.length; i++) {
+				var x = i * xMult;
+				var y = 100 - ((points[i] / max) * 100);
+				if (isNaN(y) == !0) y = 0;
+				svgPoints += x + "," + y + " "
+			}
+			var line = document.getElementById("line");
+			line.setAttribute("points", svgPoints)
+		}
+	}
+}
+
+function callCustomPage() {
+	if (rollingFlag == !0) {
+		$('#news-container').vTicker('remove');
+		rollingFlag = !1
+	}
+	$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.");
+	if (nowData == 0) {
+		inputTableData(0);
+		dpiAddClass(dpiFlag);
+		opacity(opacityFlag);
+		CustomBtn()
+	}
+	$("#tableContents").removeClass('hidden');
+	$('#nav-icon').addClass('open');
+	$("#toggle-mainMenu").attr('checked', !0);
+	editFlag = 2
+}
+
+function CustomBtn() {
+	$(document).ready(function() {
+		$('#miniWrapper').find('.idxIcon').click(function() {
+			var miniRowNum = $(this).attr('name');
+			if (localStorage.getItem('myData' + miniRowNum) == 1) {
+				localStorage.setItem("myData" + miniRowNum, 0);
+				$(this).html("<img src='https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/0.svg' style='width:1.9rem;height:1.9rem;'/>")
+			} else {
+				localStorage.setItem("myData" + miniRowNum, 1);
+				$(this).html("<img src='https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/1.svg' style='width:1.9rem;height:1.9rem;'/>")
+			}
+		})
+	})
+}
+
+function colorGraph(num) {
+	if (num == 1) {
+		colorYOU = "0";
+		colorTank1 = "rgba(123,154,162,1)";
+		colorTank2 = "rgba(169,26,22,1)";
+		colorTank3 = "rgba(104,37,49,1)";
+		colorDps1 = "rgba(179,137,21,1)";
+		colorDps2 = "rgba(55,82,216,1)";
+		colorDps3 = "rgba(173,197,81,1)";
+		colorDps4 = "rgba(238,46,72,1)";
+		colorDps5 = "rgba(50,103,11,1)";
+		colorDps6 = "rgba(103,69,152,1)";
+		colorDps7 = "rgba(20,138,169,1)";
+		colorHeal1 = "rgba(234,234,234,1)";
+		colorHeal2 = "rgba(50,48,123,1)";
+		colorHeal3 = "rgba(177,86,28,1)";
+		colorPet1 = "rgba(50,48,123,1)";
+		colorPet2 = "rgba(50,103,11,1)";
+		colorPet3 = "rgba(20,138,169,1)";
+		colorChocobo = "rgba(117,117,117,1)";
+		colorLimit = "rgba(255,187,0,1)";
+		colorLife = "rgba(64,64,64,1)"
+	} else if (num == 2) {
+		colorYOU = "0";
+		colorTank1 = "rgba(123,154,162,0.5)";
+		colorTank2 = "rgba(169,26,22,0.5)";
+		colorTank3 = "rgba(104,37,49,0.5)";
+		colorDps1 = "rgba(179,137,21,0.5)";
+		colorDps2 = "rgba(55,82,216,0.5)";
+		colorDps3 = "rgba(173,197,81,0.5)";
+		colorDps4 = "rgba(238,46,72,0.5)";
+		colorDps5 = "rgba(50,103,11,0.5)";
+		colorDps6 = "rgba(103,69,152,0.5)";
+		colorDps7 = "rgba(20,138,169,0.5)";
+		colorHeal1 = "rgba(234,234,234,0.5)";
+		colorHeal2 = "rgba(50,48,123,0.5)";
+		colorHeal3 = "rgba(177,86,28,0.5)";
+		colorPet1 = "rgba(50,48,123,0.5)";
+		colorPet2 = "rgba(50,103,11,0.5)";
+		colorPet3 = "rgba(20,138,169,0.5)";
+		colorChocobo = "rgba(117,117,117,0.5)";
+		colorLimit = "rgba(255,187,0,0.5)";
+		colorLife = "rgba(64,64,64,0.5)"
+	} else if (num == 3) {
+		colorYOU = "0";
+		colorTank1 = "rgba(123,154,162,0)";
+		colorTank2 = "rgba(169,26,22,0)";
+		colorTank3 = "rgba(104,37,49,0)";
+		colorDps1 = "rgba(179,137,21,0)";
+		colorDps2 = "rgba(55,82,216,0)";
+		colorDps3 = "rgba(173,197,81,0)";
+		colorDps4 = "rgba(238,46,72,0)";
+		colorDps5 = "rgba(50,103,11,0)";
+		colorDps6 = "rgba(103,69,152,0)";
+		colorDps7 = "rgba(20,138,169,0)";
+		colorHeal1 = "rgba(234,234,234,0)";
+		colorHeal2 = "rgba(50,48,123,0)";
+		colorHeal3 = "rgba(177,86,28,0)";
+		colorPet1 = "rgba(50,48,123,0)";
+		colorPet2 = "rgba(50,103,11,0)";
+		colorPet3 = "rgba(20,138,169,0)";
+		colorChocobo = "rgba(117,117,117,0)";
+		colorLimit = "rgba(255,187,0,0)";
+		colorLife = "rgba(64,64,64,0)"
+	} else if (num == 4) {
+		colorYOU = custom1ColorYOU;
+		colorTank1 = custom1ColorTank1;
+		colorTank2 = custom1ColorTank2;
+		colorTank3 = custom1ColorTank3;
+		colorDps1 = custom1ColorDps1;
+		colorDps2 = custom1ColorDps2;
+		colorDps3 = custom1ColorDps3;
+		colorDps4 = custom1ColorDps4;
+		colorDps5 = custom1ColorDps5;
+		colorDps6 = custom1ColorDps6;
+		colorDps7 = custom1ColorDps7;
+		colorHeal1 = custom1ColorHeal1;
+		colorHeal2 = custom1ColorHeal2;
+		colorHeal3 = custom1ColorHeal3;
+		colorPet1 = custom1ColorPet1;
+		colorPet2 = custom1ColorPet2;
+		colorPet3 = custom1ColorPet3;
+		colorChocobo = custom1ColorChocobo;
+		colorLimit = custom1ColorLimit;
+		colorLife = custom1ColorLife
+	} else {
+		colorYOU = custom2ColorYOU;
+		colorTank1 = custom2ColorTank1;
+		colorTank2 = custom2ColorTank2;
+		colorTank3 = custom2ColorTank3;
+		colorDps1 = custom2ColorDps1;
+		colorDps2 = custom2ColorDps2;
+		colorDps3 = custom2ColorDps3;
+		colorDps4 = custom2ColorDps4;
+		colorDps5 = custom2ColorDps5;
+		colorDps6 = custom2ColorDps6;
+		colorDps7 = custom2ColorDps7;
+		colorHeal1 = custom2ColorHeal1;
+		colorHeal2 = custom2ColorHeal2;
+		colorHeal3 = custom2ColorHeal3;
+		colorPet1 = custom2ColorPet1;
+		colorPet2 = custom2ColorPet2;
+		colorPet3 = custom2ColorPet3;
+		colorChocobo = custom2ColorChocobo;
+		colorLimit = custom2ColorLimit;
+		colorLife = custom2ColorLife
+	}
+}
+
+function dpiAddClass(num) {
+	if (fontNameBar != 0)
+		$('.mobList').css('font-family', fontNameBar);
+	else $('.mobList').css('font-family', 'NanumGothic');
+	$('#Contents').find('#miniCombatantRowYOU').css("color", inputMyTextColor);
+	$('#Contents').find('#miniCombatantRow').css("color", inputOtherTextColor);
+	$('#Contents').find('#contentsRowsYOU').css("color", inputMyTextColor);
+	$('#Contents').find('#contentsRows').css("color", inputOtherTextColor);
+	$('#soloTable').find('#text4').css("color", inputSoloTableColor);
+	if (tabFlag == 4 && modeFlag == 2)
+		$('#Contents').find('#miniCombatantRow').css("color", '#ffffff');
+	if (num == 1) {
+		$(".after_div_label").css('width', '5px');
+		$(".after_div_label").css('height', '5px');
+		$(".after_div_label").css('top', '12px');
+		$("html").css("font-size", '56.3%');
+		$("#menu td:first-child").css("border-left", 'solid 1px #1a1a1a');
+		$("#menu").find("td").css("border-bottom", 'solid 1px #1a1a1a');
+		$("#menu").find("td").css("border-right", 'solid 1px #1a1a1a');
+		$(".toggle__label").css("height", '1px');
+		$("#nav-icon span").css("height", '1px');
+		$('#nav-icon ').css('top', '9px');
+		$('#nav-icon span:nth-child(2)').css('top', '6px');
+		$('#nav-icon span:nth-child(3)').css('top', '6px');
+		$('#nav-icon span:nth-child(4)').css('top', '12px');
+		$(".div_label").css("height", '1px');
+		if (modeFlag == 1) $("#Contents").css("top", '4.9rem');
+		else {
+			if (historyOnFlag == 1) $("#Contents").css("top", '4.9rem');
+			else $("#Contents").css("top", '3.3rem')
+		}
+		$(".bar").css("height", '1px');
+		$('.barTable').css("height", '1px');
+		$('.userGraph').css("height", '19px');
+		$("#tableContents").find(".cell_icon").css("height", "19px");
+		$("#tableContents").find(".cell_dps").css("height", "19px");
+		$("#tableContents").find(".cell_name").css("height", "19px");
+		$("#tableContents").find(".cell_narrow").css("height", "19px");
+		$("#tableContents").find(".cell_variable").css("height", "19px");
+		$("#tableContents").find(".cell_wide").css("height", "19px");
+		if (fontNameMini != 0)
+			$('#miniWrapper').find('.id').css('font-family', fontNameMini);
+		else $('#miniWrapper').find('.id').css('font-family', 'NanumGothic');
+		if (fontNameSmall != 0) {
+			$('#contentsWrapper').css('font-family', fontNameSmall);
+			$('#miniWrapper').find('.idxMean').css('font-family', fontNameSmall)
+		} else {
+			$('#contentsWrapper').css('font-family', '돋움');
+			$('#miniWrapper').find('.idxMean').css('font-family', '돋움')
+		}
+		$("#contentsWrapper").css("font-size", '11px');
+		$("#line-graph").css("width", '23.1rem');
+		$("#line-graph").css("height", '5.1rem')
+	} else if (num == 2) {
+		$(".after_div_label").css('width', '5px');
+		$(".after_div_label").css('height', '5px');
+		$(".after_div_label").css('top', '14px');
+		$("html").css("font-size", '62.5%');
+		$('#nav-icon ').css('top', '9px');
+		$('#nav-icon span:nth-child(2)').css('top', '7px');
+		$('#nav-icon span:nth-child(3)').css('top', '7px');
+		$('#nav-icon span:nth-child(4)').css('top', '14px');
+		if (modeFlag == 1) $("#Contents").css("top", '4.8rem');
+		else {
+			if (historyOnFlag == 1) $("#Contents").css("top", '4.8rem');
+			else $("#Contents").css("top", '3.3rem')
+		}
+		$(".bar").css("height", '1px');
+		$('.barTable').css("height", '1px');
+		$('.userGraph').css("height", '2.2rem');
+		$("#tableContents").find(".cell_icon").css("height", "2.2rem");
+		$("#tableContents").find(".cell_dps").css("height", "2.2rem");
+		$("#tableContents").find(".cell_name").css("height", "2.2rem");
+		$("#tableContents").find(".cell_narrow").css("height", "2.2rem");
+		$("#tableContents").find(".cell_variable").css("height", "2.2rem");
+		$("#tableContents").find(".cell_wide").css("height", "2.2rem");
+		if (fontNameMini != 0)
+			$('#miniWrapper').find('.id').css('font-family', fontNameMini);
+		else $('#miniWrapper').find('.id').css('font-family', 'NanumGothic');
+		if (fontNameSmall != 0) {
+			$('#contentsWrapper').css('font-family', fontNameSmall);
+			$('#miniWrapper').find('.idxMean').css('font-family', fontNameSmall)
+		} else {
+			$('#contentsWrapper').css('font-family', '돋움');
+			$('#miniWrapper').find('.idxMean').css('font-family', '돋움')
+		}
+		$("#contentsWrapper").css("font-size", '12px');
+		$("#line-graph").css("width", '24.1rem');
+		$("#line-graph").css("height", '5.1rem')
+	} else if (num == 3) {
+		$(".after_div_label").css('width', '7px');
+		$(".after_div_label").css('height', '7px');
+		$(".after_div_label").css('top', '18px');
+		$("html").css("font-size", '83.125%');
+		$('#nav-icon ').css('top', '13px');
+		$('#nav-icon span:nth-child(2)').css('top', '9px');
+		$('#nav-icon span:nth-child(3)').css('top', '9px');
+		$('#nav-icon span:nth-child(4)').css('top', '18px');
+		if (modeFlag == 1) $("#Contents").css("top", '4.8rem');
+		else {
+			if (historyOnFlag == 1) $("#Contents").css("top", '4.8rem');
+			else $("#Contents").css("top", '3.3rem')
+		}
+		$(".bar").css("height", '1px');
+		$('.barTable').css("height", '1px');
+		$('.userGraph').css("height", '2.1rem');
+		$("#tableContents").find(".cell_icon").css("height", "2.1rem");
+		$("#tableContents").find(".cell_dps").css("height", "2.1rem");
+		$("#tableContents").find(".cell_name").css("height", "2.1rem");
+		$("#tableContents").find(".cell_narrow").css("height", "2.1rem");
+		$("#tableContents").find(".cell_variable").css("height", "2.1rem");
+		$("#tableContents").find(".cell_wide").css("height", "2.1rem");
+		if (fontNameMini != 0)
+			$('#miniWrapper').find('.id').css('font-family', fontNameMini);
+		else $('#miniWrapper').find('.id').css('font-family', 'NanumGothic');
+		if (fontNameSmall != 0) {
+			$('#contentsWrapper').css('font-family', fontNameBig);
+			$('#miniWrapper').find('.idxMean').css('font-family', fontNameBig)
+		} else {
+			$('#contentsWrapper').css('font-family', 'NanumGothic');
+			$('#miniWrapper').find('.idxMean').css('font-family', 'NanumGothic')
+		}
+		$("#contentsWrapper").css("font-size", '1.2rem');
+		$("#line-graph").css("width", '313px');
+		$("#line-graph").css("height", '66px')
+	} else {
+		$(".after_div_label").css('width', '10px');
+		$(".after_div_label").css('height', '10px');
+		$(".after_div_label").css('top', '28px');
+		$("html").css("font-size", '125%');
+		$('#nav-icon ').css('top', '18px');
+		$('#nav-icon span:nth-child(2)').css('top', '13px');
+		$('#nav-icon span:nth-child(3)').css('top', '13px');
+		$('#nav-icon span:nth-child(4)').css('top', '26px');
+		$("#menu td:first-child").css("border-left", 'solid 2px #1a1a1a');
+		$("#menu").find("td").css("border-bottom", 'solid 2px #1a1a1a');
+		$("#menu").find("td").css("border-right", 'solid 2px #1a1a1a');
+		$(".toggle__label").css("height", '2px');
+		$("#nav-icon span").css("height", '2px');
+		$(".div_label").css("height", '2px');
+		if (modeFlag == 1) $("#Contents").css("top", '4.9rem');
+		else {
+			if (historyOnFlag == 1) $("#Contents").css("top", '4.9rem');
+			else $("#Contents").css("top", '3.3rem')
+		}
+		$(".bar").css("height", '2px');
+		$('.barTable').css("height", '2px');
+		$('.userGraph').css("height", '2.2rem');
+		$("#tableContents").find(".cell_icon").css("height", "2.2rem");
+		$("#tableContents").find(".cell_dps").css("height", "2.2rem");
+		$("#tableContents").find(".cell_name").css("height", "2.2rem");
+		$("#tableContents").find(".cell_narrow").css("height", "2.2rem");
+		$("#tableContents").find(".cell_variable").css("height", "2.2rem");
+		$("#tableContents").find(".cell_wide").css("height", "2.2rem");
+		if (fontNameMini != 0)
+			$('#miniWrapper').find('.id').css('font-family', fontNameMini);
+		else $('#miniWrapper').find('.id').css('font-family', 'NanumGothic');
+		if (fontNameSmall != 0) {
+			$('#contentsWrapper').css('font-family', fontNameBig);
+			$('#miniWrapper').find('.idxMean').css('font-family', fontNameBig)
+		} else {
+			$('#contentsWrapper').css('font-family', 'NanumGothic');
+			$('#miniWrapper').find('.idxMean').css('font-family', 'NanumGothic')
+		}
+		$("#contentsWrapper").css("font-size", '1.3rem');
+		$("#line-graph").css("width", '481px');
+		$("#line-graph").css("height", '101px')
+	}
+}
+
+function cellWidthClass(num) {
+	if (num == 1) {
+		$('#tableContents').find('.cell_wide').css('width', cellWideWidth + 'rem');
+		$('#tableHeader').find('#cell_H_wide').css('width', cellWideWidth + 'rem');
+		$('#tableContents').find('.cell_variable').css('width', cellWideVariableWidth + 'rem');
+		$('#tableHeader').find('#cell_H_variable').css('width', cellWideVariableWidth + 'rem')
+	} else {
+		$('#tableContents').find('.cell_wide').css('width', cellNarrowWidth + 'rem');
+		$('#tableHeader').find('#cell_H_wide').css('width', cellNarrowWidth + 'rem');
+		$('#tableContents').find('.cell_variable').css('width', cellNarrowVariableWidth + 'rem');
+		$('#tableHeader').find('#cell_H_variable').css('width', cellNarrowVariableWidth + 'rem')
+	}
+	$('#tableContents').find('.cell_narrow').css('width', RealNarrowCell + 'rem');
+	$('#tableHeader').find('#cell_H_narrow').css('width', RealNarrowCell + 'rem')
+}
+
+function dpsCellWidthClass(num) {
+	if (num == 1) {
+		if (cellWidthFlag == 1) {
+			$('#tableContents').find('.cell_dps').css('width', cellWideWidth + 'rem');
+			$('#tableHeader').find('#cell_H_dps').css('width', cellWideWidth + 'rem')
+		} else {
+			$('#tableContents').find('.cell_dps').css('width', cellNarrowWidth + 'rem');
+			$('#tableHeader').find('#cell_H_dps').css('width', cellNarrowWidth + 'rem')
+		}
+	} else {
+		$('#tableContents').find('.cell_dps').css('width', RealNarrowCell + 'rem');
+		$('#tableHeader').find('#cell_H_dps').css('width', RealNarrowCell + 'rem')
+	}
+}
+
+function opacity(num) {
+	if (num == 1) {
+		$('#menu td').css('background', 'rgba(0,0,0,0)');
+		$('#tableContents').find('#miniCombatantRow').css('background', 'rgba(0,0,0,0)');
+		$('#barContents').find('#barRows').css('background', 'rgba(0,0,0,0)');
+		$('#soloTable td').css('background', 'rgba(0,0,0,0)');
+		$('#miniCombatantRow').css('background', 'rgba(0,0,0,0)');
+		$('#miniCombatantRowYOU').css('background', 'rgba(0,0,0,0)')
+	} else if (num == 2) {
+		$('#menu td').css('background', 'rgba(0,0,0,0.25)');
+		$('#tableContents').find('#miniCombatantRow').css('background', 'rgba(0,0,0,0.25)');
+		$('#barContents').find('#barRows').css('background', 'rgba(0,0,0,0.25)');
+		$('#soloTable td').css('background', 'rgba(0,0,0,0.25)');
+		$('#miniCombatantRow').css('background', 'rgba(0,0,0,0.25)');
+		$('#miniCombatantRowYOU').css('background', 'rgba(0,0,0,0.25)')
+	} else if (num == 3) {
+		$('#menu td').css('background', 'rgba(0,0,0,0.5)');
+		$('#tableContents').find('#miniCombatantRow').css('background', 'rgba(0,0,0,0.5)');
+		$('#barContents').find('#barRows').css('background', 'rgba(0,0,0,0.5)');
+		$('#soloTable td').css('background', 'rgba(0,0,0,0.5)');
+		$('#miniCombatantRow').css('background', 'rgba(0,0,0,0.5)');
+		$('#miniCombatantRowYOU').css('background', 'rgba(0,0,0,0.5)')
+	} else if (num == 4) {
+		$('#menu td').css('background', 'rgba(0,0,0,0.75)');
+		$('#tableContents').find('#miniCombatantRow').css('background', 'rgba(0,0,0,0.75)');
+		$('#barContents').find('#barRows').css('background', 'rgba(0,0,0,0.75)');
+		$('#soloTable td').css('background', 'rgba(0,0,0,0.75)');
+		$('#miniCombatantRow').css('background', 'rgba(0,0,0,0.75)');
+		$('#miniCombatantRowYOU').css('background', 'rgba(0,0,0,0.75)')
+	} else {
+		$('#menu td').css('background', 'rgba(0,0,0,1)');
+		$('#tableContents').find('#miniCombatantRow').css('background', 'rgba(0,0,0,1)');
+		$('#barContents').find('#barRows').css('background', 'rgba(0,0,0,1)');
+		$('#soloTable td').css('background', 'rgba(0,0,0,1)');
+		$('#miniCombatantRow').css('background', 'rgba(0,0,0,1)');
+		$('#miniCombatantRowYOU').css('background', 'rgba(0,0,0,1)')
+	}
+}
+
+function updateUI() {
+	$(document).ready(function() {
+		$("#Contents").mouseover(function(e) {
+			if ($(document).scrollTop() == 0) {
+				if (opacityFlag == 1) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.2)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.2)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.2)');
+					$("#headerRows").css("background", 'rgba(0,0,0,0.2)')
+				} else if (opacityFlag == 2) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.45)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.45)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.45)');
+					$("#headerRows").css("background", 'rgba(0,0,0,0.45)')
+				} else if (opacityFlag == 3) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.7)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.7)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.7)');
+					$("#headerRows").css("background", 'rgba(0,0,0,0.7)')
+				} else if (opacityFlag == 4) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.95)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.95)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.95)');
+					$("#headerRows").css("background", 'rgba(0,0,0,0.95)')
+				} else {
+					$(".mainList").css("background", 'rgba(0,0,0,1)');
+					$(".mobList").css("background", 'rgba(0,0,0,1)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,1)');
+					$("#headerRows").css("background", 'rgba(0,0,0,1)')
+				}
+			}
+		});
+		$("#soloTable").mouseover(function(e) {
+			if ($(document).scrollTop() == 0) {
+				if (opacityFlag == 1) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.2)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.2)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.2)')
+				} else if (opacityFlag == 2) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.45)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.45)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.45)')
+				} else if (opacityFlag == 3) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.7)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.7)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.7)')
+				} else if (opacityFlag == 4) {
+					$(".mainList").css("background", 'rgba(0,0,0,0.95)');
+					$(".mobList").css("background", 'rgba(0,0,0,0.95)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,0.95)');
+					$("#headerRows").css("background", 'rgba(0,0,0,0.95)')
+				} else {
+					$(".mainList").css("background", 'rgba(0,0,0,1)');
+					$(".mobList").css("background", 'rgba(0,0,0,1)');
+					$(".toggleBtn").css("background", 'rgba(0,0,0,1)');
+					$("#headerRows").css("background", 'rgba(0,0,0,1)')
+				}
+			}
+		});
+		document.addEventListener("scroll", function(e) {
+			if ($(document).scrollTop() != 0) {
+				$(".mainList").css("background", '#1a1a1a');
+				$(".mobList").css("background", '#1a1a1a');
+				$(".toggleBtn").css("background", '#1a1a1a');
+				$("#headerRows").css("background", '#0f0f0f')
+			}
+		})
+	});
+	$(".mobList").mouseover(function() {
+		if (nowData != 0) {
+			if (menuFlag == 2 && historyOnFlag == 0 && nowData.Encounter.title != 'Encounter')
+				$(this).css("background", "rgba(77,77,77,1)");
+			else $(this).css("background", "#1a1a1a")
+		} else $(this).css("background", "#1a1a1a");
+		$(".mainList").css("background", "#1a1a1a");
+		$(".toggleBtn").css("background", "#1a1a1a");
+		$("#headerRows").css("background", '#0f0f0f')
+	});
+	$(".mainList").mouseover(function() {
+		$(this).css("background", "rgba(77,77,77,1)");
+		$(".toggleBtn").css("background", "#1a1a1a");
+		$(".mobList").css("background", "#1a1a1a");
+		$("#headerRows").css("background", '#0f0f0f');
+		if (tabFlag == 4 && modeFlag == 2) {
+			$('.mobList').text("[알림] 편집이 끝났나요? 탭:즐겨찾기(My ACT)로 이동해요.")
+		}
+	});
+	$(".toggleBtn").mouseover(function() {
+		if (menuFlag == 2 && historyOnFlag == 0 && tabFlag != 5)
+			$(this).css("background", "rgba(77,77,77,1)");
+		else $(this).css("background", "#1a1a1a");
+		$(".mobList").css("background", "#1a1a1a");
+		$(".mainList").css("background", "#1a1a1a");
+		$("#headerRows").css("background", '#0f0f0f');
+		if (tabFlag == 4) {
+			if (rollingFlag == !0) {
+				$('#news-container').vTicker('remove');
+				rollingFlag = !1
+			}
+			if (modeFlag == 2) $('.mobList').text("[알림] 탭:All로 이동해요. (33가지 ACT 항목 전체보기)");
+			else if (modeFlag == 1 && menuFlag == 2) $('.mobList').text("[알림] 탭:편집 모드로 이동해요. (커스터마이징)")
+		}
+	});
+	$(".mobList").mouseout(function() {
+		$(this).css("background", "#1a1a1a")
+	});
+	$(".mainList").mouseout(function() {
+		$(this).css("background", "#1a1a1a");
+		if (tabFlag == 4 && modeFlag == 2)
+			$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.")
+	});
+	$(".toggleBtn").mouseout(function() {
+		$(this).css("background", "#1a1a1a");
+		if (tabFlag == 4 && menuFlag == 2) {
+			if (modeFlag == 2)
+				$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.");
+			else if (modeFlag == 1) {
+				if (nowData != 0) updateEncounter(nowData);
+				else {
+					$('.mobList').html(notice);
+					rolling()
+				}
+			}
+		}
+	});
+	$('#soloTable').find('td:eq(0)').html("<div id='text3'>Last10</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(1)').html("<div id='text3'>Last30</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(2)').html("<div id='text3'>Last60</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(3)').html("<div id='text3'>P.DPS (00:00)</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(4)').html("<div id='text3'>DPS</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(5)').html("<div id='text3'style='height:0rem;'>Graph </div>");
+	$('#soloTable').find('td:eq(6)').html("<div id='text3'style='height:0rem;'>Damage</div>");
+	$('#soloTable').find('td:eq(8)').html("<div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(9)').html("<div id='text3'>Swing</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(10)').html("<div id='text3'>Miss</div><div id='text4'>" + 0 + "</div>");
+	$('#soloTable').find('td:eq(11)').html("<div id='text3'>D.CRIT</div><div id='text4'>" + 0 + '%' + "</div>");
+	$('#soloTable').find('td:eq(12)').html("<div id='text3'>Rank<span id='text2'>" + '-' + "</span></div><div id='text4'>" + '1 / 1' + "</div>");
+	$('#soloTable').find('td:eq(13)').html("<div id='text3'>Max-Hit<span id='text2'>" + '-' + "</span></div><div id='text4'>" + 0 + "</div>");
+	for (var i = 1; i <= 5; i++) {
+		if (i == colorFlag) {
+			colorGraph(colorFlag);
+			break
+		} else toggle_img_Color('Color', 'images/menu/graph1.svg', 'images/menu/graph2.svg', 'images/menu/graph3.svg', 'images/menu/graph4.svg', 'images/menu/graph5.svg')
+	}
+	for (var i = 1; i <= 5; i++) {
+		if (i == opacityFlag) {
+			opacity(opacityFlag);
+			break
+		} else toggle_img_Opacity('Opacity', 'images/menu/bg1.svg', 'images/menu/bg2.svg', 'images/menu/bg3.svg', 'images/menu/bg4.svg')
+	}
+	for (var i = 1; i <= 4; i++) {
+		if (i == dpiFlag) {
+			dpiAddClass(dpiFlag);
+			break
+		} else toggle_img_Resolution('DPI', 'images/menu/HD.svg', 'images/menu/expandFHD.svg', 'images/menu/expandQHD.svg', 'images/menu/expandUHD.svg')
+	}
+	if (petFlag == 2) toggle_img('Pet', 'images/menu/petAdd.svg', 'images/menu/petSub.svg');
+	if (numberFlag == 2) toggle_img('number', 'images/menu/float.svg', 'images/menu/int.svg');
+	if (cellWidthFlag == 1) toggle_img('Cells', 'images/menu/cellReduce.svg', 'images/menu/cellExpand.svg');
+	if (languageFlag == 2) toggle_img('Language', 'images/menu/kor.svg', 'images/menu/eng.svg');
+	menuTabSwap(tabFlag);
+	$("#tableContents").removeClass('hidden');
+	if (localStorage.getItem('inputModeView') == 1) {
+		$("#toggle-checkbox").attr('checked', !1);
+		buttonToggle(!1)
+	} else if (localStorage.getItem('inputModeView') == 2) {
+		$("#toggle-checkbox").attr('checked', !0);
+		buttonToggle(!0)
+	}
+	$('#menu').find("td:eq(0)").attr('title', "전투 (DPS)");
+	$('#menu').find("td:eq(1)").attr('title', "회복 (HPS)");
+	$('#menu').find("td:eq(2)").attr('title', "즐겨찾기 (My ACT)");
+	$('#menu').find("td:eq(3)").attr('title', "편집 모드 (All)");
+	$('#menu').find("td:eq(11)").attr('title', "나무인형 (Solo)");
+	if (dpiFlag == 1) $('#menu').find("td:eq(4)").attr('title', "HD (1366 × 768)");
+	else if (dpiFlag == 2) $('#menu').find("td:eq(4)").attr('title', "FHD (1920 × 1080)");
+	else if (dpiFlag == 3) $('#menu').find("td:eq(4)").attr('title', "QHD (2560 × 1440)");
+	else $('#menu').find("td:eq(4)").attr('title', "UHD (3840 × 2160)");
+	if (colorFlag == 1) $('#menu').find("td:eq(5)").attr('title', "그래프 색상 (기본)");
+	else if (colorFlag == 2) $('#menu').find("td:eq(5)").attr('title', "그래프 색상 (반투명)");
+	else if (colorFlag == 3) $('#menu').find("td:eq(5)").attr('title', "그래프 색상 (투명)");
+	else if (colorFlag == 4) $('#menu').find("td:eq(5)").attr('title', "그래프 색상 (My 1)");
+	else $('#menu').find("td:eq(5)").attr('title', "그래프 색상 (My 2)");
+	if (numberFlag == 1) $('#menu').find("td:eq(6)").attr('title', "소수 표기");
+	else $('#menu').find("td:eq(6)").attr('title', "정수 표기");
+	if (petFlag == 1) $('#menu').find("td:eq(7)").attr('title', "소환수 합산");
+	else $('#menu').find("td:eq(7)").attr('title', "소환수 분리");
+	if (cellWidthFlag == 1) $('#menu').find("td:eq(8)").attr('title', "셀 너비 넓게");
+	else $('#menu').find("td:eq(8)").attr('title', "셀 너비 좁게");
+	if (opacityFlag == 1) $('#menu').find("td:eq(9)").attr('title', "배경 불투명도 (0%)");
+	else if (opacityFlag == 2) $('#menu').find("td:eq(9)").attr('title', "배경 불투명도 (25%)");
+	else if (opacityFlag == 3) $('#menu').find("td:eq(9)").attr('title', "배경 불투명도 (50%)");
+	else if (opacityFlag == 4) $('#menu').find("td:eq(9)").attr('title', "배경 불투명도 (75%)");
+	else $('#menu').find("td:eq(9)").attr('title', "배경 불투명도 (100%)");
+	if (languageFlag == 1) $('#menu').find("td:eq(10)").attr('title', "번역 (한국어)");
+	else $('#menu').find("td:eq(10)").attr('title', "번역 (영어)");
+	setFlag = 1
+}
+
+function errorCheck() {
+	if (myData1 <= 0 || myData1 > 33) {
+		myData1 = 24;
+		errorFlag = 1;
+		error[41] = "errorCode 41 : 즐겨찾기 탭 (미니 모드) 설정 → myData1 값 범위 오류"
+	}
+	if (myData2 <= 0 || myData2 > 33) {
+		myData2 = 26;
+		errorFlag = 1;
+		error[42] = "errorCode 42 : 즐겨찾기 탭 (미니 모드) 설정 → myData2 값 범위 오류"
+	}
+	if (myData3 <= 0 || myData3 > 33) {
+		myData3 = 27;
+		errorFlag = 1;
+		error[43] = "errorCode 43 : 즐겨찾기 탭 (미니 모드) 설정 → myData3 값 범위 오류"
+	}
+	if (myData4 <= 0 || myData4 > 33) {
+		myData4 = 5;
+		errorFlag = 1;
+		error[44] = "errorCode 44 : 즐겨찾기 탭 (미니 모드) 설정 → myData4 값 범위 오류"
+	}
+	if (cellWideWidth < 5) {
+		cellWideWidth = 8;
+		errorFlag = 1;
+		error[45] = "errorCode 45 : 셀 너비 설정 → cellWideWidth 값의 최소값은 5입니다."
+	}
+	if (cellNarrowWidth < 5) {
+		cellNarrowWidth = 6.5;
+		errorFlag = 1;
+		error[46] = "errorCode 46 : 셀 너비 설정 → cellNarrowWidth 값의 최소값은 5입니다."
+	}
+	if (cellWideWidth < cellNarrowWidth || cellWideWidth == cellNarrowWidth) {
+		cellWideWidth = 8.0;
+		cellNarrowWidth = 6.5;
+		errorFlag = 1;
+		error[47] = "errorCode 47 : 셀 너비 설정 → cellWideWidth 값 > cellNarrowWidth 값이어야 합니다."
+	}
+	if (RealNarrowCell < 4) {
+		RealNarrowCell = 4;
+		errorFlag = 1;
+		error[48] = "errorCode 48 : 셀 너비 설정 → RealNarrowCell 값의 최소값은 4입니다."
+	}
+	if (cellWideVariableWidth < 15) {
+		cellWideVariableWidth = 15;
+		errorFlag = 1;
+		error[40] = "errorCode 40 : 셀 너비 설정 → cellWideVariableWidth 값의 최소값은 15입니다."
+	}
+	if (cellNarrowVariableWidth < 10) {
+		cellNarrowVariableWidth = 10;
+		errorFlag = 1;
+		error[39] = "errorCode 39 : 셀 너비 설정 → cellNarrowVariableWidth 값의 최소값은 10입니다."
+	}
+	if (cellWideVariableWidth < cellNarrowVariableWidth || cellNarrowVariableWidth == cellWideVariableWidth) {
+		cellWideVariableWidth = 18;
+		cellNarrowVariableWidth = 15;
+		errorFlag = 1;
+		error[38] = "errorCode 38 : 셀 너비 설정 → cellWideVariableWidth 값 > cellNarrowVariableWidth 값이어야 합니다."
+	}
+	var colorCheck = rgbaCheck(inputMyTextColor);
+	if (colorCheck != 0) {
+		inputMyTextColor = "rgba(255,255,255,1)";
+		errorFlag = 1;
+		error[49] = "errorCode 49 : 글자색 설정 → inputMyTextColor 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(inputOtherTextColor);
+	if (colorCheck != 0) {
+		inputOtherTextColor = "rgba(255,255,255,1)";
+		errorFlag = 1;
+		error[50] = "errorCode 50 : 글자색 설정 → inputOtherTextColor 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(inputSoloTableColor);
+	if (colorCheck != 0) {
+		inputSoloTableColor = "rgba(0,115,220,1)";
+		errorFlag = 1;
+		error[51] = "errorCode 51 : 글자색 설정 → inputSoloTableColor 값 오타/범위 오류"
+	}
+	if (custom1ColorYOU != 0) {
+		var colorCheck = rgbaCheck(custom1ColorYOU);
+		if (colorCheck != 0) {
+			custom1ColorYOU = "rgba(0,0,0,1)";
+			errorFlag = 1;
+			error[52] = "errorCode 52 : 그래프 설정 ① → custom1ColorYOU 값 오타/범위 오류"
+		}
+	}
+	var colorCheck = rgbaCheck(custom1ColorTank1);
+	if (colorCheck != 0) {
+		custom1ColorTank1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[53] = "errorCode 53 : 그래프 설정 ① → custom1ColorTank1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorTank2);
+	if (colorCheck != 0) {
+		custom1ColorTank2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[54] = "errorCode 54 : 그래프 설정 ① → custom1ColorTank2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorTank3);
+	if (colorCheck != 0) {
+		custom1ColorTank3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[55] = "errorCode 55 : 그래프 설정 ① → custom1ColorTank3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps1);
+	if (colorCheck != 0) {
+		custom1ColorDps1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[56] = "errorCode 56 : 그래프 설정 ① → custom1ColorDps1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps2);
+	if (colorCheck != 0) {
+		custom1ColorDps2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[57] = "errorCode 57 : 그래프 설정 ① → custom1ColorDps2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps3);
+	if (colorCheck != 0) {
+		custom1ColorDps3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[58] = "errorCode 58 : 그래프 설정 ① → custom1ColorDps3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps4);
+	if (colorCheck != 0) {
+		custom1ColorDps4 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[59] = "errorCode 59 : 그래프 설정 ① → custom1ColorDps4 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps5);
+	if (colorCheck != 0) {
+		custom1ColorDps5 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[60] = "errorCode 60 : 그래프 설정 ① → custom1ColorDps5 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps6);
+	if (colorCheck != 0) {
+		custom1ColorDps6 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[61] = "errorCode 61 : 그래프 설정 ① → custom1ColorDps6 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorDps7);
+	if (colorCheck != 0) {
+		custom1ColorDps7 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[62] = "errorCode 62 : 그래프 설정 ① → custom1ColorDps7 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorHeal1);
+	if (colorCheck != 0) {
+		custom1ColorHeal1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[63] = "errorCode 63 : 그래프 설정 ① → custom1ColorHeal1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorHeal2);
+	if (colorCheck != 0) {
+		custom1ColorHeal2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[64] = "errorCode 64 : 그래프 설정 ① → custom1ColorHeal2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorHeal3);
+	if (colorCheck != 0) {
+		custom1ColorHeal3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[65] = "errorCode 65 : 그래프 설정 ① → custom1ColorHeal3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorPet1);
+	if (colorCheck != 0) {
+		custom1ColorPet1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[66] = "errorCode 66 : 그래프 설정 ① → custom1ColorPet1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorPet2);
+	if (colorCheck != 0) {
+		custom1ColorPet2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[67] = "errorCode 67 : 그래프 설정 ① → custom1ColorPet2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorPet3);
+	if (colorCheck != 0) {
+		custom1ColorPet3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[68] = "errorCode 68 : 그래프 설정 ① → custom1ColorPet3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorLimit);
+	if (colorCheck != 0) {
+		custom1ColorLimit = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[69] = "errorCode 69 : 그래프 설정 ① → custom1ColorLimit 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorChocobo);
+	if (colorCheck != 0) {
+		custom1ColorChocobo = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[70] = "errorCode 70 : 그래프 설정 ① → custom1ColorChocobo 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom1ColorLife);
+	if (colorCheck != 0) {
+		custom1ColorLife = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[71] = "errorCode 71 : 그래프 설정 ① → custom1ColorLife 값 오타/범위 오류"
+	}
+	if (custom2ColorYOU != 0) {
+		var colorCheck = rgbaCheck(custom2ColorYOU);
+		if (colorCheck != 0) {
+			custom2ColorYOU = "rgba(0,0,0,1)";
+			errorFlag = 1;
+			error[72] = "errorCode 72 : 그래프 설정 ② → custom2ColorYOU 값 오타/범위 오류"
+		}
+	}
+	var colorCheck = rgbaCheck(custom2ColorTank1);
+	if (colorCheck != 0) {
+		custom2ColorTank1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[73] = "errorCode 73 : 그래프 설정 ② → custom2ColorTank1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorTank2);
+	if (colorCheck != 0) {
+		custom2ColorTank2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[74] = "errorCode 74 : 그래프 설정 ② → custom2ColorTank2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorTank3);
+	if (colorCheck != 0) {
+		custom2ColorTank3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[75] = "errorCode 75 : 그래프 설정 ② → custom2ColorTank3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps1);
+	if (colorCheck != 0) {
+		custom2ColorDps1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[76] = "errorCode 76 : 그래프 설정 ② → custom2ColorDps1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps2);
+	if (colorCheck != 0) {
+		custom2ColorDps2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[77] = "errorCode 77 : 그래프 설정 ② → custom2ColorDps2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps3);
+	if (colorCheck != 0) {
+		custom2ColorDps3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[78] = "errorCode 78 : 그래프 설정 ② → custom2ColorDps3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps4);
+	if (colorCheck != 0) {
+		custom2ColorDps4 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[79] = "errorCode 79 : 그래프 설정 ② → custom2ColorDps4 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps5);
+	if (colorCheck != 0) {
+		custom2ColorDps5 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[80] = "errorCode 80 : 그래프 설정 ② → custom2ColorDps5 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps6);
+	if (colorCheck != 0) {
+		custom2ColorDps6 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[81] = "errorCode 81 : 그래프 설정 ② → custom2ColorDps6 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorDps7);
+	if (colorCheck != 0) {
+		custom2ColorDps7 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[82] = "errorCode 82 : 그래프 설정 ② → custom2ColorDps7 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorHeal1);
+	if (colorCheck != 0) {
+		custom2ColorHeal1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[83] = "errorCode 83 : 그래프 설정 ② → custom2ColorHeal1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorHeal2);
+	if (colorCheck != 0) {
+		custom2ColorHeal2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[84] = "errorCode 84 : 그래프 설정 ② → custom2ColorHeal2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorHeal3);
+	if (colorCheck != 0) {
+		custom2ColorHeal3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[85] = "errorCode 85 : 그래프 설정 ② → custom2ColorHeal3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorPet1);
+	if (colorCheck != 0) {
+		custom2ColorPet1 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[86] = "errorCode 86 : 그래프 설정 ② → custom2ColorPet1 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorPet2);
+	if (colorCheck != 0) {
+		custom2ColorPet2 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[87] = "errorCode 87 : 그래프 설정 ② → custom2ColorPet2 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorPet3);
+	if (colorCheck != 0) {
+		custom2ColorPet3 = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[88] = "errorCode 88 : 그래프 설정 ② → custom2ColorPet3 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorLimit);
+	if (colorCheck != 0) {
+		custom2ColorLimit = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[89] = "errorCode 89 : 그래프 설정 ② → custom2ColorLimit 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorChocobo);
+	if (colorCheck != 0) {
+		custom2ColorChocobo = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[90] = "errorCode 90 : 그래프 설정 ② → custom2ColorChocobo 값 오타/범위 오류"
+	}
+	var colorCheck = rgbaCheck(custom2ColorLife);
+	if (colorCheck != 0) {
+		custom2ColorLife = "rgba(0,0,0,1)";
+		errorFlag = 1;
+		error[91] = "errorCode 91 : 그래프 설정 ② → custom2ColorLife 값 오타/범위 오류"
+	}
+	if (errorFlag == 1) {
+		$('#error').html("<img src='images/menu/warning.svg' style='width:4rem;height:4rem;'/><br><br>설정값이 잘못됐어요! <br>myData.txt 파일을 확인해주세요. <br><br>");
+		var errorTable = document.getElementById("error");
+		for (var i = 0; i < error.length; i++) {
+			if (i == 0) {
+				var errorRow = errorTable.insertRow();
+				var errorCell = errorRow.insertCell();
+				errorCell.className = 'errorInfo';
+				errorCell.innerHTML = "잘못된 값은 기본값으로 변경/적용됩니다.<br>이 메세지는 클릭하면 사라집니다."
+			}
+			if (error[i] != NaN && error[i] != undefined) {
+				var errorRow = errorTable.insertRow();
+				var errorCell = errorRow.insertCell();
+				errorCell.className = 'error';
+				errorCell.innerHTML = error[i]
+			}
+		}
+	}
+}
+
+function rgbaCheck(input) {
+	var tmp = input.split(',');
+	var tmpTextHead = tmp[0].split('(');
+	var tmpTextTail = tmp[3].split(')');
+	if (tmpTextHead[0] != 'rgba') {
+		return 1
+	}
+	if (tmpTextHead[1] > 255 || tmpTextHead[1] < 0) {
+		return 2
+	}
+	if (tmp[1] > 255 || tmp[1] < 0) {
+		return 3
+	}
+	if (tmp[2] > 255 || tmp[2] < 0) {
+		return 4
+	}
+	if (tmpTextTail[0] > 1 || tmpTextTail[0] < 0) {
+		return 5
+	}
+	return 0
+}
+
+function callTooltipHeader() {
+	$(document).ready(function() {
+		$('[rel=tooltipMini]').mouseover(function(e) {
+			var tip = $(this).attr('title');
+			$(this).attr('title', '');
+			$(this).append('<div id="tooltip"><div class="tipBody">' + tip + '</div></div>')
+		}).mousemove(function(e) {
+			$('#tooltip').css('top', e.pageY - 15 - $(document).scrollTop());
+			$('#tooltip').css('bottom', e.pageX - $(document).scrollTop())
+		}).mouseout(function() {
+			$(this).attr('title', $('.tipBody').html());
+			$(this).children('div#tooltip').remove()
+		})
+	})
+}
+
+function viewName(data) {
+	if (data.Encounter.title != 'Encounter') {
+		$(document).ready(function() {
+			$('#tableContents').find('#contentsRowsYOU').find('.cell_name').removeClass('hidden2');
+			$('#tableContents').find('#contentsRows').find('.cell_name').removeClass('hidden2');
+			$('#tableContents').find('#miniCombatantRowYOU').find('.id').removeClass('hidden2');
+			$('#tableContents').find('#miniCombatantRow').find('.id').removeClass('hidden2');
+			$('#tableContents').find('#contentsRowsYOU').find('.cell_icon').click(function() {
+				$(this).parent().find('.cell_name').toggleClass('hidden2')
+			});
+			$('#tableContents').find('#contentsRows').find('.cell_icon').click(function() {
+				$(this).parent().find('.cell_name').toggleClass('hidden2')
+			});
+			$('#tableContents').find('#miniCombatantRowYOU').find('.icon').click(function() {
+				$(this).parent().find('.id').toggleClass('hidden2')
+			});
+			$('#tableContents').find('#miniCombatantRow').find('.icon').click(function() {
+				$(this).parent().find('.id').toggleClass('hidden2')
+			})
+		})
+	}
+}
+var formatNumberDPS = (number) => {
+	number = parseFloat(number);
+	if (numberFlag == 1) {
+		if (number >= 10000)
+			return addComma(floatChange((number / 1000), 1).toFixed(1)) + 'K';
+		else if (number >= 1000000)
+			return addComma(floatChange((number / 1000000), 1).toFixed(1)) + 'M';
+		return addComma(floatChange((number), 2).toFixed(2))
+	} else {
+		if (number >= 10000)
+			return Intl.NumberFormat().format(Math.trunc(number / 1000)) + 'K';
+		else if (number >= 1000000)
+			return Intl.NumberFormat().format(Math.trunc(number / 1000000)) + 'M';
+		return Intl.NumberFormat().format(Math.trunc(number))
+	}
+};
+var formatNumberPER = (number) => {
+	number = parseFloat(number);
+	if (number == 'NaN' || number == '---' || number == '∞' || number == '' || number == 0) {
+		return 0 + '%'
+	} else {
+		if (numberFlag == 1) return floatChange((number), 1) + '%';
+		else return Intl.NumberFormat().format(Math.trunc(number)) + '%'
+	}
+};
+var formatNumberDMG = (number) => {
+	number = parseInt(number);
+	if (number >= 10000000)
+		return Intl.NumberFormat().format(Math.trunc(number / 1000000)) + 'M';
+	return Intl.NumberFormat().format(number)
+};
+var formatNumberDMG_K = (number) => {
+	number = parseInt(number);
+	if (number >= 1000)
+		return Intl.NumberFormat().format(Math.trunc(number / 1000)) + 'K';
+	else if (number >= 1000000)
+		return Intl.NumberFormat().format(Math.trunc(number / 1000000)) + 'M';
+	return Intl.NumberFormat().format(number)
+};
+var formatNumberDPS_K = (number) => {
+	number = parseInt(number);
+	if (number >= 1000) {
+		if (numberFlag == 1) return floatChange((number / 1000), 1) + 'K';
+		else return Intl.NumberFormat().format(Math.trunc(number / 1000)) + 'K'
+	} else if (number >= 1000000) {
+		if (numberFlag == 1) return floatChange((number / 1000000), 1) + 'M';
+		else return Intl.NumberFormat().format(Math.trunc(number / 1000000)) + 'M'
+	}
+	return Intl.NumberFormat().format(number)
+};
+
+function floatChange(num, positionalNum) {
+	var numFormat = 10;
+	for (var i = 1; i < positionalNum; i++)
+		numFormat *= 10;
+	numFormat = parseInt(numFormat);
+	return parseFloat(Math.round(parseFloat(num) * numFormat) / numFormat)
+}
+
+function addComma(num) {
+	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+function delComma(num) {
+	if (isNaN(num) == !1) {
+		if (num > 1000) return num.replace(/,/gi, '');
+		else return num
+	} else return num.replace(/,/gi, '')
+}
+
+function addslashes(str) {
+	return str.replace(/'/g, "_")
+}
+
+function BarEffect(combatantJobOrName, ID) {
+	var tank1 = ["Gld", "Pld"]
+	var tank2 = ["Mrd", "War"]
+	var tank3 = ["Drk"]
+	var dps1 = ["Pgl", "Mnk"]
+	var dps2 = ["Lnc", "Drg"]
+	var dps3 = ["Arc", "Brd"]
+	var dps4 = ["Rog", "Nin"]
+	var dps5 = ["Acn", "Smn"]
+	var dps6 = ["Thm", "Blm"]
+	var dps7 = ["Mch"]
+	var healer1 = ["Cnj", "Whm"]
+	var healer2 = ["Sch"]
+	var healer3 = ["Ast"]
+	var pet1 = ["Eos", "Selene"]
+	var pet2 = ["Garuda", "Ifrit", "Titan", "topaz", "emerald"]
+	var pet3 = ["Look", "Bishop"]
+	var life = ["Alc", "Arm", "Bsm", "Crp", "Cul", "Gsm", "Ltw", "Wvr", "Fsh", "Min", "Btn"]
+	var job = combatantJobOrName;
+	var name = combatantJobOrName;
+	if (job == "")
+		var owner = ID.match(/[(](.+)[)]/);
+	if (ID == "YOU" && colorYOU != "0")
+		var color = colorYOU;
+	else if (colorYOU != "0" && owner != undefined) {
+		if (myNameList.indexOf(owner[1]) > -1)
+			var color = colorYOU;
+		else {
+			if (pet1.indexOf(name) > -1)
+				var color = colorPet1;
+			else if (pet2.indexOf(name) > -1)
+				var color = colorPet2;
+			else if (pet3.indexOf(name) > -1)
+				var color = colorPet3
+		}
+	} else {
+		if (dps1.indexOf(job) > -1) {
+			var color = colorDps1
+		} else if (dps2.indexOf(job) > -1) {
+			var color = colorDps2
+		} else if (dps3.indexOf(job) > -1) {
+			var color = colorDps3
+		} else if (dps4.indexOf(job) > -1) {
+			var color = colorDps4
+		} else if (dps5.indexOf(job) > -1) {
+			var color = colorDps5
+		} else if (dps6.indexOf(job) > -1) {
+			var color = colorDps6
+		} else if (dps7.indexOf(job) > -1) {
+			var color = colorDps7
+		} else if (tank1.indexOf(job) > -1) {
+			var color = colorTank1
+		} else if (tank2.indexOf(job) > -1) {
+			var color = colorTank2
+		} else if (tank3.indexOf(job) > -1) {
+			var color = colorTank3
+		} else if (healer1.indexOf(job) > -1) {
+			var color = colorHeal1
+		} else if (healer2.indexOf(job) > -1) {
+			var color = colorHeal2
+		} else if (healer3.indexOf(job) > -1) {
+			var color = colorHeal3
+		} else if (pet1.indexOf(name) > -1) {
+			var color = colorPet1
+		} else if (pet2.indexOf(name) > -1) {
+			var color = colorPet2
+		} else if (pet3.indexOf(name) > -1) {
+			var color = colorPet3
+		} else if (name == "Chocobo") {
+			var color = colorChocobo
+		} else if (name == "Limit Break") {
+			var color = colorLimit
+		} else if (life.indexOf(job) > -1) {
+			var color = colorLife
+		}
+	}
+	return color
+}
+
+function saveEncounterData(data) {
+	var RHPS = 0;
+	var RDPS = 0;
+	for (var combatantName in data.Combatant) {
+		var combatant = data.Combatant[combatantName];
+		if (combatant.enchps == '∞' || combatant.enchps == '---' || combatant.enchps == 'NaN' || combatant.enchps == '')
+			combatant.enchps = 0;
+		RHPS += parseFloat(combatant.enchps);
+	}
+	if (data.Encounter.dps == '∞' || data.Encounter.dps == '---' || data.Encounter.dps == 'NaN' || data.Encounter.dps == '')
+		RDPS = parseFloat(0);
+	else RDPS = parseFloat(data.Encounter.dps);
+	if (data.Encounter.title != 'Encounter') {
+		if (EncountersArray.length == 0) {
+			EncountersArray.push({
+				Data: data,
+				Name: data.Encounter.title,
+				Time: data.Encounter.duration,
+				RDPS: RDPS,
+				RHPS: RHPS,
+				Zone: data.Encounter.CurrentZoneName,
+				Points: points,
+				idx: EncountersArrayIndex
+			})
+		} else {
+			EncountersArray[EncountersArray.length - 1].Data = data;
+			EncountersArray[EncountersArray.length - 1].Name = data.Encounter.title;
+			EncountersArray[EncountersArray.length - 1].Time = data.Encounter.duration;
+			EncountersArray[EncountersArray.length - 1].RDPS = RDPS;
+			EncountersArray[EncountersArray.length - 1].RHPS = RHPS;
+			EncountersArray[EncountersArray.length - 1].Zone = data.Encounter.CurrentZoneName;
+			EncountersArray[EncountersArray.length - 1].Points = points;
+			EncountersArray[EncountersArray.length - 1].idx = EncountersArrayIndex;
+			if (EncountersArray.length >= 2) {
+				if (EncountersArray[EncountersArray.length - 1].Zone != EncountersArray[EncountersArray.length - 2].Zone) {
+					EncountersArrayIndex = 1;
+					EncountersArray[EncountersArray.length - 1].idx = EncountersArrayIndex
+				} else {
+					EncountersArrayIndex++;
+					EncountersArray[EncountersArray.length - 1].idx = EncountersArrayIndex
+				}
+			}
+		}
+		nowPoints = points;
+		nowData = data;
+		initFlag = !0;
+		createArr = !0
+	} else {
+		if (createArr == !0) {
+			EncountersArray.push({
+				Data: data,
+				Name: data.Encounter.title,
+				Time: data.Encounter.duration,
+				RDPS: RDPS,
+				RHPS: RHPS,
+				Zone: data.Encounter.CurrentZoneName,
+				Points: points,
+				idx: '-'
+			});
+			createArr = !1
+		} else {
+			EncountersArray[EncountersArray.length - 1].Data = data;
+			EncountersArray[EncountersArray.length - 1].Name = data.Encounter.title;
+			EncountersArray[EncountersArray.length - 1].Time = data.Encounter.duration;
+			EncountersArray[EncountersArray.length - 1].RDPS = RDPS;
+			EncountersArray[EncountersArray.length - 1].RHPS = RHPS;
+			EncountersArray[EncountersArray.length - 1].Zone = data.Encounter.CurrentZoneName;
+			EncountersArray[EncountersArray.length - 1].Points = points;
+			EncountersArray[EncountersArray.length - 1].idx = '-'
+		}
+		nowData = data;
+		nowPoints = points
+	}
+	if (EncountersArray.length > 15) {
+		EncountersArray.shift()
+	}
+}
+
+function inputHistoryData() {
+	var header = new Array();
+	header[1] = 'View';
+	header[2] = 'Name';
+	header[4] = 'Time';
+	header[5] = 'RDPS';
+	header[21] = 'RHPS';
+	header[22] = 'Count';
+	var colData = [1, 2, 4, 5, 21, 22];
+	var encData = new Array();
+	for (var i = 0; i < EncountersArray.length; i++) {
+		encData[i] = new Array();
+		if (i == 0) {
+			encData[i][1] = EncountersArray[i].Name;
+			encData[i][2] = EncountersArray[i].Time;
+			encData[i][3] = formatNumberDPS(EncountersArray[i].RDPS);
+			encData[i][4] = formatNumberDPS(EncountersArray[i].RHPS);
+			encData[i][5] = EncountersArray[i].idx;
+			encData[i][6] = EncountersArray[i].Zone;
+			encData[i][7] = EncountersArray[i].Points
+		} else {
+			encData[i][1] = EncountersArray[i].Name;
+			encData[i][2] = EncountersArray[i].Time;
+			encData[i][3] = formatNumberDPS(EncountersArray[i].RDPS);
+			encData[i][4] = formatNumberDPS(EncountersArray[i].RHPS);
+			encData[i][5] = EncountersArray[i].idx;
+			if (EncountersArray[i - 1].Zone != EncountersArray[i].Zone) {
+				encData[i][6] = EncountersArray[i].Zone
+			} else {
+				encData[i][6] = ""
+			}
+			encData[i][7] = EncountersArray[i].Points
+		}
+	}
+	if (RowClick == 0)
+		RowNum = encData.length - 1;
+	inputHeaderData(colData, header);
+	inputEncContentsData(colData, encData);
+	dpiAddClass(dpiFlag);
+	cellWidthClass(cellWidthFlag);
+	dpsCellWidthClass(numberFlag);
+	opacity(opacityFlag);
+	callTooltipHeader()
+}
+
+function callLanguageData() {
+	$(function() {
+		$.ajax({
+			type: 'get',
+			url: 'https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/language.xml',
+			dataType: 'xml',
+			success: function(data) {
+				$(data).find('word').each(function() {
+					var eng = $(this).find('eng').text();
+					var kor = $(this).find('kor').text();
+					languageList[eng] = kor
+				});
+				var memo = new Array();
+				$(data).find('notice').each(function() {
+					var noticeText = $(this).find('ver').text();
+					var num = $(this).find('num').text();
+					memo[num] = "<li>" + noticeText + "</li>"
+				});
+				start = "<div id='news-container'><ul>";
+				end = "</ul></div>";
+				for (var i = 0; i < memo.length; i++)
+					notice += memo[i];
+				notice = start + notice + end;
+				if (tabFlag == 4 && modeFlag == 2) $('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.");
+				else $('.mobList').html(notice)
+			},
+			error: function(err) {
+				notice = "<div id='news-container'><ul><li>[알림] 번역 데이터 수신에 실패했습니다.</li><li>잠시 후에 다시 시도해주시기 바랍니다.</li><li>이용에 불편을 드려 죄송합니다. T^T</li></ul></div";
+				$('.mobList').html(notice);
+				updateStart = 1;
+				if (nowData != 0) update(nowData)
+			},
+			complete: function() {
+				if (tabFlag != 4 && modeFlag != 2) rolling();
+				updateStart = 1;
+				if (nowData != 0) update(nowData)
+			}
+		})
+	})
+}
+document.addEventListener("onOverlayDataUpdate", function(e) {
+	RowClick = 0;
+  var data = new Combatant(e);
+	if (updateStart == 1) {
+		saveEncounterData(data);
+		update(data)
+	} else {
+		nowData = data;
+		saveEncounterData(data)
+	}
+});
+window.addEventListener("message", function(e) {
+	if (e.data.type === "onOverlayDataUpdate") {
+		RowClick = 0;
+    var data = new Combatant(e.data);
+		if (updateStart == 1) {
+			saveEncounterData(data);
+			update(data)
+		} else {
+			nowData = data;
+			saveEncounterData(data)
+		}
+	}
+});
+
+function update(data) {
+	if (rollingFlag == !0) {
+		$('#news-container').vTicker('remove');
+		rollingFlag = !1
+	}
+	if (blockFlag == 1) $("#tableContents").removeClass('hidden');
+	if (initFlag == !0)
+		oldGraphSize = new Array();
+	$(document).scrollTop(0);
+	updateEncounter(data);
+	updateCombatantData(data);
+	if (initFlag == !0) {
+		points = new Array();
+		oldGraphSize = new Array();
+		initFlag = !1
+	}
+	if (editFlag == 2) CustomBtn();
+	dpiAddClass(dpiFlag);
+	cellWidthClass(cellWidthFlag);
+	dpsCellWidthClass(numberFlag);
+	opacity(opacityFlag);
+	callTooltipHeader();
+	viewName(data);
+	if (historyOnFlag != 0) {
+		$("#toggle-mainMenu").attr('checked', !1);
+		$('#nav-icon').removeClass('open');
+		historyOnFlag = 0
+	}
+	if (tabFlag == 4 && modeFlag == 2) {
+		$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.")
+	}
+	if (menuFlag == 1) {
+		$('.mobList').text("HAERUSKIN REBOOT TABS & SETTINGS")
+	}
+	if (opacityFlag == 1) $("#headerRows").css("background", 'rgba(0,0,0,0.2)');
+	else if (opacityFlag == 2) $("#headerRows").css("background", 'rgba(0,0,0,0.45)');
+	else if (opacityFlag == 3) $("#headerRows").css("background", 'rgba(0,0,0,0.7)');
+	else if (opacityFlag == 4) $("#headerRows").css("background", 'rgba(0,0,0,0.95)');
+	else $("#headerRows").css("background", 'rgba(0,0,0,1)')
+}
+
+function updateEncounter(data) {
+	var RHPS = 0;
+	var RDPS = 0;
+	for (var combatantName in data.Combatant) {
+		var combatant = data.Combatant[combatantName];
+		if (combatant.enchps == '∞' || combatant.enchps == '---' || combatant.enchps == 'NaN' || combatant.enchps == '')
+			combatant.enchps = 0;
+		RHPS += parseFloat(combatant.enchps);
+	}
+	if (data.Encounter.dps == '∞' || data.Encounter.dps == '---' || data.Encounter.dps == 'NaN' || data.Encounter.dps == '')
+		RDPS = parseFloat(0);
+	else RDPS = parseFloat(data.Encounter.dps);
+	$(document).ready(function() {
+		$('.mobList').text('[' + data.Encounter.duration + ']' + ' ' + data.Encounter.title + ' ' + '( ' + formatNumberDPS(RDPS) + ' / ' + formatNumberDPS(RHPS) + ' )')
+	})
+}
+
+function getName(combatant) {
+	if (combatant.Job === "") {
+		var owner = combatant.name.match(/[(](.+)[)]/);
+		if (owner !== null) {
+			if (combatant.ownerName != "YOU")
+				combatant.ownerName = owner[1]
+		}
+	}
+	return combatant
+}
+
+function updateCombatantData(data) {
+	var combatantData = new Array();
+	var combatantIndex = 0;
+	var allDamage = 0;
+	var allHealed = 0;
+	for (var combatantName in data.Combatant) {
+		var combatant = data.Combatant[combatantName];
+		allDamage += parseInt(combatant.damage);
+		allHealed += parseInt(combatant.healed);
+	}
+	for (var combatantName in data.Combatant) {
+		var combatant = getName(data.Combatant[combatantName]);
+		if (combatantName.search("요정 에오스") != -1) {
+			var combatantName = 'Eos'
+		} else if (combatantName.search("가루다 에기") != -1) {
+			var combatantName = 'Garuda'
+		} else if (combatantName.search("타이탄 에기") != -1) {
+			var combatantName = 'Titan'
+		} else if (combatantName.search("이프리트 에기") != -1) {
+			var combatantName = 'Ifrit'
+		} else if (combatantName.search("요정 셀레네") != -1) {
+			var combatantName = 'Selene'
+		} else if (combatantName.search("카벙클 에메랄드") != -1) {
+			var combatantName = 'emerald'
+		} else if (combatantName.search("카벙클 토파즈") != -1) {
+			var combatantName = 'topaz'
+		} else if (combatantName.search("자동포탑 룩") != -1) {
+			var combatantName = 'Look'
+		} else if (combatantName.search("자동포탑 비숍") != -1) {
+			var combatantName = 'Bishop'
+		} else if (combatantName.search("리미트 브레이크") != -1) {
+			var combatantName = 'Limit Break'
+		} else if (combatantName.search("Limit Break") != -1) {
+			var combatantName = 'Limit Break'
+		} else if (combatantName.search(/\)$/) != -1) {
+			var combatantName = 'Chocobo'
+		} else if (combatantName.search("Eos") != -1) {
+			var combatantName = 'Eos'
+		} else if (combatantName.search("Garuda-Egi") != -1) {
+			var combatantName = 'Garuda'
+		} else if (combatantName.search("Titan-Egi") != -1) {
+			var combatantName = 'Titan'
+		} else if (combatantName.search("Ifrit-Egi") != -1) {
+			var combatantName = 'Ifrit'
+		} else if (combatantName.search("Selene") != -1) {
+			var combatantName = 'Selene'
+		} else if (combatantName.search("Emerald Carbuncle") != -1) {
+			var combatantName = 'emerald'
+		} else if (combatantName.search("Topaz Carbuncle") != -1) {
+			var combatantName = 'topaz'
+		} else if (combatantName.search("Rook Autoturret") != -1) {
+			var combatantName = 'Look'
+		} else if (combatantName.search("Bishop Autoturret") != -1) {
+			var combatantName = 'Bishop'
+		} else {
+			var combatantName = 'error'
+		}
+		combatant.JobOrName = combatant.Job || combatantName;
+		if (combatant.JobOrName != 'error') {
+			if (combatant.dps == '∞' || combatant.dps == '---' || combatant.dps == 'NaN' || combatant.dps == '')
+				combatant.dps = 0;
+			if (combatant.encdps == '∞' || combatant.encdps == '---' || combatant.encdps == 'NaN' || combatant.encdps == '')
+				combatant.encdps = 0;
+			if (combatant.enchps == '∞' || combatant.enchps == '---' || combatant.enchps == 'NaN' || combatant.enchps == '')
+				combatant.enchps = 0;
+			if (combatant.Last10DPS == '∞' || combatant.Last10DPS == '---' || combatant.Last10DPS == 'NaN' || combatant.Last10DPS == '')
+				combatant.Last10DPS = 0;
+			if (combatant.Last30DPS == '∞' || combatant.Last30DPS == '---' || combatant.Last30DPS == 'NaN' || combatant.Last30DPS == '')
+				combatant.Last30DPS = 0;
+			if (combatant.Last60DPS == '∞' || combatant.Last60DPS == '---' || combatant.Last60DPS == 'NaN' || combatant.Last60DPS == '')
+				combatant.Last60DPS = 0;
+			if (combatant['damage%'] == '--') combatant['damage%'] = 0 + '%';
+			if (combatant['healed%'] == '--') combatant['healed%'] = 0 + '%';
+			combatantData.push({
+				ownerName: combatant.ownerName,
+				JobOrName: combatant.JobOrName,
+				name: combatant.name,
+				dps: parseFloat(combatant.dps),
+				duration: combatant.duration,
+				encdps: parseFloat(combatant.encdps),
+				Last10DPS: parseInt(combatant.Last10DPS),
+				Last30DPS: parseInt(combatant.Last30DPS),
+				Last60DPS: parseInt(combatant.Last60DPS),
+				dper: combatant['damage%'],
+				damage: parseInt(combatant.damage),
+				tohit: combatant.tohit,
+				swings: parseInt(combatant.swings),
+				hits: parseInt(combatant.hits),
+				misses: parseInt(combatant.misses),
+				hitfailed: parseInt(combatant.hitfailed),
+				crithits: parseInt(combatant.crithits),
+				dcrit: combatant['crithit%'],
+				maxhit: combatant.maxhit,
+				damagetaken: parseInt(combatant.damagetaken),
+				healstaken: parseInt(combatant.healstaken),
+				powerheal: parseInt(combatant.powerheal),
+				ParryPct: combatant.ParryPct,
+				BlockPct: combatant.BlockPct,
+				enchps: parseFloat(combatant.enchps),
+				hper: combatant['healed%'],
+				healed: parseInt(combatant.healed),
+				OverHealPct: combatant.OverHealPct,
+				heals: parseInt(combatant.heals),
+				critheals: parseInt(combatant.critheals),
+				hcrit: combatant['critheal%'],
+				maxheal: combatant.maxheal,
+				cures: parseInt(combatant.cures),
+				deaths: parseInt(combatant.deaths)
+			});
+			if (combatantData[combatantIndex].OverHealPct == undefined)
+				combatantData[combatantIndex].OverHealPct = 0 + '%';
+			if (combatantData[combatantIndex].damage == 0 && allDamage == 0) combatantData[combatantIndex].dper = 0;
+			else combatantData[combatantIndex].dper = (combatantData[combatantIndex].damage / allDamage) * 100;
+			if (combatantData[combatantIndex].hits == 0 && combatantData[combatantIndex].swings == 0) combatantData[combatantIndex].tohit = 0;
+			else combatantData[combatantIndex].tohit = (combatantData[combatantIndex].hits / combatantData[combatantIndex].swings) * 100;
+			if (combatantData[combatantIndex].crithits == 0 && combatantData[combatantIndex].hits == 0) combatantData[combatantIndex].dcrit = 0;
+			else combatantData[combatantIndex].dcrit = (combatantData[combatantIndex].crithits / combatantData[combatantIndex].hits) * 100;
+			if (combatantData[combatantIndex].healed == 0 && allHealed == 0) combatantData[combatantIndex].hper = 0;
+			else combatantData[combatantIndex].hper = (combatantData[combatantIndex].healed / allHealed) * 100;
+			if (combatantData[combatantIndex].critheals == 0 && combatantData[combatantIndex].heals == 0) combatantData[combatantIndex].hcrit = 0;
+			else combatantData[combatantIndex].hcrit = (combatantData[combatantIndex].critheals / combatantData[combatantIndex].heals) * 100;
+			combatantIndex++
+		}
+	}
+	addPetData(combatantData, combatantIndex, allDamage, allHealed)
+}
+
+function addPetData(combatantData, combatantIndex, allDamage, allHealed) {
+	var jobList = ["Acn", "Smn", "Sch", "Mch"]
+	var addPetCombatantData = new Array();
+	var me;
+	for (var i = 0; i < combatantIndex; i++) {
+		if (combatantData[i].name == "YOU")
+			me = i;
+		if (jobList.indexOf(combatantData[i].JobOrName) > -1) {
+			var userName = combatantData[i].name;
+			for (var j = 0; j < combatantIndex; j++) {
+				var petName = combatantData[j].ownerName;
+				if (userName == petName) {
+					if (addPetCombatantData[userName] == undefined) {
+						combatantData[j].ownerName = undefined;
+						addPetCombatantData[userName] = new Array();
+						addPetCombatantData[userName][0] = petName;
+						addPetCombatantData[userName][1] = combatantData[i].JobOrName;
+						addPetCombatantData[userName][2] = userName;
+						addPetCombatantData[userName][3] = combatantData[i].dps + combatantData[j].encdps;
+						addPetCombatantData[userName][4] = combatantData[i].duration;
+						addPetCombatantData[userName][5] = combatantData[i].encdps + combatantData[j].encdps;
+						addPetCombatantData[userName][6] = combatantData[i].Last10DPS + combatantData[j].Last10DPS;
+						addPetCombatantData[userName][7] = combatantData[i].Last30DPS + combatantData[j].Last30DPS;
+						addPetCombatantData[userName][8] = combatantData[i].Last60DPS + combatantData[j].Last60DPS;
+						addPetCombatantData[userName][10] = combatantData[i].damage + combatantData[j].damage;
+						if (addPetCombatantData[userName][10] == 0 && allDamage == 0) addPetCombatantData[userName][9] = 0;
+						else addPetCombatantData[userName][9] = (addPetCombatantData[userName][10] / allDamage) * 100;
+						addPetCombatantData[userName][12] = combatantData[i].swings + combatantData[j].swings;
+						addPetCombatantData[userName][13] = combatantData[i].hits + combatantData[j].hits;
+						if (addPetCombatantData[userName][13] == 0 && addPetCombatantData[userName][12] == 0) addPetCombatantData[userName][11] = 0;
+						else addPetCombatantData[userName][11] = (addPetCombatantData[userName][13] / addPetCombatantData[userName][12]) * 100;
+						addPetCombatantData[userName][14] = combatantData[i].misses + combatantData[j].misses;
+						addPetCombatantData[userName][15] = combatantData[i].hitfailed + combatantData[j].hitfailed;
+						addPetCombatantData[userName][16] = combatantData[i].crithits + combatantData[j].crithits;
+						if (addPetCombatantData[userName][16] == 0 && addPetCombatantData[userName][13] == 0) addPetCombatantData[userName][17] = 0;
+						else addPetCombatantData[userName][17] = (addPetCombatantData[userName][16] / addPetCombatantData[userName][13]) * 100;
+						var userHit = combatantData[i].maxhit.split("-");
+						if (userHit[1] == undefined) userHit[1] = parseInt(0);
+						var PetHit = combatantData[j].maxhit.split("-");
+						if (PetHit[1] == undefined) PetHit[1] = parseInt(0);
+						if (userHit[1] == 0 && PetHit[1] == 0)
+							addPetCombatantData[userName][18] = "";
+						else addPetCombatantData[userName][18] = (parseInt(delComma(userHit[1])) > parseInt(delComma(PetHit[1]))) ? userHit[0] + "-" + userHit[1] : PetHit[0] + "-" + PetHit[1];
+						addPetCombatantData[userName][19] = combatantData[i].damagetaken;
+						addPetCombatantData[userName][20] = combatantData[i].healstaken;
+						addPetCombatantData[userName][21] = combatantData[i].powerheal + combatantData[j].powerheal;
+						addPetCombatantData[userName][22] = combatantData[i].ParryPct;
+						addPetCombatantData[userName][23] = combatantData[i].BlockPct;
+						addPetCombatantData[userName][24] = combatantData[i].enchps + combatantData[j].enchps;
+						addPetCombatantData[userName][26] = combatantData[i].healed + combatantData[j].healed;
+						if (addPetCombatantData[userName][26] == 0 && allHealed == 0) addPetCombatantData[userName][25] = 0;
+						else addPetCombatantData[userName][25] = (addPetCombatantData[userName][26] / allHealed) * 100;
+						addPetCombatantData[userName][27] = combatantData[i].OverHealPct;
+						addPetCombatantData[userName][28] = combatantData[i].heals + combatantData[j].heals;
+						addPetCombatantData[userName][29] = combatantData[i].critheals + combatantData[j].critheals;
+						if (addPetCombatantData[userName][29] == 0 && addPetCombatantData[userName][28] == 0) addPetCombatantData[userName][30] = 0;
+						else addPetCombatantData[userName][30] = (addPetCombatantData[userName][29] / addPetCombatantData[userName][28]) * 100;
+						var userHeal = combatantData[i].maxheal.split("-");
+						if (userHeal[1] == undefined) userHeal[1] = parseInt(0);
+						var PetHeal = combatantData[j].maxheal.split("-");
+						if (PetHeal[1] == undefined) PetHeal[1] = parseInt(0);
+						if (userHeal[1] == 0 && PetHeal[1] == 0)
+							addPetCombatantData[userName][31] = "";
+						else addPetCombatantData[userName][31] = (parseInt(delComma(userHeal[1])) > parseInt(delComma(PetHeal[1]))) ? userHeal[0] + "-" + userHeal[1] : PetHeal[0] + "-" + PetHeal[1];
+						addPetCombatantData[userName][32] = combatantData[i].cures + combatantData[j].cures;
+						addPetCombatantData[userName][33] = combatantData[i].deaths
+					} else {
+						combatantData[j].ownerName = undefined;
+						addPetCombatantData[userName][3] += combatantData[j].encdps;
+						addPetCombatantData[userName][5] += combatantData[j].encdps;
+						addPetCombatantData[userName][6] += combatantData[j].Last10DPS;
+						addPetCombatantData[userName][7] += combatantData[j].Last30DPS;
+						addPetCombatantData[userName][8] += combatantData[j].Last60DPS;
+						addPetCombatantData[userName][10] += combatantData[j].damage;
+						if (addPetCombatantData[userName][10] == 0 && allDamage == 0) addPetCombatantData[userName][9] = 0;
+						else addPetCombatantData[userName][9] = (addPetCombatantData[userName][10] / allDamage) * 100;
+						addPetCombatantData[userName][12] += combatantData[j].swings;
+						addPetCombatantData[userName][13] += combatantData[j].hits;
+						if (addPetCombatantData[userName][13] == 0 && addPetCombatantData[userName][12] == 0) addPetCombatantData[userName][11] = 0;
+						else addPetCombatantData[userName][11] = (addPetCombatantData[userName][13] / addPetCombatantData[userName][12]) * 100;
+						addPetCombatantData[userName][14] += combatantData[j].misses;
+						addPetCombatantData[userName][15] += combatantData[j].hitfailed;
+						addPetCombatantData[userName][16] += combatantData[j].crithits;
+						if (addPetCombatantData[userName][16] == 0 && addPetCombatantData[userName][13] == 0) addPetCombatantData[userName][17] = 0;
+						else addPetCombatantData[userName][17] = (addPetCombatantData[userName][16] / addPetCombatantData[userName][13]) * 100;
+						var userHit = combatantData[i].maxhit.split("-");
+						if (userHit[1] == undefined) userHit[1] = parseInt(0);
+						var PetHit = combatantData[j].maxhit.split("-");
+						if (PetHit[1] == undefined) PetHit[1] = parseInt(0);
+						if (userHit[1] == 0 && PetHit[1] == 0)
+							addPetCombatantData[userName][18] = "";
+						else addPetCombatantData[userName][18] = (parseInt(delComma(userHit[1])) > parseInt(delComma(PetHit[1]))) ? userHit[0] + "-" + userHit[1] : PetHit[0] + "-" + PetHit[1];
+						addPetCombatantData[userName][21] += combatantData[j].powerheal;
+						addPetCombatantData[userName][24] += combatantData[j].enchps;
+						addPetCombatantData[userName][26] += combatantData[j].healed;
+						if (addPetCombatantData[userName][26] == 0 && allHealed == 0) addPetCombatantData[userName][25] = 0;
+						else addPetCombatantData[userName][25] = (addPetCombatantData[userName][26] / allHealed) * 100;
+						addPetCombatantData[userName][28] += combatantData[j].heals;
+						addPetCombatantData[userName][29] += combatantData[j].critheals;
+						if (addPetCombatantData[userName][29] == 0 && addPetCombatantData[userName][28] == 0) addPetCombatantData[userName][30] = 0;
+						else addPetCombatantData[userName][30] = (addPetCombatantData[userName][29] / addPetCombatantData[userName][28]) * 100;
+						var userHeal = combatantData[i].maxheal.split("-");
+						if (userHeal[1] == undefined) userHeal[1] = parseInt(0);
+						var PetHeal = combatantData[j].maxheal.split("-");
+						if (PetHeal[1] == undefined) PetHeal[1] = parseInt(0);
+						if (userHeal[1] == 0 && PetHeal[1] == 0)
+							addPetCombatantData[userName][31] = "";
+						else addPetCombatantData[userName][31] = (parseInt(delComma(userHeal[1])) > parseInt(delComma(PetHeal[1]))) ? userHeal[0] + "-" + userHeal[1] : PetHeal[0] + "-" + PetHeal[1];
+						addPetCombatantData[userName][32] += combatantData[j].cures
+					}
+				}
+			}
+		}
+	}
+	for (var j = 0; j < combatantIndex; j++) {
+		var userName = "YOU";
+		var petName = combatantData[j].ownerName;
+		if (petName != undefined) {
+			if (addPetCombatantData[userName] == undefined) {
+				combatantData[j].ownerName = undefined;
+				addPetCombatantData[userName] = new Array();
+				addPetCombatantData[userName][0] = "YOU";
+				addPetCombatantData[userName][1] = combatantData[me].JobOrName;
+				addPetCombatantData[userName][2] = userName;
+				addPetCombatantData[userName][3] = combatantData[me].dps + combatantData[j].encdps;
+				addPetCombatantData[userName][4] = combatantData[me].duration;
+				addPetCombatantData[userName][5] = combatantData[me].encdps + combatantData[j].encdps;
+				addPetCombatantData[userName][6] = combatantData[me].Last10DPS + combatantData[j].Last10DPS;
+				addPetCombatantData[userName][7] = combatantData[me].Last30DPS + combatantData[j].Last30DPS;
+				addPetCombatantData[userName][8] = combatantData[me].Last60DPS + combatantData[j].Last60DPS;
+				addPetCombatantData[userName][10] = combatantData[me].damage + combatantData[j].damage;
+				if (addPetCombatantData[userName][10] == 0 && allDamage == 0) addPetCombatantData[userName][9] = 0;
+				else addPetCombatantData[userName][9] = (addPetCombatantData[userName][10] / allDamage) * 100;
+				addPetCombatantData[userName][12] = combatantData[me].swings + combatantData[j].swings;
+				addPetCombatantData[userName][13] = combatantData[me].hits + combatantData[j].hits;
+				if (addPetCombatantData[userName][13] == 0 && addPetCombatantData[userName][12] == 0) addPetCombatantData[userName][11] = 0;
+				else addPetCombatantData[userName][11] = (addPetCombatantData[userName][13] / addPetCombatantData[userName][12]) * 100;
+				addPetCombatantData[userName][14] = combatantData[me].misses + combatantData[j].misses;
+				addPetCombatantData[userName][15] = combatantData[me].hitfailed + combatantData[j].hitfailed;
+				addPetCombatantData[userName][16] = combatantData[me].crithits + combatantData[j].crithits;
+				if (addPetCombatantData[userName][16] == 0 && addPetCombatantData[userName][13] == 0) addPetCombatantData[userName][17] = 0;
+				else addPetCombatantData[userName][17] = (addPetCombatantData[userName][16] / addPetCombatantData[userName][13]) * 100;
+				var userHit = combatantData[me].maxhit.split("-");
+				if (userHit[1] == undefined) userHit[1] = parseInt(0);
+				var PetHit = combatantData[j].maxhit.split("-");
+				if (PetHit[1] == undefined) PetHit[1] = parseInt(0);
+				if (userHit[1] == 0 && PetHit[1] == 0)
+					addPetCombatantData[userName][18] = "";
+				else addPetCombatantData[userName][18] = (parseInt(delComma(userHit[1])) > parseInt(delComma(PetHit[1]))) ? userHit[0] + "-" + userHit[1] : PetHit[0] + "-" + PetHit[1];
+				addPetCombatantData[userName][19] = combatantData[me].damagetaken;
+				addPetCombatantData[userName][20] = combatantData[me].healstaken;
+				addPetCombatantData[userName][21] = combatantData[me].powerheal + combatantData[j].powerheal;
+				addPetCombatantData[userName][22] = combatantData[me].ParryPct;
+				addPetCombatantData[userName][23] = combatantData[me].BlockPct;
+				addPetCombatantData[userName][24] = combatantData[me].enchps + combatantData[j].enchps;
+				addPetCombatantData[userName][26] = combatantData[me].healed + combatantData[j].healed;
+				if (addPetCombatantData[userName][26] == 0 && allHealed == 0) addPetCombatantData[userName][25] = 0;
+				else addPetCombatantData[userName][25] = (addPetCombatantData[userName][26] / allHealed) * 100;
+				addPetCombatantData[userName][27] = combatantData[me].OverHealPct;
+				addPetCombatantData[userName][28] = combatantData[me].heals + combatantData[j].heals;
+				addPetCombatantData[userName][29] = combatantData[me].critheals + combatantData[j].critheals;
+				if (addPetCombatantData[userName][29] == 0 && addPetCombatantData[userName][28] == 0) addPetCombatantData[userName][30] = 0;
+				else addPetCombatantData[userName][30] = (addPetCombatantData[userName][29] / addPetCombatantData[userName][28]) * 100;
+				var userHeal = combatantData[me].maxheal.split("-");
+				if (userHeal[1] == undefined) userHeal[1] = parseInt(0);
+				var PetHeal = combatantData[j].maxheal.split("-");
+				if (PetHeal[1] == undefined) PetHeal[1] = parseInt(0);
+				if (userHeal[1] == 0 && PetHeal[1] == 0)
+					addPetCombatantData[userName][31] = "";
+				else addPetCombatantData[userName][31] = (parseInt(delComma(userHeal[1])) > parseInt(delComma(PetHeal[1]))) ? userHeal[0] + "-" + userHeal[1] : PetHeal[0] + "-" + PetHeal[1];
+				addPetCombatantData[userName][32] = combatantData[me].cures + combatantData[j].cures;
+				addPetCombatantData[userName][33] = combatantData[me].deaths
+			} else {
+				combatantData[j].ownerName = undefined;
+				addPetCombatantData[userName][3] += combatantData[j].encdps;
+				addPetCombatantData[userName][5] += combatantData[j].encdps;
+				addPetCombatantData[userName][6] += combatantData[j].Last10DPS;
+				addPetCombatantData[userName][7] += combatantData[j].Last30DPS;
+				addPetCombatantData[userName][8] += combatantData[j].Last60DPS;
+				addPetCombatantData[userName][10] += combatantData[j].damage;
+				if (addPetCombatantData[userName][10] == 0 && allDamage == 0) addPetCombatantData[userName][9] = 0;
+				else addPetCombatantData[userName][9] = (addPetCombatantData[userName][10] / allDamage) * 100;
+				addPetCombatantData[userName][12] += combatantData[j].swings;
+				addPetCombatantData[userName][13] += combatantData[j].hits;
+				if (addPetCombatantData[userName][13] == 0 && addPetCombatantData[userName][12] == 0) addPetCombatantData[userName][11] = 0;
+				else addPetCombatantData[userName][11] = (addPetCombatantData[userName][13] / addPetCombatantData[userName][12]) * 100;
+				addPetCombatantData[userName][14] += combatantData[j].misses;
+				addPetCombatantData[userName][15] += combatantData[j].hitfailed;
+				addPetCombatantData[userName][16] += combatantData[j].crithits;
+				if (addPetCombatantData[userName][16] == 0 && addPetCombatantData[userName][13] == 0) addPetCombatantData[userName][17] = 0;
+				else addPetCombatantData[userName][17] = (addPetCombatantData[userName][16] / addPetCombatantData[userName][13]) * 100;
+				var userHit = combatantData[me].maxhit.split("-");
+				if (userHit[1] == undefined) userHit[1] = parseInt(0);
+				var PetHit = combatantData[j].maxhit.split("-");
+				if (PetHit[1] == undefined) PetHit[1] = parseInt(0);
+				if (userHit[1] == 0 && PetHit[1] == 0)
+					addPetCombatantData[userName][18] = "";
+				else addPetCombatantData[userName][18] = (parseInt(delComma(userHit[1])) > parseInt(delComma(PetHit[1]))) ? userHit[0] + "-" + userHit[1] : PetHit[0] + "-" + PetHit[1];
+				addPetCombatantData[userName][21] += combatantData[j].powerheal;
+				addPetCombatantData[userName][24] += combatantData[j].enchps;
+				addPetCombatantData[userName][26] += combatantData[j].healed;
+				if (addPetCombatantData[userName][26] == 0 && allHealed == 0) addPetCombatantData[userName][25] = 0;
+				else addPetCombatantData[userName][25] = (addPetCombatantData[userName][26] / allHealed) * 100;
+				addPetCombatantData[userName][28] += combatantData[j].heals;
+				addPetCombatantData[userName][29] += combatantData[j].critheals;
+				if (addPetCombatantData[userName][29] == 0 && addPetCombatantData[userName][28] == 0) addPetCombatantData[userName][30] = 0;
+				else addPetCombatantData[userName][30] = (addPetCombatantData[userName][29] / addPetCombatantData[userName][28]) * 100;
+				var userHeal = combatantData[me].maxheal.split("-");
+				if (userHeal[1] == undefined) userHeal[1] = parseInt(0);
+				var PetHeal = combatantData[j].maxheal.split("-");
+				if (PetHeal[1] == undefined) PetHeal[1] = parseInt(0);
+				if (userHeal[1] == 0 && PetHeal[1] == 0)
+					addPetCombatantData[userName][31] = "";
+				else addPetCombatantData[userName][31] = (parseInt(delComma(userHeal[1])) > parseInt(delComma(PetHeal[1]))) ? userHeal[0] + "-" + userHeal[1] : PetHeal[0] + "-" + PetHeal[1];
+				addPetCombatantData[userName][32] += combatantData[j].cures
+			}
+		}
+	}
+	inputData(combatantData, addPetCombatantData, combatantIndex)
+}
+
+function inputData(combatantData, addPetCombatantData, combatantIndex) {
+	var petList = ["Eos", "Selene", "Garuda", "Ifrit", "Titan", "topaz", "emerald", "Look", "Bishop", "error"]
+	var jobList = ["Acn", "Smn", "Sch", "Mch"]
+	var FinalData = new Array();
+	var combatantCnt = 0;
+	if (petFlag == 1) {
+		for (var i = 0; i < combatantIndex; i++) {
+			var userName = combatantData[i].name;
+			if (jobList.indexOf(combatantData[i].JobOrName) > -1 && addPetCombatantData[userName] != undefined) {
+				FinalData[combatantCnt] = new Array();
+				for (var j = 0; j <= 33; j++)
+					FinalData[combatantCnt][j] = addPetCombatantData[userName][j];
+				combatantCnt++
+			} else if (petList.indexOf(combatantData[i].JobOrName) > -1) {} else {
+				FinalData[combatantCnt] = new Array();
+				FinalData[combatantCnt][0] = combatantData[i].ownerName;
+				FinalData[combatantCnt][1] = combatantData[i].JobOrName;
+				FinalData[combatantCnt][2] = combatantData[i].name;
+				FinalData[combatantCnt][3] = combatantData[i].dps;
+				FinalData[combatantCnt][4] = combatantData[i].duration;
+				FinalData[combatantCnt][5] = combatantData[i].encdps;
+				FinalData[combatantCnt][6] = combatantData[i].Last10DPS;
+				FinalData[combatantCnt][7] = combatantData[i].Last30DPS;
+				FinalData[combatantCnt][8] = combatantData[i].Last60DPS;
+				FinalData[combatantCnt][9] = combatantData[i].dper;
+				FinalData[combatantCnt][10] = combatantData[i].damage;
+				FinalData[combatantCnt][11] = combatantData[i].tohit;
+				FinalData[combatantCnt][12] = combatantData[i].swings;
+				FinalData[combatantCnt][13] = combatantData[i].hits;
+				FinalData[combatantCnt][14] = combatantData[i].misses;
+				FinalData[combatantCnt][15] = combatantData[i].hitfailed;
+				FinalData[combatantCnt][16] = combatantData[i].crithits;
+				FinalData[combatantCnt][17] = combatantData[i].dcrit;
+				FinalData[combatantCnt][18] = combatantData[i].maxhit;
+				FinalData[combatantCnt][19] = combatantData[i].damagetaken;
+				FinalData[combatantCnt][20] = combatantData[i].healstaken;
+				FinalData[combatantCnt][21] = combatantData[i].powerheal;
+				FinalData[combatantCnt][22] = combatantData[i].ParryPct;
+				FinalData[combatantCnt][23] = combatantData[i].BlockPct;
+				FinalData[combatantCnt][24] = combatantData[i].enchps;
+				FinalData[combatantCnt][25] = combatantData[i].hper;
+				FinalData[combatantCnt][26] = combatantData[i].healed;
+				FinalData[combatantCnt][27] = combatantData[i].OverHealPct;
+				FinalData[combatantCnt][28] = combatantData[i].heals;
+				FinalData[combatantCnt][29] = combatantData[i].critheals;
+				FinalData[combatantCnt][30] = combatantData[i].hcrit;
+				FinalData[combatantCnt][31] = combatantData[i].maxheal;
+				FinalData[combatantCnt][32] = combatantData[i].cures;
+				FinalData[combatantCnt][33] = combatantData[i].deaths;
+				combatantCnt++
+			}
+		}
+	} else {
+		for (var i = 0; i < combatantIndex; i++) {
+			FinalData[i] = new Array();
+			if (combatantData[i].ownerName == undefined) combatantData[i].ownerName = "YOU";
+			FinalData[i][0] = combatantData[i].ownerName;
+			FinalData[i][1] = combatantData[i].JobOrName;
+			FinalData[i][2] = combatantData[i].name;
+			FinalData[i][3] = combatantData[i].dps;
+			FinalData[i][4] = combatantData[i].duration;
+			FinalData[i][5] = combatantData[i].encdps;
+			FinalData[i][6] = combatantData[i].Last10DPS;
+			FinalData[i][7] = combatantData[i].Last30DPS;
+			FinalData[i][8] = combatantData[i].Last60DPS;
+			FinalData[i][9] = combatantData[i].dper;
+			FinalData[i][10] = combatantData[i].damage;
+			FinalData[i][11] = combatantData[i].tohit;
+			FinalData[i][12] = combatantData[i].swings;
+			FinalData[i][13] = combatantData[i].hits;
+			FinalData[i][14] = combatantData[i].misses;
+			FinalData[i][15] = combatantData[i].hitfailed;
+			FinalData[i][16] = combatantData[i].crithits;
+			FinalData[i][17] = combatantData[i].dcrit;
+			FinalData[i][18] = combatantData[i].maxhit;
+			FinalData[i][19] = combatantData[i].damagetaken;
+			FinalData[i][20] = combatantData[i].healstaken;
+			FinalData[i][21] = combatantData[i].powerheal;
+			FinalData[i][22] = combatantData[i].ParryPct;
+			FinalData[i][23] = combatantData[i].BlockPct;
+			FinalData[i][24] = combatantData[i].enchps;
+			FinalData[i][25] = combatantData[i].hper;
+			FinalData[i][26] = combatantData[i].healed;
+			FinalData[i][27] = combatantData[i].OverHealPct;
+			FinalData[i][28] = combatantData[i].heals;
+			FinalData[i][29] = combatantData[i].critheals;
+			FinalData[i][30] = combatantData[i].hcrit;
+			FinalData[i][31] = combatantData[i].maxheal;
+			FinalData[i][32] = combatantData[i].cures;
+			FinalData[i][33] = combatantData[i].deaths
+		}
+	}
+	sortData(FinalData)
+}
+
+function sortData(FinalData) {
+	if (tabFlag != 2) {
+		FinalData.sort(function descending(a, b) {
+			return (b[5] < a[5]) ? -1 : (b[5] == a[5]) ? 0 : 1
+		})
+	} else {
+		FinalData.sort(function descending(a, b) {
+			return (b[24] < a[24]) ? -1 : (b[24] == a[24]) ? 0 : 1
+		})
+	}
+	inputUnion(FinalData)
+}
+
+function inputUnion(FinalData) {
+	for (i = 0; i < FinalData.length; i++) {
+		FinalData[i][3] = formatNumberDPS(FinalData[i][3]);
+		FinalData[i][5] = formatNumberDPS(FinalData[i][5]);
+		FinalData[i][6] = formatNumberDPS_K(FinalData[i][6]);
+		FinalData[i][7] = formatNumberDPS_K(FinalData[i][7]);
+		FinalData[i][8] = formatNumberDPS_K(FinalData[i][8]);
+		FinalData[i][10] = formatNumberDMG(FinalData[i][10]);
+		FinalData[i][9] = formatNumberPER(FinalData[i][9]);
+		FinalData[i][11] = formatNumberPER(FinalData[i][11]);
+		FinalData[i][12] = formatNumberDMG(FinalData[i][12]);
+		FinalData[i][13] = formatNumberDMG(FinalData[i][13]);
+		FinalData[i][14] = formatNumberDMG(FinalData[i][14]);
+		FinalData[i][15] = formatNumberDMG(FinalData[i][15]);
+		FinalData[i][16] = formatNumberDMG(FinalData[i][16]);
+		FinalData[i][17] = formatNumberPER(FinalData[i][17]);
+		var maxHitIndex = FinalData[i][18].split("-");
+		if (maxHitIndex[1] == 'Bind' || maxHitIndex[1] == 'Disaster') {
+			FinalData[i][18] = languageList['Tri-' + maxHitIndex[1]] + ' - ' + maxHitIndex[2]
+		} else {
+			if (maxHitIndex[1] == undefined)
+				FinalData[i][18] = "";
+			else {
+				if (languageFlag == 1) {
+					if (languageList[maxHitIndex[0]] == undefined)
+						FinalData[i][18] = maxHitIndex[0] + ' - ' + maxHitIndex[1];
+					else FinalData[i][18] = languageList[maxHitIndex[0]] + ' - ' + maxHitIndex[1]
+				} else FinalData[i][18] = maxHitIndex[0] + ' - ' + maxHitIndex[1]
+			}
+		}
+		FinalData[i][19] = formatNumberDMG(FinalData[i][19]);
+		FinalData[i][20] = formatNumberDMG(FinalData[i][20]);
+		FinalData[i][21] = formatNumberDMG(FinalData[i][21]);
+		FinalData[i][24] = formatNumberDPS(FinalData[i][24]);
+		FinalData[i][25] = formatNumberPER(FinalData[i][25]);
+		FinalData[i][26] = formatNumberDMG(FinalData[i][26]);
+		FinalData[i][28] = formatNumberDMG(FinalData[i][28]);
+		FinalData[i][29] = formatNumberDMG(FinalData[i][29]);
+		FinalData[i][30] = formatNumberPER(FinalData[i][30]);
+		var maxHealIndex = FinalData[i][31].split("-");
+		if (maxHealIndex[1] == undefined)
+			FinalData[i][31] = "";
+		else {
+			if (languageFlag == 1) {
+				if (languageList[maxHealIndex[0]] == undefined)
+					FinalData[i][31] = maxHealIndex[0] + ' - ' + maxHealIndex[1];
+				else {
+					if (FinalData[i][1] == "Ast" && languageList[maxHealIndex[0]] == '리제네')
+						FinalData[i][31] = '별읽기: 베네피크' + ' - ' + maxHealIndex[1];
+					else if (FinalData[i][1] == "Nin" && languageList[maxHealIndex[0]] == 'Unknown')
+						FinalData[i][31] = '약탈' + ' - ' + maxHealIndex[1];
+					else FinalData[i][31] = languageList[maxHealIndex[0]] + ' - ' + maxHealIndex[1]
+				}
+			} else {
+				FinalData[i][31] = maxHealIndex[0] + ' - ' + maxHealIndex[1]
+			}
+		}
+		FinalData[i][32] = formatNumberDMG(FinalData[i][32]);
+		FinalData[i][33] = formatNumberDMG(FinalData[i][33])
+	}
+	inputTableData(FinalData)
+}
+
+function inputTableData(FinalData) {
+	var contents = new Array();
+	var header = new Array();
+	var headerKR = new Array();
+	header[1] = 'Job';
+	header[2] = 'Name';
+	header[3] = 'P.DPS';
+	header[4] = 'P.Time';
+	header[5] = 'DPS';
+	header[6] = 'Last10';
+	header[7] = 'Last30';
+	header[8] = 'Last60';
+	header[9] = 'D%';
+	header[10] = 'Damage';
+	header[11] = 'ACC';
+	header[12] = 'Swing';
+	header[13] = 'Hit';
+	header[14] = 'Miss';
+	header[15] = 'Avoid';
+	header[16] = 'D.Crit';
+	header[17] = 'D.CRIT';
+	header[18] = 'Max-Hit';
+	header[19] = 'D.Taken';
+	header[20] = 'H.Taken';
+	header[21] = 'Replenish';
+	header[22] = 'PARRY';
+	header[23] = 'BLOCK';
+	header[24] = 'HPS';
+	header[25] = 'H%';
+	header[26] = 'Healed';
+	header[27] = 'Ov.H';
+	header[28] = 'Heal';
+	header[29] = 'H.Crit';
+	header[30] = 'H.CRIT';
+	header[31] = 'Max-Heal';
+	header[32] = 'Dispel';
+	header[33] = 'Death';
+	headerKR[1] = '[01] Job : 클래스 또는 직업';
+	headerKR[2] = '[02] Name : 캐릭터 이름';
+	headerKR[3] = '[03] P.DPS : 초당 딜량 (P.Time 기준 / 소환수는 합산 시 DPS 적용)';
+	headerKR[4] = '[04] P.Time : 전투 로그 수집 시간 (내 첫 타격 기준)';
+	headerKR[5] = '[05] DPS : 초당 딜량 (Time 기준 / 공식)';
+	headerKR[6] = '[06] Last10 : 최근 10초간 평균 DPS';
+	headerKR[7] = '[07] Last30 : 최근 30초간 평균 DPS';
+	headerKR[8] = '[08] Last60 : 최근 60초간 평균 DPS';
+	headerKR[9] = '[09] D% : 총 딜량 중 내가 기여한 딜량 (%)';
+	headerKR[10] = '[10] Damage : 딜량';
+	headerKR[11] = '[11] ACC : 명중률 (%)';
+	headerKR[12] = '[12] Swing : 공격 스킬 시전 횟수 (도트, 자동 공격 포함)';
+	headerKR[13] = '[13] Hit : 공격 적중 횟수';
+	headerKR[14] = '[14] Miss : 공격 빗나감 횟수';
+	headerKR[15] = '[15] Avoid : 공격 실패 횟수 (적의 저항, 반사, 막기, 회피 등)';
+	headerKR[16] = '[16] D.Crit : 딜 극대화 횟수';
+	headerKR[17] = '[17] D.CRIT : 딜 극대화율 (%)';
+	headerKR[18] = '[18] Max-Hit : 최고 공격 스킬';
+	headerKR[19] = '[19] D.Taken : 받은 피해량 (소환수 합산 제외)';
+	headerKR[20] = '[20] H.Taken : 받은 힐량 (소환수 합산 제외)';
+	headerKR[21] = '[21] Replenish : 스킬을 통한 MP 보충량 (소환수 합산 제외)';
+	headerKR[22] = '[22] PARRY : (물리) 받아넘기기 발동률 (%, 소환수 합산 제외)';
+	headerKR[23] = '[23] BLOCK : (물리) 방패막기 발동률 (%, 소환수 합산 제외)';
+	headerKR[24] = '[24] HPS : 초당 힐량 (Time 기준 / 공식)';
+	headerKR[25] = '[25] H% : 총 힐량 중 내가 기여한 힐량 (%)';
+	headerKR[26] = '[26] Healed : 힐량';
+	headerKR[27] = '[27] Ov.H : 오버힐 (%, 소환수 합산 제외)';
+	headerKR[28] = '[28] Heal : 회복 스킬 시전 횟수 (도트 포함)';
+	headerKR[29] = '[29] H.Crit : 힐 극대화 횟수';
+	headerKR[30] = '[30] H.CRIT : 힐 극대화율 (%)';
+	headerKR[31] = '[31] Max-Heal : 최고 회복 스킬';
+	headerKR[32] = '[32] Dispel : 디버프 해제 스킬 시전 횟수';
+	headerKR[33] = '[33] Death : 죽음 횟수 (소환수 합산 제외)';
+	var maxDPS = 0;
+	var maxHPS = 0;
+	var healer = ["Cnj", "Whm", "Sch", "Ast", "Eos", "Selene"]
+	for (var i = 0; i < FinalData.length; i++) {
+		var tmpDPS = delComma(FinalData[i][5]);
+		var tmpHPS = delComma(FinalData[i][24]);
+		tmpDPS = Number(tmpDPS);
+		tmpHPS = Number(tmpHPS);
+		if (maxDPS < parseFloat(tmpDPS))
+			maxDPS = parseFloat(tmpDPS);
+		if (maxHPS < parseFloat(tmpHPS))
+			maxHPS = parseFloat(tmpHPS)
+	}
+	if (modeFlag == 2) {
+		var miniNode = document.createElement('div');
+		miniNode.id = 'miniWrapper';
+		if (tabFlag == 4) {
+			for (i = 1; i <= 33; i++) {
+				var miniRowNode = document.createElement('div');
+				miniRowNode.id = 'miniCombatantRow';
+				var Idx = headerKR[i].split(" : ");
+				var myDataInput = localStorage.getItem('myData' + i);
+				miniRowNode.innerHTML = "<span class='idxIcon' name = '" + i + "'><img src='https://rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/" + myDataInput + ".svg' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='idxName'>" + Idx[0] + "</span>" + "<span class='idxMean'>" + Idx[1] + "</span>";
+				miniNode.appendChild(miniRowNode);
+				var miniRowNode = document.createElement('div');
+				miniRowNode.id = 'miniBarRows';
+				miniRowNode.innerHTML = "<div class='bar' style='background:(0,0,0,0); width:0%;'></div>";
+				miniNode.appendChild(miniRowNode)
+			}
+		} else {
+			for (var i = 0; i < FinalData.length; i++) {
+				var bar = barInfo(FinalData, maxDPS, maxHPS, i, 0);
+				var miniRowNode = document.createElement('div');
+				if (FinalData[i][2] == "YOU" || FinalData[i][0] == "YOU")
+					miniRowNode.id = 'miniCombatantRowYOU';
+				else miniRowNode.id = 'miniCombatantRow';
+				var rank = i + 1;
+				if (tabFlag == 1) {
+					var tmpDMG = delComma(FinalData[i][10]);
+					tmpDMG = Number(tmpDMG);
+					if (i == 0) {
+						miniRowNode.innerHTML = "<span class='icon' rel='tooltipMini' title='전투 종료 후 아이콘 클릭 시<br>Name 숨기기/보이기 가능'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps' rel='tooltipMini' title='Damage (D% / D.CRIT) : DPS'><span class='data'>" + formatNumberDMG_K(tmpDMG) + ' (' + FinalData[i][9] + ' / ' + FinalData[i][17] + ')' + "</span>" + FinalData[i][5] + "</span>"
+					} else {
+						miniRowNode.innerHTML = "<span class='icon'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps'><span class='data'>" + formatNumberDMG_K(tmpDMG) + ' (' + FinalData[i][9] + ' / ' + FinalData[i][17] + ')' + "</span>" + FinalData[i][5] + "</span>"
+					}
+					miniNode.appendChild(miniRowNode);
+					var miniRowNode = document.createElement('div');
+					miniRowNode.id = 'miniBarRows';
+					if (oldGraphSize[bar[2]] == undefined) oldGraphSize[bar[2]] = 0 + '%';
+					miniRowNode.innerHTML = "<div class='bar' style='background:" + bar[1] + "; width:" + oldGraphSize[bar[2]] + ";'></div>";
+					miniRowNode.name = addslashes(bar[2]);
+					oldGraphSize[bar[2]] = bar[0];
+					miniNode.appendChild(miniRowNode)
+				} else if (tabFlag == 3) {
+					var tooltipMsg = header[myData1] + ' / ' + header[myData2] + ' / ' + header[myData3] + ' : ' + header[myData4];
+					if (myData1 == 10 || myData1 == 19 || myData1 == 20 || myData1 == 21 || myData1 == 26) {
+						var tmpMyData1 = delComma(FinalData[i][myData1]);
+						tmpMyData1 = formatNumberDMG_K(Number(tmpMyData1))
+					} else tmpMyData1 = FinalData[i][myData1];
+					if (myData2 == 10 || myData2 == 19 || myData2 == 20 || myData2 == 21 || myData2 == 26) {
+						tmpMyData2 = delComma(FinalData[i][myData2]);
+						tmpMyData2 = formatNumberDMG_K(Number(tmpMyData2))
+					} else tmpMyData2 = FinalData[i][myData2];
+					if (myData3 == 10 || myData3 == 19 || myData3 == 20 || myData3 == 21 || myData3 == 26) {
+						tmpMyData3 = delComma(FinalData[i][myData3]);
+						tmpMyData3 = formatNumberDMG_K(Number(tmpMyData3))
+					} else tmpMyData3 = FinalData[i][myData3];
+					if (myData4 == 10 || myData4 == 19 || myData4 == 20 || myData4 == 21 || myData4 == 26) {
+						tmpMyData4 = delComma(FinalData[i][myData4]);
+						tmpMyData4 = formatNumberDMG_K(Number(tmpMyData4))
+					} else tmpMyData4 = FinalData[i][myData4];
+					if (i == 0) {
+						miniRowNode.innerHTML = "<span class='icon' rel='tooltipMini' title='전투 종료 후 아이콘 클릭 시<br>Name 숨기기/보이기 가능'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps' rel='tooltipMini' title='" + tooltipMsg + "<br>[편집] myData.txt 파일'><span class='data'>" + tmpMyData1 + ' / ' + tmpMyData2 + ' / ' + tmpMyData3 + "</span>" + tmpMyData4 + "</span>"
+					} else {
+						miniRowNode.innerHTML = "<span class='icon'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps'><span class='data'>" + tmpMyData1 + ' / ' + tmpMyData2 + ' / ' + tmpMyData3 + "</span>" + tmpMyData4 + "</span>"
+					}
+					miniNode.appendChild(miniRowNode);
+					var miniRowNode = document.createElement('div');
+					miniRowNode.id = 'miniBarRows';
+					if (oldGraphSize[bar[2]] == undefined) oldGraphSize[bar[2]] = 0 + '%';
+					miniRowNode.innerHTML = "<div class='bar' style='background:" + bar[1] + "; width:" + oldGraphSize[bar[2]] + ";'></div>";
+					miniRowNode.name = addslashes(bar[2]);
+					oldGraphSize[bar[2]] = bar[0];
+					miniNode.appendChild(miniRowNode)
+				} else if (tabFlag == 2) {
+					if (healer.indexOf(FinalData[i][1]) > -1) {
+						var tmpHealed = delComma(FinalData[i][26]);
+						tmpHealed = Number(tmpHealed);
+						if (i == 0) {
+							miniRowNode.innerHTML = "<span class='icon' rel='tooltipMini' title='전투 종료 후 아이콘 클릭 시<br>Name 숨기기/보이기 가능'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps' rel='tooltipMini' title='Healed (H% / Ov.H) : HPS'><span class='data'>" + formatNumberDMG_K(tmpHealed) + ' (' + FinalData[i][25] + ' / ' + FinalData[i][27] + ')' + "</span>" + FinalData[i][24] + "</span>"
+						} else {
+							miniRowNode.innerHTML = "<span class='icon'><img src='images/glow/" + FinalData[i][1] + ".png' style='width:1.9rem;height:1.9rem;'/>" + "</span>" + "<span class='id'>" + FinalData[i][2] + "</span>" + "<span class='dps'><span class='data'>" + formatNumberDMG_K(tmpHealed) + ' (' + FinalData[i][25] + ' / ' + FinalData[i][27] + ')' + "</span>" + FinalData[i][24] + "</span>"
+						}
+						miniNode.appendChild(miniRowNode);
+						var miniRowNode = document.createElement('div');
+						miniRowNode.id = 'miniBarRows';
+						if (oldGraphSize[bar[2]] == undefined) oldGraphSize[bar[2]] = 0 + '%';
+						miniRowNode.innerHTML = "<div class='bar' style='background:" + bar[1] + "; width:" + oldGraphSize[bar[2]] + ";'></div>";
+						miniRowNode.name = addslashes(bar[2]);
+						oldGraphSize[bar[2]] = bar[0];
+						miniNode.appendChild(miniRowNode)
+					}
+				}
+			}
+		}
+		linkingData(miniNode, 'contentsData', 'miniWrapper', FinalData)
+	} else {
+		if (tabFlag == 1) {
+			var colData = [1, 2, 5, 9, 10, 12, 14, 17, 33]
+		} else if (tabFlag == 2) {
+			var colData = [1, 2, 24, 25, 26, 27, 28, 30, 32, 33]
+		} else if (tabFlag == 3) {
+			var colData = new Array();
+			for (var i = 1; i <= 33; i++)
+				if (localStorage.getItem('myData' + i) == 1) colData.push(i);
+		} else {
+			var colData = new Array();
+			for (var i = 1; i <= 33; i++) colData.push(i);
+		}
+		inputHeaderData(colData, header);
+		inputContentsData(colData, FinalData, maxDPS, maxHPS)
+	}
+}
+
+function inputHeaderData(colData, header) {
+	var headerNode = document.createElement('div');
+	headerNode.id = 'headerWrapper';
+	var headerRowNode = document.createElement('div');
+	headerRowNode.id = 'headerRows';
+	for (var i = 0; i < colData.length; i++) {
+		var headerCell = document.createElement('div');
+		inputCellId(colData, i, headerCell, 1);
+		if (header[colData[i]] == 'Time') {
+			headerCell.innerHTML = "<div rel='tooltipMini' title='전투 로그 수집 시간<br>(파티원 첫 타격 기준 / 공식)'>Time</div>"
+		} else if (header[colData[i]] == 'Job') {
+			headerCell.innerHTML = "<div rel='tooltipMini' title='전투 종료 후 아이콘 클릭 시<br>Name 숨기기/보이기 가능'>Job</div>"
+		} else if (header[colData[i]] == 'RDPS') {
+			headerCell.innerHTML = "<div rel='tooltipMini' title='초당 파티 딜량<br>(파티원 DPS 합계)'>RDPS</div>"
+		} else if (header[colData[i]] == 'RHPS') {
+			headerCell.innerHTML = "<div rel='tooltipMini' title='초당 파티 힐량<br>(파티원 HPS 합계)'>RHPS</div>"
+		} else {
+			headerCell.innerText = header[colData[i]]
+		}
+		headerRowNode.appendChild(headerCell)
+	}
+	headerNode.appendChild(headerRowNode);
+	linkingData(headerNode, 'headerData', 'headerWrapper', 0)
+}
+
+function inputContentsData(colData, FinalData, maxDPS, maxHPS) {
+	var contentsNode = document.createElement('div');
+	contentsNode.id = 'contentsWrapper';
+	var barNode = document.createElement('div');
+	barNode.id = 'barWrapper';
+	var healer = ["Cnj", "Whm", "Sch", "Ast", "Eos", "Selene"]
+	for (var j = 0; j < FinalData.length; j++) {
+		var rank = j + 1;
+		if (tabFlag == 2) {
+			if (healer.indexOf(FinalData[j][1]) > -1) {
+				var contentsRowNode = document.createElement('div');
+				if (FinalData[j][2] == "YOU" || FinalData[j][0] == "YOU")
+					contentsRowNode.id = 'contentsRowsYOU';
+				else contentsRowNode.id = 'contentsRows';
+				for (var i = 0; i < colData.length; i++) {
+					var contentsCell = document.createElement('div');
+					inputCellId(colData, i, contentsCell, 2);
+					if (colData[i] == 1)
+						contentsCell.innerHTML = "<img src='images/glow/" + FinalData[j][colData[i]] + ".png' style='width:1.9rem;height:1.9rem;'/>";
+					else contentsCell.innerText = FinalData[j][colData[i]];
+					contentsRowNode.appendChild(contentsCell)
+				}
+				contentsNode.appendChild(contentsRowNode);
+				var contentsRowNode = document.createElement('div');
+				contentsRowNode.className = 'barTable';
+				contentsNode.appendChild(contentsRowNode);
+				var bar = barInfo(FinalData, maxDPS, maxHPS, j);
+				makingBar(barNode, 1, bar, 0)
+			}
+		} else {
+			var contentsRowNode = document.createElement('div');
+			if (FinalData[j][2] == "YOU" || FinalData[j][0] == "YOU")
+				contentsRowNode.id = 'contentsRowsYOU';
+			else contentsRowNode.id = 'contentsRows';
+			for (var i = 0; i < colData.length; i++) {
+				var contentsCell = document.createElement('div');
+				inputCellId(colData, i, contentsCell, 2);
+				if (colData[i] == 1)
+					contentsCell.innerHTML = "<img src='images/glow/" + FinalData[j][colData[i]] + ".png' style='width:1.9rem;height:1.9rem;'/>";
+				else contentsCell.innerText = FinalData[j][colData[i]];
+				contentsRowNode.appendChild(contentsCell)
+			}
+			contentsNode.appendChild(contentsRowNode);
+			var contentsRowNode = document.createElement('div');
+			contentsRowNode.className = 'barTable';
+			contentsNode.appendChild(contentsRowNode);
+			var bar = barInfo(FinalData, maxDPS, maxHPS, j);
+			makingBar(barNode, 1, bar, 0)
+		}
+	}
+	linkingData(contentsNode, 'contentsData', 'contentsWrapper', FinalData);
+	linkingData(barNode, 'barData', 'barWrapper', FinalData)
+}
+
+function inputEncContentsData(colData, encData) {
+	var contentsNode = document.createElement('div');
+	contentsNode.id = 'contentsWrapper';
+	var barNode = document.createElement('div');
+	barNode.id = 'barWrapper';
+	var mapFlag = 0;
+	var mapCnt = 0;
+	var start = EncountersArray.length - 1;
+	for (var j = start; j >= 0; j--) {
+		if (encData.length == 1) {
+			if (encData[j][6] != "") {
+				var contentsMapNode = document.createElement('div');
+				contentsMapNode.id = 'contentsMap';
+				var barMapNode = document.createElement('div');
+				barMapNode.id = 'barMap';
+				mapCnt = encData[j][5]
+			}
+		} else {
+			if (mapFlag == 0) {
+				if (encData[j][6] == "" && j != 0) {
+					var contentsMapNode = document.createElement('div');
+					contentsMapNode.id = 'contentsMap';
+					var barMapNode = document.createElement('div');
+					barMapNode.id = 'barMap';
+					mapCnt = encData[j][5]
+				} else {
+					var contentsMapNode = document.createElement('div');
+					contentsMapNode.id = 'contentsMap';
+					var barMapNode = document.createElement('div');
+					barMapNode.id = 'barMap';
+					mapCnt = encData[j][5]
+				}
+				mapFlag = 1
+			}
+		}
+		var contentsRowNode = document.createElement('div');
+		contentsRowNode.id = 'contentsEncRows';
+		for (var i = 0; i < colData.length; i++) {
+			var contentsCell = document.createElement('div');
+			inputCellId(colData, i, contentsCell, 2, barMapNode);
+			if (j == RowNum && colData[i] == 1)
+				contentsCell.innerHTML = "<img src='images/menu/eye.svg' style='width:1.8rem;height:1.8rem;'/>";
+			else if (j != RowNum && colData[i] == 1)
+				contentsCell.innerHTML = "";
+			else contentsCell.innerText = encData[j][i];
+			contentsRowNode.appendChild(contentsCell);
+			contentsRowNode.name = j
+		}
+		contentsMapNode.appendChild(contentsRowNode);
+		var contentsRowNode = document.createElement('div');
+		contentsRowNode.className = 'barTable';
+		contentsMapNode.appendChild(contentsRowNode);
+		makingBar(barNode, 2, 0, barMapNode);
+		if (encData.length == 1) {
+			makingMapRow(encData, barNode, contentsMapNode, contentsNode, mapCnt, j, barMapNode)
+		} else {
+			if (encData[j][6] != "") {
+				makingMapRow(encData, barNode, contentsMapNode, contentsNode, mapCnt, j, barMapNode);
+				mapFlag = 0
+			}
+		}
+	}
+	linkingData(barNode, 'barData', 'barWrapper', 0);
+	linkingData(contentsNode, 'contentsData', 'contentsWrapper', 0)
+}
+
+function inputCellId(colData, i, Cell, Flag) {
+	if (Flag == 2) {
+		if (colData[i] == 10 || colData[i] == 19 || colData[i] == 20 || colData[i] == 21 || colData[i] == 26) {
+			Cell.className = 'cell_wide'
+		} else if (colData[i] == 3 || colData[i] == 5 || colData[i] == 24) {
+			Cell.className = 'cell_dps'
+		} else if (colData[i] == 2) {
+			Cell.className = 'cell_name'
+		} else if (colData[i] == 1) {
+			Cell.className = 'cell_icon'
+		} else if (colData[i] == 18 || colData[i] == 31) {
+			Cell.className = 'cell_variable'
+		} else {
+			Cell.className = 'cell_narrow'
+		}
+	} else {
+		if (colData[i] == 10 || colData[i] == 19 || colData[i] == 20 || colData[i] == 21 || colData[i] == 26) {
+			Cell.id = 'cell_H_wide'
+		} else if (colData[i] == 3 || colData[i] == 5 || colData[i] == 24) {
+			Cell.id = 'cell_H_dps'
+		} else if (colData[i] == 2) {
+			Cell.id = 'cell_H_name'
+		} else if (colData[i] == 1) {
+			Cell.id = 'cell_H_icon'
+		} else if (colData[i] == 18 || colData[i] == 31) {
+			Cell.id = 'cell_H_variable'
+		} else {
+			Cell.id = 'cell_H_narrow'
+		}
+	}
+}
+
+function barInfo(FinalData, maxDPS, maxHPS, user) {
+	var bar = new Array();
+	var tmpDPS = delComma(FinalData[user][5]);
+	var tmpHPS = delComma(FinalData[user][24]);
+	tmpDPS = Number(tmpDPS);
+	tmpHPS = Number(tmpHPS);
+	if (tabFlag != 2)
+		var width = Math.min(100, parseFloat(tmpDPS / maxDPS * 100, 10)) + '%';
+	else var width = Math.min(100, parseFloat(tmpHPS / maxHPS * 100, 10)) + '%';
+	var color = BarEffect(FinalData[user][1], FinalData[user][2]);
+	bar.push(width);
+	bar.push(color);
+	bar.push(FinalData[user][2]);
+	return bar
+}
+
+function makingBar(barNode, flag, bar, barMapNode) {
+	if (flag == 2) {
+		var barRowNode = document.createElement('div');
+		barRowNode.id = 'barRows';
+		barRowNode.innerHTML = "<div class='userGraph' style='background:rgba(0,0,0,0); width:" + oldGraphSize[bar[2]] + ";'></div>";
+		if (barMapNode != 0)
+			barMapNode.appendChild(barRowNode);
+		else barNode.appendChild(barRowNode);
+		var contentsRowNode = document.createElement('div');
+		contentsRowNode.className = 'barTable';
+		if (barMapNode != 0)
+			barMapNode.appendChild(contentsRowNode);
+		else barNode.appendChild(contentsRowNode)
+	} else {
+		var barRowNode = document.createElement('div');
+		barRowNode.id = 'barRows';
+		if (oldGraphSize[bar[2]] == undefined) oldGraphSize[bar[2]] = 0 + '%';
+		barRowNode.innerHTML = "<div class='userGraph' style='background:" + bar[1] + "; width:" + oldGraphSize[bar[2]] + ";'></div>";
+		barRowNode.name = addslashes(bar[2]);
+		oldGraphSize[bar[2]] = bar[0];
+		barNode.appendChild(barRowNode);
+		var contentsRowNode = document.createElement('div');
+		contentsRowNode.className = 'barTable';
+		barNode.appendChild(contentsRowNode)
+	}
+}
+
+function makingMapRow(encData, barNode, contentsMapNode, contentsNode, mapCnt, mapRowName, barMapNode) {
+	var mapName = encData[mapRowName][6];
+	contentsMapNode.name = 'map' + mapRowName;
+	contentsMapNode.className = 'map' + mapRowName;
+	barMapNode.name = 'map' + mapRowName;
+	contentsNode.appendChild(contentsMapNode);
+	barNode.appendChild(barMapNode);
+	var contentsRowNode = document.createElement('div');
+	contentsRowNode.id = 'contentsEncRows';
+	contentsRowNode.name = 'map' + mapRowName;
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_icon';
+	contentsCell.innerHTML = "<img src='images/menu/up.svg' style='width:2rem;height:2rem;'/>";
+	contentsRowNode.appendChild(contentsCell);
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_MapName';
+	if (languageFlag == 1) {
+		if (languageList[mapName] != undefined)
+			contentsCell.innerText = languageList[mapName];
+		else contentsCell.innerText = mapName
+	} else contentsCell.innerText = mapName;
+	contentsRowNode.appendChild(contentsCell);
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_wide';
+	contentsRowNode.appendChild(contentsCell);
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_wide';
+	contentsRowNode.appendChild(contentsCell);
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_wide';
+	contentsRowNode.appendChild(contentsCell);
+	var contentsCell = document.createElement('div');
+	contentsCell.className = 'cell_narrow';
+	contentsCell.name = mapCnt;
+	contentsRowNode.appendChild(contentsCell);
+	contentsNode.appendChild(contentsRowNode);
+	var contentsRowNode = document.createElement('div');
+	contentsRowNode.className = 'barTable';
+	contentsNode.appendChild(contentsRowNode);
+	makingBar(barNode, 2, 0, 0)
+}
+
+function linkingData(newNode, searchData, existData, FinalData) {
+	if (FinalData != '') soloMode(FinalData);
+	if (existData == 'miniWrapper' || existData == 'contentsWrapper') {
+		var miniCheck = 0;
+		if (existData == 'miniWrapper') miniCheck = 1;
+		var rootNode = document.createElement('div');
+		rootNode.id = 'new';
+		rootNode.appendChild(newNode);
+		existData = rootNode.id;
+		newNode = rootNode
+	}
+	var node = document.getElementById(searchData);
+	if (node != null) {
+		var parentDiv = node.parentNode;
+		parentDiv.replaceChild(newNode, node)
+	} else {
+		var node = document.getElementById(existData);
+		var parentDiv = node.parentNode;
+		parentDiv.replaceChild(newNode, node)
+	}
+	if (existData == 'barWrapper') {
+		$(document).ready(function() {
+			for (var i = 0; i < FinalData.length; i++) {
+				$('#barContents').find("#barRows[name=" + addslashes(FinalData[i][2]) + "]").find('.userGraph').animate({
+					width: oldGraphSize[FinalData[i][2]]
+				})
+			}
+		})
+	} else if (miniCheck == 1) {
+		$(document).ready(function() {
+			for (var i = 0; i < FinalData.length; i++) {
+				$('#tableContents').find("#miniBarRows[name=" + addslashes(FinalData[i][2]) + "]").find('.bar').animate({
+					width: oldGraphSize[FinalData[i][2]]
+				})
+			}
+		})
+	}
+}
+/* FILE CACHED 1484252498*/
+    </script>
+  </head>
+  <body>
+    <table id="error" class="hidden"></table>
+    <div id="wrap">
+    <div id="Header">
+    <span class="mainList"><div id="nav-icon"> <span></span> <span></span> <span></span> <span></span></div><input class="toggle__input" id="toggle-mainMenu" type="checkbox"></span>
+    <span class="mobList"><input class="toggle__input" id="toggle-mobList" type="checkbox"></span>
+    <span class="toggleBtn"><div class="toggle"><input class="toggle__input" id="toggle-checkbox" type="checkbox"><div class="div_label"></div><div class="after_div_label"></div></div></span>
+    </div>
+    <table id="menu" cellspacing="0" class="hidden">
+    <tr>
+    <td onclick='menuTabSwap(1)' rel='tooltip' title=''><img src='images/menu/tabDPS.svg' class='menuIcon' id='DPS'/></td>
+    <td onclick='menuTabSwap(2)' rel='tooltip' title=''><img src='images/menu/tabHPS.svg' class='menuIcon' id='HPS'/></td>
+    <td onclick='menuTabSwap(3)' rel='tooltip' title=''><img src='images/menu/user.svg' class='menuIcon' id='User'/></td>
+    <td onclick='menuTabSwap(4)' rel='tooltip' title=''><img src='images/menu/settings.svg' class='menuIcon' id='Settings'/></td>
+    </tr>
+    <tr>
+    <td rel='tooltip' title='' onclick="toggle_img_Resolution('DPI', 'images/menu/HD.svg', 'images/menu/expandFHD.svg','images/menu/expandQHD.svg','images/menu/expandUHD.svg');"><img src='images/menu/HD.svg' class='menuIcon' name='DPI'/></td>
+    <td rel='tooltip' title='' onclick="toggle_img_Color('Color', 'images/menu/graph1.svg', 'images/menu/graph2.svg', 'images/menu/graph3.svg', 'images/menu/graph4.svg', 'images/menu/graph5.svg');"><img src='images/menu/graph1.svg'  class='menuIcon' name='Color'/></td>
+    <td rel='tooltip' title='' onclick="toggle_img('number','images/menu/float.svg','images/menu/int.svg');"><img src='images/menu/float.svg' class='menuIcon' name='number'/></td>
+    <td rel='tooltip' title='' onclick="toggle_img('Pet','images/menu/petAdd.svg','images/menu/petSub.svg');"><img src='images/menu/petAdd.svg' class='menuIcon' name='Pet'/></td>
+    </tr>
+    <tr>
+    <td rel='tooltip' title='' onclick="toggle_img('Cells','images/menu/cellReduce.svg','images/menu/cellExpand.svg');"><img src='images/menu/cellReduce.svg' class='menuIcon' name='Cells'/></td>
+    <td rel='tooltip' title='' onclick="toggle_img_Opacity('Opacity', 'images/menu/bg1.svg', 'images/menu/bg2.svg','images/menu/bg3.svg','images/menu/bg4.svg');"><img src='images/menu/bg1.svg'  class='menuIcon' name='Opacity'/></td>
+    <td rel='tooltip' title='' onclick="toggle_img('Language','images/menu/kor.svg','images/menu/eng.svg');"><img src='images/menu/kor.svg' class='menuIcon' name='Language'/></td>
+    <td rel='tooltip' title='' onclick='menuTabSwap(5)'><img src='images/menu/meter.svg' class='menuIcon' id='Solo'/></td>
+    </tr>
+    </table>
+    <div id="block">
+    <div class="loading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 124 124">
+    <circle id="circle" class="circle-bg" cx="62" cy="62" r="59" />
+    <circle id="circle" class="circle-color" cx="62" cy="62" r="59" transform="rotate(-90 62 62)" />
+    <polyline id="check" class="check" points="73.56 48.63 57.88 72.69 49.38 62" />
+    </svg>
+    </div>
+    <div id="text1"></div><div id="text2"></div>
+    </div>
+    <div id="tableHeader"><div id="headerData"></div> </div>
+    <div id="Contents">
+    <div id="tableContents"> <div id="contentsData"></div></div>
+    <div id="barContents"> <div id="barData"></div></div>
+    </div>
+    <table id='soloTable' class="hidden">
+    <tr><td></td><td></td><td></td><td rel="tooltip" title="P.DPS (P.Time)"></td><td></td></tr>
+    <tr><td colspan='3'></td><td colspan='2' ></td></tr>
+    <tr><td colspan='3'>
+    <div id="line-graph">
+    <svg viewBox="0 0 500 100">
+    <polyline id="line"
+    fill="none"
+    stroke="#ffbb00"
+    stroke-width="1" />
+    </svg></div>
+    </td><td colspan='2'></td></tr>
+    <tr><td></td><td></td><td></td><td rel="tooltip" title="현재 1위 DPS"></td><td></td></tr>
+    </table>
+    </div>
+  </body>
+  <script>
+    function onOverlayDataUpdate(e)
+    {
+      RowClick=0;
+      if(updateStart==1)
+      {
+        saveEncounterData(e.detail);
+        update(e.detail);
+      }
+      else
+      {
+        nowData=e.detail;
+        saveEncounterData(e.detail);
+      }
+    }
+  </script>
+</html>

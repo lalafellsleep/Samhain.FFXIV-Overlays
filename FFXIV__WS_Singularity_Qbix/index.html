@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
+		<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+		<script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
+        <style>
+            .menu{width:64px; position:fixed; right:0px; top:0px;}
+            .menu>div{width:36px; height:36px; margin:15px; background:rgba(0,0,0,0.5); transform:rotate(45deg);}
+        </style>
+    </head>
+    <body>
+        <div class="menu">
+            <div class="account"></div>
+            <div class="setting"></div>
+            <div class="battlelog"></div>
+        </div>
+    </body>
+</html>

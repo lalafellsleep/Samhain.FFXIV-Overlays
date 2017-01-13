@@ -310,13 +310,13 @@ $(document).ready(function() {
 	$('#block').find('#text1').html("<h2>HAERUSKIN REBOOT</h2>v.1.2.Yellow.161212");
 	$('#block').find('#text2').text("파이널판타지14 시바서버 해루 / FFXIVHAERU@gmail.com");
 	setTimeout(function() {
-		$('.mobList').text("myData.txt 파일 유효성 체크 중입니다...")
+		$('.mobList').text("myData.txt File Error Check...")
 	}, 100);
 	setTimeout(function() {
-		$('.mobList').text('인터페이스 초기화 중입니다...')
+		$('.mobList').text('Interface initialize...')
 	}, 500);
 	setTimeout(function() {
-		$('.mobList').text("서버 연결 중입니다...")
+		$('.mobList').text("Connecting Server...")
 	}, 800);
 	setTimeout(function() {
 		$('#header').html("<div class='mainList'><div id='nav-icon'> <span></span> <span></span><span></span> <span></span></div><input class='toggle__input' id='toggle-mainMenu' type='checkbox'></div><div class='mobList'><input class='toggle__input' id='toggle-mobList' type='checkbox'></div>  <div class='toggleBtn'><div class='toggle'><input class='toggle__input' id='toggle-checkbox' type='checkbox'><div class='div_label'></div><div class='after_div_label'></div></div></div>");
@@ -457,7 +457,7 @@ $(document).ready(function() {
 			if (nowData != 0) {
 				if (nowData.Encounter.title != 'Encounter') {
 					historyOnFlag = 1;
-					$('.mobList').text('전투 로그 모아보기 ( 최대 15개 / ' + new Date().toLocaleTimeString() + ' 기준 )');
+					$('.mobList').text('Battle logs ( Max 15 / ' + new Date().toLocaleTimeString() + ')');
 					var foldFlag = new Array();
 					inputHistoryData();
 					historyControl();
@@ -672,7 +672,7 @@ function toggle_img(name, src_a, src_b) {
 				localStorage.setItem('inputPetCombine', 2);
 				petFlag = localStorage.getItem('inputPetCombine')
 			}
-			$('#menu').find("td:eq(7)").find(".tipBody").text("소환수 분리")
+			$('#menu').find("td:eq(7)").find(".tipBody").text("Pet detach")
 		} else if (name == "Language") {
 			$('#menu').find("td:eq(10)").find(".tipBody").text("번역 (영어)");
 			if (setFlag == 1) {
@@ -680,14 +680,14 @@ function toggle_img(name, src_a, src_b) {
 				languageFlag = localStorage.getItem('inputLanguage')
 			}
 		} else if (name == "Cells") {
-			$('#menu').find("td:eq(8)").find(".tipBody").text("셀 너비 넓게");
+			$('#menu').find("td:eq(8)").find(".tipBody").text("Cell width larger");
 			if (setFlag == 1) {
 				localStorage.setItem('inputCellWidth', 1);
 				cellWidthFlag = localStorage.getItem('inputCellWidth');
 				cellWidthClass(cellWidthFlag)
 			}
 		} else {
-			$('#menu').find("td:eq(6)").find(".tipBody").text("정수 표기");
+			$('#menu').find("td:eq(6)").find(".tipBody").text("no under dot");
 			if (setFlag == 1) {
 				localStorage.setItem('inputToFixed2', 2);
 				numberFlag = localStorage.getItem('inputToFixed2');
@@ -700,7 +700,7 @@ function toggle_img(name, src_a, src_b) {
 	}
 	if (img.src.indexOf(src_b) >= 0) {
 		if (name == "Pet") {
-			$('#menu').find("td:eq(7)").find(".tipBody").text("소환수 합산");
+			$('#menu').find("td:eq(7)").find(".tipBody").text("Pet attach");
 			if (setFlag == 1) {
 				localStorage.setItem('inputPetCombine', 1);
 				petFlag = localStorage.getItem('inputPetCombine')
@@ -712,14 +712,14 @@ function toggle_img(name, src_a, src_b) {
 				languageFlag = localStorage.getItem('inputLanguage')
 			}
 		} else if (name == "Cells") {
-			$('#menu').find("td:eq(8)").find(".tipBody").text("셀 너비 좁게");
+			$('#menu').find("td:eq(8)").find(".tipBody").text("Cell width smaller");
 			if (setFlag == 1) {
 				localStorage.setItem('inputCellWidth', 2);
 				cellWidthFlag = localStorage.getItem('inputCellWidth');
 				cellWidthClass(cellWidthFlag)
 			}
 		} else {
-			$('#menu').find("td:eq(6)").find(".tipBody").text("소수 표기");
+			$('#menu').find("td:eq(6)").find(".tipBody").text("view under dot");
 			if (setFlag == 1) {
 				localStorage.setItem('inputToFixed2', 1);
 				numberFlag = localStorage.getItem('inputToFixed2');
@@ -747,7 +747,7 @@ function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
 			opacityFlag = localStorage.getItem('inputOpacity');
 			opacity(opacityFlag)
 		}
-		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (100%)");
+		$('#menu').find("td:eq(9)").find(".tipBody").text("background opacity (100%)");
 		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg5.svg';
 		return
 	}
@@ -757,7 +757,7 @@ function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
 			opacityFlag = localStorage.getItem('inputOpacity');
 			opacity(opacityFlag)
 		}
-		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (0%)");
+		$('#menu').find("td:eq(9)").find(".tipBody").text("background opacity (0%)");
 		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg1.svg';
 		return
 	}
@@ -767,7 +767,7 @@ function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
 			opacityFlag = localStorage.getItem('inputOpacity');
 			opacity(opacityFlag)
 		}
-		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (25%)");
+		$('#menu').find("td:eq(9)").find(".tipBody").text("background opacity (25%)");
 		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg2.svg';
 		return
 	}
@@ -777,7 +777,7 @@ function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
 			opacityFlag = localStorage.getItem('inputOpacity');
 			opacity(opacityFlag)
 		}
-		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (50%)");
+		$('#menu').find("td:eq(9)").find(".tipBody").text("background opacity (50%)");
 		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg3.svg';
 		return
 	}
@@ -787,7 +787,7 @@ function toggle_img_Opacity_Add(name, src_1, src_2, src_3, src_4, src_5) {
 			opacityFlag = localStorage.getItem('inputOpacity');
 			opacity(opacityFlag)
 		}
-		$('#menu').find("td:eq(9)").find(".tipBody").text("배경 불투명도 (75%)");
+		$('#menu').find("td:eq(9)").find(".tipBody").text("background opacity (75%)");
 		img.src = 'https://cdn.rawgit.com/HAERUHAERU/HAERU-REBOOT-SKIN/master/bg4.svg';
 		return
 	}
@@ -852,7 +852,7 @@ function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
 			colorGraph(colorFlag);
 			if (nowData != 0) update(nowData)
 		}
-		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (기본)");
+		$('#menu').find("td:eq(5)").find(".tipBody").text("Graph color (기본)");
 		img.src = src_1;
 		return
 	}
@@ -863,7 +863,7 @@ function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
 			colorGraph(colorFlag);
 			if (nowData != 0) update(nowData)
 		}
-		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (반투명)");
+		$('#menu').find("td:eq(5)").find(".tipBody").text("Graph color (50%)");
 		img.src = src_2;
 		return
 	}
@@ -874,7 +874,7 @@ function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
 			colorGraph(colorFlag);
 			if (nowData != 0) update(nowData)
 		}
-		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (투명)");
+		$('#menu').find("td:eq(5)").find(".tipBody").text("Graph color (transparent)");
 		img.src = src_3;
 		return
 	}
@@ -885,7 +885,7 @@ function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
 			colorGraph(colorFlag);
 			if (nowData != 0) update(nowData)
 		}
-		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (My 1)");
+		$('#menu').find("td:eq(5)").find(".tipBody").text("Graph color (My 1)");
 		img.src = src_4;
 		return
 	}
@@ -896,7 +896,7 @@ function toggle_img_Color(name, src_1, src_2, src_3, src_4, src_5) {
 			colorGraph(colorFlag);
 			if (nowData != 0) update(nowData)
 		}
-		$('#menu').find("td:eq(5)").find(".tipBody").text("그래프 색상 (My 2)");
+		$('#menu').find("td:eq(5)").find(".tipBody").text("Graph color (My 2)");
 		img.src = src_5;
 		return
 	}
@@ -1032,7 +1032,7 @@ function callCustomPage() {
 		$('#news-container').vTicker('remove');
 		rollingFlag = !1
 	}
-	$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.");
+	$('.mobList').text("Click star icon, Customize ACT Tab columns!");
 	if (nowData == 0) {
 		inputTableData(0);
 		dpiAddClass(dpiFlag);
@@ -1493,7 +1493,7 @@ function updateUI() {
 		$(".mobList").css("background", "#1a1a1a");
 		$("#headerRows").css("background", '#0f0f0f');
 		if (tabFlag == 4 && modeFlag == 2) {
-			$('.mobList').text("[알림] 편집이 끝났나요? 탭:즐겨찾기(My ACT)로 이동해요.")
+			$('.mobList').text("[Noti] Finished Editing? go to Tab:Favorate(My ACT).")
 		}
 	});
 	$(".toggleBtn").mouseover(function() {
@@ -1508,8 +1508,8 @@ function updateUI() {
 				$('#news-container').vTicker('remove');
 				rollingFlag = !1
 			}
-			if (modeFlag == 2) $('.mobList').text("[알림] 탭:All로 이동해요. (33가지 ACT 항목 전체보기)");
-			else if (modeFlag == 1 && menuFlag == 2) $('.mobList').text("[알림] 탭:편집 모드로 이동해요. (커스터마이징)")
+			if (modeFlag == 2) $('.mobList').text("[Noti] go to Tab:All (view 33 columns)");
+			else if (modeFlag == 1 && menuFlag == 2) $('.mobList').text("[Noti] go to Tab:Editmode (Favorate)")
 		}
 	});
 	$(".mobList").mouseout(function() {
@@ -1518,13 +1518,13 @@ function updateUI() {
 	$(".mainList").mouseout(function() {
 		$(this).css("background", "#1a1a1a");
 		if (tabFlag == 4 && modeFlag == 2)
-			$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.")
+			$('.mobList').text("Click star icon, Customize ACT Tab columns!")
 	});
 	$(".toggleBtn").mouseout(function() {
 		$(this).css("background", "#1a1a1a");
 		if (tabFlag == 4 && menuFlag == 2) {
 			if (modeFlag == 2)
-				$('.mobList').text("별 모양 아이콘을 클릭해 나만의 ACT를 만들어보세요.");
+				$('.mobList').text("Click star icon, Customize ACT Tab columns!");
 			else if (modeFlag == 1) {
 				if (nowData != 0) updateEncounter(nowData);
 				else {

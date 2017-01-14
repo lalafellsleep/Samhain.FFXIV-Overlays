@@ -1,3 +1,4 @@
 [submodule "ffxiv_overlay_corejs"]
 	path = ffxiv_overlay_corejs
 	url = https://github.com/laiglinne-ff/ffxiv_overlay_corejs
+	branch = master

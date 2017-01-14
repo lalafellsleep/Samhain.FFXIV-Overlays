@@ -170,7 +170,7 @@ function getCombatlog(key)
 function addcombatlog(c)
 {
     combatlog.push({key:c.combatKey, value:c});
-    $("section.combatlog .cover").prepend("<div onclick=\"getrecalc('"+c.combatKey+"');\">"+c.encounter.title+" ("+c.encounter.encdps+"D, "+c.encounter.enchps+"H)</div>");
+    $("section.combatlog .cover").prepend("<div onclick=\"getrecalc('"+c.combatKey+"');\">"+c.Encounter.title+" ("+c.Encounter.encdps+"D, "+c.Encounter.enchps+"H)</div>");
 }
 
 function combatCalculator()
@@ -183,7 +183,7 @@ function combatCalculator()
         d["summonerMerge"] = true;
 
     d.sortkeyChange(options[curopt].k);
-    $("header .zonearea").html(d.zone + " - " + parseFloat(d.encounter.encdps).toFixed(0) + " RD / " + parseFloat(d.encounter.enchps).toFixed(0) + " RH");
+    $("header .zonearea").html(d.zone + " - " + parseFloat(d.Encounter.encdps).toFixed(0) + " RD / " + parseFloat(d.Encounter.enchps).toFixed(0) + " RH");
     $("header .wordarea").html("[--:--] ".concat(d.title).replace("--:--", d.duration));
 
     $(".data>div").each(function()
@@ -248,14 +248,14 @@ function combatCalculator()
             $(".data div[data-id=\""+a.name+"\"]").find("i").html(name);
             $(".data div[data-id=\""+a.name+"\"]").find(".job").html(lang.get(aclass));
             $(".data div[data-id=\""+a.name+"\"]").attr("data-rank", a.rank);
-            $(".data div[data-id=\""+a.name+"\"]").find(".bar").css({"width":meperc+"%", "background":"rgba("+a.R+","+a.G+","+a.B+","+alpha+")"});
-            $(".data div[data-id=\""+a.name+"\"]").find(".petbar").css({"width":petperc+"%", "background":"rgba("+(a.R+(a.R/5))+","+(a.G+(a.G/5))+","+(a.B+(a.B/5))+","+alpha+")"});
+            $(".data div[data-id=\""+a.name+"\"]").find(".bar").css({"width":meperc+"%", "background":"rgba("+a.color.R+","+a.color.G+","+a.color.B+","+alpha+")"});
+            $(".data div[data-id=\""+a.name+"\"]").find(".petbar").css({"width":petperc+"%", "background":"rgba("+(a.color.R+(a.color.R/5))+","+(a.color.G+(a.color.G/5))+","+(a.color.B+(a.color.B/5))+","+alpha+")"});
             $(".data div[data-id=\""+a.name+"\"]").find(".content span.value").html(value);
             $(".data div[data-id=\""+a.name+"\"]").find("div.content").css("background-image","url(img/"+a.Job+".png)");
         }
         else
         {
-            $(".data").append("<div style=\"top:"+top+"px;\" class=\""+job+"\" data-id=\""+a.name+"\" data-rank=\""+a.rank+"\"><div class=\"bar\" style=\"background:rgba("+a.R+","+a.G+","+a.B+","+alpha+"); width:"+meperc+"%;\"></div><div class=\"petbar\" style=\"background:rgba("+(a.R+(a.R/5))+","+(a.G+(a.G/5))+","+(a.B+(a.B/5))+","+alpha+"); width:"+petperc+"%;\"></div><div class=\"content\" style=\"background-image:url(img/"+a.Job+".png);\"><span class=\"name\"><span class=\"namecover\"><i>"+name+"</i><span class=\"i\">"+a.name+"</span><span class=\"job\">"+lang.get(aclass)+"</span></span></span><span class=\"value\">"+value+"</span></div></div>");
+            $(".data").append("<div style=\"top:"+top+"px;\" class=\""+job+"\" data-id=\""+a.name+"\" data-rank=\""+a.rank+"\"><div class=\"bar\" style=\"background:rgba("+a.color.R+","+a.color.G+","+a.color.B+","+alpha+"); width:"+meperc+"%;\"></div><div class=\"petbar\" style=\"background:rgba("+(a.color.R+(a.color.R/5))+","+(a.color.G+(a.color.G/5))+","+(a.color.B+(a.color.B/5))+","+alpha+"); width:"+petperc+"%;\"></div><div class=\"content\" style=\"background-image:url(img/"+a.Job+".png);\"><span class=\"name\"><span class=\"namecover\"><i>"+name+"</i><span class=\"i\">"+a.name+"</span><span class=\"job\">"+lang.get(aclass)+"</span></span></span><span class=\"value\">"+value+"</span></div></div>");
         }
     
         if(!(localStorage.getItem("metro_nameview")=="true"?true:false) && a.name != "YOU" && a.name != "Limit Break")
@@ -265,7 +265,7 @@ function combatCalculator()
     }
     guageSizer();
 
-    if(!existsCombatlog(d.combatKey) && d.encounter.title != "Encounter")
+    if(!existsCombatlog(d.combatKey) && d.Encounter.title != "Encounter")
     {
         addcombatlog(lastCombat);
     }

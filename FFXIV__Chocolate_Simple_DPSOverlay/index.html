@@ -134,22 +134,19 @@
 			<div class="resizer"></div>
 		</div>
 	</body>
-	<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
-	<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket_compat.js"></script>
 	<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
-
-  	<script src="../ffxiv_overlay_corejs/app.js"></script>
+	<script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+	<script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
 	<script>
 		var options = [
-			{v:"{damage} ({encdps} DPS, {dmgPct}%)", k:"mergedDamage"},
-			{v:"{damage} ({encdps} DPS, {dmgPct}%)", k:"mergedDamage"},
-			{v:"{healed} ({enchps} HPS, {healedPct}%)", k:"mergedHealed"},
-			{v:"{validHeal} ({enchps} HPS, CRIT.H {crithealPct}%)", k:"validHeal"},
-			{v:"{invalidHeal} ({OverHPct}%)", k:"invalidHeal"},
+			{v:"{damage} ({encdps} DPS, {damage%}%)", k:"mergedDamage"},
+			{v:"{damage} ({encdps} DPS, {damage%}%)", k:"mergedDamage"},
+			{v:"{healed} ({enchps} HPS, {healed%}%)", k:"mergedHealed"},
+			{v:"{invalidHeal} ({OverHealPct}%)", k:"invalidHeal"},
 			{v:"{mergedDamagetaken} ({mergedHealstaken}, {deaths})", k:"mergedDamagetaken"},
-			{v:"ACC {tohit}%, CRIT.D {crithitPct}%", k:"tohit"},
-			{v:"{maxhit} &lt;{maxHit}&gt;", k:"maxHit"},
-			{v:"{maxheal} &lt;{maxHeal}&gt;", k:"maxHeal"},
+			{v:"ACC {tohit}%, CRIT.D {crithit%}%", k:"tohit"},
+			{v:"{maxhitstr} &lt;{maxhitval}&gt;", k:"maxhitval"},
+			{v:"{maxhealstr} &lt;{maxhealval}&gt;", k:"maxhealval"},
 		];
 	</script>
   	<script src="js/app.js"></script>

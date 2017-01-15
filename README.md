@@ -1,7 +1,8 @@
 # 파이널판타지 14의 ACTWebSocket를 위한 OverlaySkin입니다.
 FinalFantasy XIV Overlayskin for ACTWebSocket
 
-이 스킨들은 ACTWebSocket 1.1을 위한 오버레이 스킨입니다. 하지만 일부 스킨은 RainbowMage의 OverlayPlugin을 지원합니다.
+이 스킨들은 ACTWebSocket 1.1을 위한 오버레이 스킨입니다.<br>
+하지만 일부 스킨은 RainbowMage의 OverlayPlugin을 지원합니다.
 
 불안정하고, 새로운 최신 스킨을 사용해 볼 수 있지만 추천하고 싶지는 않군요.
 

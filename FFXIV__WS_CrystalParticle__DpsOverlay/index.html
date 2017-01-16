@@ -6,6 +6,7 @@
   		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <style>
             /* GLOBAL */
+            @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); /* Support Eng (Jp...i dont know)*/
             * {font-family:"맑은 고딕";}
             html, body {margin:0px; padding:0px;}
 
@@ -25,12 +26,70 @@
             body>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; bottom:0px; color:#FFF; font-size:12px; padding:8px;}
             body>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; box-shadow:0px 0px 1px rgba(0,0,0,0.25);}
             body>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
+
+            body>.data>.combatants {position:fixed; top:48px; left:12px; right:12px; bottom:50px;}
+            body>.data>.combatants>div {font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:12px; right:12px; background:rgba(0,0,0,0.25);}
+            body>.data>.combatants>div:after, body>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+            body>.data>.combatants>div:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
+            body>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+            body>.data>.combatants>div>div {height:20px; color:#FFF;}
+            body>.data>.combatants>div>svg {position:absolute; height:22px; width:7px; left:-7px; top:-1px;}
+            body>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 2px rgba(0,0,0,0.75));}
+            body>.data>.combatants>div>.dat>div {float:left;}
+            body>.data>.combatants>div>.dat>.class {width:20px;}
+            body>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
+            body>.data>.combatants>div>.dat>.name {padding-left:4px;}
+            body>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
+            body>.data>.combatants>div>.dat>.val {float:right; text-align:right;}
+            body>.data>.combatants>div>.border {position:absolute; height:20px; top:-1px; left:0px; right:0px; border-top:1px solid rgba(255,255,255,0.5); border-bottom:1px solid rgba(255,255,255,0.5);}
+
+            body>.data>.combatants>div>.bar {min-width:20px; position:absolute; left:0px; top:0px; z-index:1; background:rgba(0,0,0,0.25); opacity:0.75;}
+            body>.data>.combatants>div>.bar:after, 
+            body>.data>.combatants>div>.bar:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+            body>.data>.combatants>div>.bar:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
+            body>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+
+            /* JobColor */
+            .PLD.bar {background:rgb(186,224,234) !important;}
+            .PLD.bar:after {border-right-color:rgb(186,224,234) !important;}
+            .PLD.bar:before {border-left-color:rgb(186,224,234) !important;}
+
+            .NIN.bar {background:rgb(236,178,186) !important;}
+            .NIN.bar:after {border-right-color:rgb(236,178,186) !important;}
+            .NIN.bar:before {border-left-color:rgb(236,178,186) !important;}
+
+            .BLM.bar {background:rgb(182,151,198) !important;}
+            .BLM.bar:after {border-right-color:rgb(182,151,198) !important;}
+            .BLM.bar:before {border-left-color:rgb(182,151,198) !important;}
+
+            .WAR.bar {background:rgb(192,96,96) !important;}
+            .WAR.bar:after {border-right-color:rgb(192,96,96) !important;}
+            .WAR.bar:before {border-left-color:rgb(192,96,96) !important;}
+
+            .MCH.bar {background:rgb(140,228,209) !important;}
+            .MCH.bar:after {border-right-color:rgb(140,228,209) !important;}
+            .MCH.bar:before {border-left-color:rgb(140,228,209) !important;}
+
+            .WHM.bar {background:rgb(226,219,211) !important;}
+            .WHM.bar:after {border-right-color:rgb(226,219,211) !important;}
+            .WHM.bar:before {border-left-color:rgb(226,219,211) !important;}
+
+            .AST.bar {background:rgb(239,178,124) !important;}
+            .AST.bar:after {border-right-color:rgb(239,178,124) !important;}
+            .AST.bar:before {border-left-color:rgb(239,178,124) !important;}
+
+            .LMB.bar {background:rgb(255,198,0) !important;}
+            .LMB.bar:after {border-right-color:rgb(255,198,0) !important;}
+            .LMB.bar:before {border-left-color:rgb(255,198,0) !important;}
         </style>
     </head>
     <body>
         <div class="data">
             <div class="cont">
                 <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span>▼</span></div>
+            </div>
+            <div class="combatants">
+
             </div>
         </div>
         <div class="menu">
@@ -41,35 +100,41 @@
                 <div class="tab">ACC&amp;CRIT</div>
             </div>
         </div>
-    </body>    
-    <script src="https://cdn.rawgit.com/ZCube/ACTWebSocket/4a89f487b80cd6f031a3f3cadb3564f408343afe/Sample/actwebsocket.js"></script>
+    </body>
     <script>
         var wsUri = "ws://@HOST_PORT@/MiniParse"; 
         /*DO NOT EDIT THIS VALUE*/
     </script>
     <script src="http://act.project.so/r/laiglinne/ffxiv_overlay_corejs/overlaycore1.1.js"></script>
     <script>
-        function myhpconvert(cur, max)
+        function onOverlayDataUpdate(e)
         {
-            var color = "rgb(0,224,0)";
-            maxhp = max;
-            curhp = cur;
+            $(".combatants").html("");
+            for(var i in lastCombat.Combatant)
+            {
+                var c = lastCombat.Combatant[i];
+                if (c.isPet) continue;
+                $(".combatants").append("<div style=\"top:"+(c.rank*24)
+                +"px;\" data-id=\""
+                +c.name
+                +"\"><div class=\"bar "
+                +c.Class
+                +"\"></div><svg><polyline points=\"7,0 0,11 7,22\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1px\"/></svg>"
+                +"<svg style=\"left:auto; right:-7px;\"><polyline points=\"0,0 7,11 0,22\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1px\" /></svg><div class=\"border\"></div><div class=\"dat\"><div class=\"class\"><img src=\"img/"
+                +c.Class
+                +".png\" /></div><div class=\"rank\">"
+                +(c.rank + 1)
+                +". </div><div class=\"name\">"
+                
+                +"</div><div class=\"val\">"
+                +c.encdps
+                +"</div></div>"
+                +"</div>");
 
-            if (maxhp < curhp)
-                curhp = maxhp;
-
-            perc = (curhp / (maxhp * 1.0)).toFixed(2);
-            if(perc > 0.75) color = "rgb(0,224,0)";
-            else if(perc > 0.35 && perc <= 0.75) color = "rgb(255, 192, 0)";
-            else color = "rgb(192, 0, 0)";
-
-            $("#hpbar").css({"width":((320 * perc)+16)+"px", "fill":color});
+                var width = (c[lastCombat.sortkey]/lastCombat.maxValue*100);
+                console.log(width);
+                $("div[data-id=\""+c.name+"\"] .bar").css({"width":width.toFixed(2)+"%"})
+            }
         }
-
-        setInterval(function(){
-            // Battle Auto Recovery
-            curhp = curhp + (maxhp / 100);
-            myhpconvert(curhp, maxhp);
-        }, 3000);
     </script>
 </html>

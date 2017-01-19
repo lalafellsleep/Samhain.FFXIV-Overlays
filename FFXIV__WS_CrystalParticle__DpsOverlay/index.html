@@ -4,185 +4,79 @@
         <title>CrystalParticle DpsOverlay</title>
         <meta charset="UTF-8">
   		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        <style>
-            /* GLOBAL */
-            @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); /* Support Eng (Jp...i dont know)*/
-            * {font-family:"맑은 고딕"; cursor:default;}
-            html, body {margin:0px; padding:0px;}
-            ::-webkit-scrollbar {width:5px;}
-            ::-webkit-scrollbar-track {background:transparent;}
-            ::-webkit-scrollbar-thumb {width:5px; background:#757575; border-radius:3px;}
-
-            /* TAB */
-            body>.menu {position:fixed; left:8px; bottom:8px; right:8px; height:20px;}
-            body>.menu>.tabs {float:left; position:relative; min-width:0px; height:20px; border-radius:10px; padding:0px 20px 0px 20px; line-height:19px; font-size:12px; color:#EDDFC1; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000);}
-            body>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
-            body>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
-            body>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
-            body>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
-            body>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
-            body>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
-            body>.menu>.setting {float:left; width:20px; height:20px; margin-left:8px; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000); border-radius:10px;}
-            body>.menu>.setting>div {width:20px; height:20px;}
-            body>.menu>.setting>div>div {width:20px; height:20px; background-image:url(img/setting.png); background-repeat:no-repeat; background-position:3px 3px; -webkit-filter:drop-shadow(0px -1px 0px #000); cursor:pointer;}
-            body>.menu>.setting>div:hover{background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%) !important;}
-
-            /* DATA */
-            body>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
-            body>.data:after {position:absolute; z-index:-1; left:1px; right:1px; top:1px; bottom:1px; content:" "; background:#000; -webkit-filter:blur(4px); opacity:.5;border-radius:8px;}
-            body>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; color:#FFF; font-size:12px; padding:8px; padding-top:11px; padding-bottom:4px;}
-            body>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; padding-top:1px; padding-bottom:1px;}
-            body>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
-
-            body>.data>.combatants {position:fixed; top:42px; left:12px; right:12px; bottom:50px;}
-            body>.data>.combatants>div {font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:12px; right:12px; background:rgba(0,0,0,0.25);}
-            body>.data>.combatants>div:after, body>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
-            body>.data>.combatants>div:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
-            body>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
-            body>.data>.combatants>div>div {height:20px; color:#FFF;}
-            body>.data>.combatants>div>svg {position:absolute; height:22px; width:7px; left:-7px; top:-1px;}
-            body>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
-            body>.data>.combatants>div>.dat>div {float:left;}
-            body>.data>.combatants>div>.dat>.class {width:20px;}
-            body>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
-            body>.data>.combatants>div>.dat>.name {padding-left:4px;}
-            body>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
-            body>.data>.combatants>div>.dat>.val {float:right; text-align:right; padding-right:5px;}
-            body>.data>.combatants>div>.border {position:absolute; height:20px; top:-1px; left:0px; right:0px;}
-
-            body>.data>.combatants>div>.bar {min-width:20px; width:20px; transition:.5s; position:absolute; left:0px; top:0px; z-index:1; background:rgba(0,0,0,0.25); opacity:0.75;}
-            body>.data>.combatants>div>.bar:after, 
-            body>.data>.combatants>div>.bar:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
-            body>.data>.combatants>div>.bar:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
-            body>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
-            
-            body>.settingwindow {position:fixed; left:4px; top:4px; bottom:32px; right:4px; display:none;}
-            body>.settingwindow>.topleft {position:absolute; top:0px; left:0px; width:16px; height:64px; background:url(img/sel_edge.png);}
-            body>.settingwindow>.topright {position:absolute; top:0px; right:0px; width:16px; height:64px; background:url(img/sel_edge.png); background-position:-16px 0px;}
-            body>.settingwindow>.bottomleft {position:absolute; bottom:0px; left:0px; width:16px; height:32px; background:url(img/sel_edge.png); background-position:0px -64px;}
-            body>.settingwindow>.bottomright {position:absolute; bottom:0px; right:0px; width:16px; height:32px; background:url(img/sel_edge.png); background-position:-16px -64px;}
-
-            body>.settingwindow>.bottom {position:absolute; bottom:0px; left:16px; right:16px; height:48px; background:url(img/sel_h.png); background-position:0px -48px;}
-            body>.settingwindow>.top {position:absolute; top:0px; left:16px; right:16px; height:96px; background:url(img/sel_h.png); background-position:0px 0px;}
-            body>.settingwindow>.left {position:absolute; top:64px; left:0px; bottom:32px; width:16px; background:url(img/sel_v.png); background-position:0px 0px;}
-            body>.settingwindow>.right {position:absolute; top:64px; right:0px; bottom:32px; width:16px; background:url(img/sel_v.png); background-position:-16px 0px;}
-            body>.settingwindow>.center {position:absolute; top:64px; right:16px; bottom:32px; left:16px; background:url(img/sel_hv.png); background-position:0px 0px;}
-
-            body>.settingwindow>.set {position:absolute; z-index:1; top:10px; left:10px; right:10px; bottom:22px;}
-
-            body>.settingwindow>.set>.title {background:url(img/w_line_c.png) repeat-x; background-position:left bottom; height:27px; line-height:22px; color:#C2C2C2; font-size:14px; padding-left:6px; text-shadow:0px 1px 0px rgba(0,0,0,0.75); font-weight:300;}
-            body>.settingwindow>.set>.content {position:absolute; top:32px; bottom:0px; right:0px; left:0px; overflow:auto;}
-            body>.settingwindow>.set>.content>.title {color:#C8C8C8; text-shadow:0px 1px 0px rgba(0,0,0,0.75); font-size:14px; padding-left:8px;}
-
-            body>.settingwindow>.set>.content>.cover {color:#EDDFC1; text-shadow:0px 1px 0px rgba(0,0,0,0.75); font-size:14px; padding-left:24px; height:24px; line-height:24px; position:relative;}
-            body>.settingwindow>.set>.content>.cover>.combobox {transition:.3s; position:absolute; min-width:210px; height:20px; margin-right:4px; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 1px #000); filter:drop-shadow(0px 0px 1px #000); display:inline-block; top:4px; right:1px; border-radius:10px; cursor:pointer; line-height:19px; padding-left:18px; padding-right:5px; color:#FFF;}
-            body>.settingwindow>.set>.content>.cover>.combobox:hover{filter:brightness(1.2) drop-shadow(0px 0px 1px #000); -webkit-filter:brightness(1.2) drop-shadow(0px 0px 1px #000);}
-            body>.settingwindow>.set>.content>.cover>.combobox>*[data=cur] {left:5px; font-size:10px; line-height:19px; display:block; position:absolute; height:18px;}
-            body>.settingwindow>.set>.content>.checkbox {height:20px; font-size:14px; color:#EDDFC1; position:relative; padding-left:24px; line-height:20px; text-shadow:0px 1px 0px rgba(0,0,0,0.75); cursor:pointer; margin-left:20px; width:auto;}
-            body>.settingwindow>.set>.content>.checkbox:hover:after,
-            body>.settingwindow>.set>.content>.checkbox:hover:before {filter:brightness(1.1); -webkit-filter:brightness(1.1);}
-            body>.settingwindow>.set>.content>.checkbox:after {position:absolute; background:url(img/checkbox.png) no-repeat; content:" "; width:16px; height:16px; left:2px; top:2px;}
-
-            body>.settingwindow>.set>.content>.checkbox[data-checked=true]:before {position:absolute; background:url(img/checkbox.png) no-repeat; content:" "; width:16px; height:16px; left:2px; top:2px; background-position:-16px 0px; z-index:2;}
-
-            /* JobColor */
-            .pastell.PLD.bar {background:rgb(186,224,234) !important;}
-            .pastell.PLD.bar:after {border-right-color:rgb(186,224,234) !important;}
-            .pastell.PLD.bar:before {border-left-color:rgb(186,224,234) !important;}
-
-            .pastell.NIN.bar {background:rgb(236,178,186) !important;}
-            .pastell.NIN.bar:after {border-right-color:rgb(236,178,186) !important;}
-            .pastell.NIN.bar:before {border-left-color:rgb(236,178,186) !important;}
-
-            .pastell.BLM.bar {background:rgb(182,151,198) !important;}
-            .pastell.BLM.bar:after {border-right-color:rgb(182,151,198) !important;}
-            .pastell.BLM.bar:before {border-left-color:rgb(182,151,198) !important;}
-
-            .pastell.WAR.bar {background:rgb(192,96,96) !important;}
-            .pastell.WAR.bar:after {border-right-color:rgb(192,96,96) !important;}
-            .pastell.WAR.bar:before {border-left-color:rgb(192,96,96) !important;}
-
-            .pastell.MCH.bar {background:rgb(140,228,209) !important;}
-            .pastell.MCH.bar:after {border-right-color:rgb(140,228,209) !important;}
-            .pastell.MCH.bar:before {border-left-color:rgb(140,228,209) !important;}
-
-            .pastell.WHM.bar {background:rgb(226,219,211) !important;}
-            .pastell.WHM.bar:after {border-right-color:rgb(226,219,211) !important;}
-            .pastell.WHM.bar:before {border-left-color:rgb(226,219,211) !important;}
-
-            .pastell.AST.bar {background:rgb(239,178,124) !important;}
-            .pastell.AST.bar:after {border-right-color:rgb(239,178,124) !important;}
-            .pastell.AST.bar:before {border-left-color:rgb(239,178,124) !important;}
-
-            .pastell.BRD.bar {background:rgb(213,229,156) !important;}
-            .pastell.BRD.bar:after {border-right-color:rgb(213,229,156) !important;}
-            .pastell.BRD.bar:before {border-left-color:rgb(213,229,156) !important;}
-
-            .pastell.DRK.bar {background:rgb(150,90,90) !important;}
-            .pastell.DRK.bar:after {border-right-color:rgb(150,90,90) !important;}
-            .pastell.DRK.bar:before {border-left-color:rgb(150,90,90) !important;}
-
-            .pastell.SMN.bar {background:rgb(123,183,130) !important;}
-            .pastell.SMN.bar:after {border-right-color:rgb(123,183,130) !important;}
-            .pastell.SMN.bar:before {border-left-color:rgb(123,183,130) !important;}
-
-            .pastell.SCH.bar {background:rgb(94,124,229) !important;}
-            .pastell.SCH.bar:after {border-right-color:rgb(94,124,229) !important;}
-            .pastell.SCH.bar:before {border-left-color:rgb(94,124,229) !important;}
-
-            .pastell.MNK.bar {background:rgb(198,172,123) !important;}
-            .pastell.MNK.bar:after {border-right-color:rgb(198,172,123) !important;}
-            .pastell.MNK.bar:before {border-left-color:rgb(198,172,123) !important;}
-
-            .pastell.DRG.bar {background:rgb(163,176,255) !important;}
-            .pastell.DRG.bar:after {border-right-color:rgb(163,176,255) !important;}
-            .pastell.DRG.bar:before {border-left-color:rgb(163,176,255) !important;}
-
-            .pastell.LMB.bar {background:rgb(255,198,0) !important;}
-            .pastell.LMB.bar:after {border-right-color:rgb(255,198,0) !important;}
-            .pastell.LMB.bar:before {border-left-color:rgb(255,198,0) !important;}
-        </style>
+        <link rel="stylesheet" href="./css/prop.css" />
+        <link rel="stylesheet" href="./css/presets.css" />
     </head>
     <body>
-        <div class="data" style="display:none;">
+        <div class="data" style="display:block;">
             <div class="cont">
                 <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span>▼</span></div>
             </div>
             <div class="combatants">
             </div>
         </div>
-        <div class="settingwindow" style="display:block;">
+        <div class="settingwindow" style="display:none;">
             <div class="topleft"></div><div class="top"></div><div class="topright"></div><div class="left"></div><div class="right"></div><div class="bottomleft"></div><div class="bottom"></div><div class="bottomright"></div><div class="center"></div>
             <div class="set">
-                <div class="title">Overlay Setting</div>
+                <div class="title" data-ko="오버레이 설정" data-en="Overlay Setting" data-jp="オーバーレイ設定">Overlay Setting</div>
                 <div class="content">
-                    <div class="title">Localization Setting</div>
+                    <div class="title" data-ko="현지화 설정" data-en="Localization Setting" data-jp="ローカライズ設定">Localization Setting</div>
                     <div class="cover">
-                        <span>Language</span>
-                        <div class="combobox" ><span data="cur">▶</span>English</div>
+                        <span data-ko="언어 (Language)" data-en="Language" data-jp="言語 (Language)">Language</span>
+                        <div class="combobox" data-id="lang" data-items="{'en':{'ko':'English', 'en':'English', 'jp':'English'}, 'ko':{'ko':'한국어', 'en':'한국어', 'jp':'한국어'}, 'jp':{'ko':'日本語', 'en':'日本語', 'jp':'日本語'}}"><span data="cur">▶</span>English</div>
                     </div>
-                    <div class="checkbox" data-id="initialname" data-checked="false">Initial Name (for only Global Server)</div>
-                    <div class="title" style="margin-top:10px;">Style Setting</div>
+                    <div class="checkbox" data-id="initialname" data-checked="false" 
+                    data-ko="이니셜 이름 (글로벌 서버 전용)" 
+                    data-en="Initial Name (Global Server only)" 
+                    data-jp="初期名（グローバルサーバのみ）">Initial Name (Global Server only)</div>
+                    <div class="title" style="margin-top:10px;"
+                    data-ko="소리 설정" 
+                    data-en="Sound Setting" 
+                    data-jp="音の設定">Sound Setting</div>
+                    <div class="checkbox" data-id="soundplay" data-checked="true"
+                    data-ko="효과음 사용" 
+                    data-en="Use Sound Effect" 
+                    data-jp="サウンドエフェクトを使用">Use Sound Effect</div>
+                    <div class="title" style="margin-top:10px;"
+                    data-ko="화면 설정" 
+                    data-en="Display Setting" 
+                    data-jp="表示設定">Display Setting</div>
                     <div class="cover">
-                        <span>Preset</span>
-                        <div class="combobox"><span data="cur">▶</span>Pastell</div>
+                        <span
+                        data-ko="소수점 표시" 
+                        data-en="Decimal Point" 
+                        data-jp="小数点表示">Decimal Point</span>
+                        <div class="combobox" data-id="decimal" data-items="{'v2':{'d':'0.00 (2)'}, 'v1':{'d':'0.0 (1)'}, 'v0':{'d':'0 (0)'}}"><span data="cur">▶</span>0.00 (2)</div>
                     </div>
-                    <div class="title" style="margin-top:10px;">Sound Setting</div>
-                    <div class="checkbox" data-id="soundplay" data-checked="true">Use Sound Effect</div>
-                    <div class="title" style="margin-top:10px;">Visible Setting</div>
-                    <div class="cover">
-                        <span>Decimal Point</span>
-                        <div class="combobox"><span data="cur">▶</span>0.00 (2)</div>
+                    <div class="checkbox" data-id="nickblur" data-checked="true"
+                    data-ko="이름을 블러 처리" 
+                    data-en="Nickname Blur Effect" 
+                    data-jp="ニックネームのぼかし">Nickname Blur Effect</div>
+                    <div class="checkbox" data-id="mergepet" data-checked="true"
+                    data-ko="소환수 합산" 
+                    data-en="Merge Pet" 
+                    data-jp="召喚獣合算">Merge Pet</div>
+                    <div class="checkbox" data-id="usename" data-checked="true"
+                    data-ko="자신의 이름 사용" 
+                    data-en="Using Your Name" 
+                    data-jp="私の名前を使用する">Using Your Name</div>
+                    <div class="title" style="margin-top:10px;"
+                    data-ko="스타일 설정" 
+                    data-en="Style Setting" 
+                    data-jp="スタイル設定">Style Setting</div>
+                    <div class="cover" style="margin-bottom:10px;">
+                        <span
+                        data-ko="프리셋" 
+                        data-en="Preset" 
+                        data-jp="プリセット">Preset</span>
+                        <div class="combobox" data-id="style" data-items="{'pastell':{'d':'Pastell'}, 'original':{'d':'Original'}, 'rolipop':{'d':'Rolipop'}, 'regular':{'d':'Regular'}, 'underbar':{'d':'Underline'}, 'custom':{'ko':'사용자 설정', 'en':'User Custom', 'jp':'ユーザー設定'}}"><span data="cur">▶</span>Pastell</div>
                     </div>
-                    <div class="cover">
-                        <span>Ability Detect Sensitive</span>
-                        <div class="combobox"><span data="cur">▶</span>Disable (Recommended)</div>
-                    </div>
-                    <div class="checkbox" data-id="nickblur" data-checked="true">Nickname Blur</div>
-                    <div class="checkbox" data-id="mergepet" data-checked="true">Merge Pet</div>
-                    <div class="checkbox" data-id="usename" data-checked="true">Using Name (replaced <span>* Sync...</span> to YOU)</div>
                 </div>
             </div>
+        </div>
+        <div class="comboboxitems" style="display:none;">
+            <div>Test Item 1</div>
+            <div>Test Item 2</div>
         </div>
         <div class="menu">
             <!-- TAB CUSTOMIZE Find "function createTabs"-->
@@ -200,124 +94,8 @@
         </div>
     </body>
     <script>
-        var wsUri = "ws://@HOST_PORT@/MiniParse"; 
-        /*DO NOT EDIT THIS VALUE*/
+        var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/
     </script>
     <script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
-    <script>
-        var style = "pastell";
-
-        function Setting()
-        {
-            this.style = "pastell";
-            this.soundplay = true;
-            this.nickblur = true;
-            this.mergepet = true;
-            this.usename = true;
-        };
-
-        var setting = new Setting();
-
-        function playWAV(file)
-        {
-            if (!setting.soundplay) return;
-            var audio = new Audio(file);
-            audio.volume = 0.15;
-            audio.play();
-        }
-
-        function openSet()
-        {
-            if ($(".data").css("display") == "none")
-            {
-                $(".data").show();
-                $(".settingwindow").hide();
-            }
-            else
-            {
-                $(".data").hide();
-                $(".settingwindow").show();
-            }
-        }
-
-        $(".combobox").click(function()
-        {
-            $(this).find("*[data=cur]").html("▼");
-        });
-
-        $(".setting, .combobox").click(function()
-        {
-            playWAV("wav/conf.wav");
-        });
-
-        $(".checkbox, .setting, .combobox").mouseenter(function()
-        {
-            playWAV("wav/hover.wav");
-        });
-
-        $(".checkbox").click(function()
-        {
-            $(this).attr("data-checked", ($(this).attr("data-checked")=="true"?"false":"true"));
-            playWAV("wav/conf.wav");
-
-            setting[$(this).attr("data-id")] = ($(this).attr("data-checked")=="true"?true:false);
-        });
-
-        $(document).ready(function()
-        {
-            $(".checkbox").each(function(){
-                if ($(this).attr("data-checked") != "true")
-                    $(this).attr("data-checked", "false");
-            });
-	        document.addEventListener('onCharacterNameRecive', onCharacterNameRecive);
-        });
-
-        function onCharacterNameRecive(e)
-        {
-            lastCombat.Combatant["YOU"].displayName = e.detail.charName;
-            $("*[data-id=usename]>span").html(e.detail.charName);
-            onOverlayDataUpdate();
-        }
-
-        function onOverlayDataUpdate(e)
-        {
-            $(".encounter").html("["+lastCombat.Encounter.duration+"] "+lastCombat.Encounter.title+" ("+lastCombat.Encounter.encdps+" DPS / "+lastCombat.Encounter.enchps+" HPS) <span>▼</span>");
-
-            $(".combatants").html("");
-            for(var i in lastCombat.Combatant)
-            {
-                var c = lastCombat.Combatant[i];
-                if (c.isPet && lastCombat.summonerMerge) continue;
-
-                $(".combatants").append("<div style=\"top:"+(c.rank*22)
-                +"px;\" data-id=\""
-                +c.name
-                +"\"><div class=\"bar "
-                +c.Class
-                +" "
-                +setting.style
-                +"\"></div><div class=\"border\"></div><div class=\"dat\"><div class=\"class\"><img src=\"img/"
-                +c.Class
-                +".png\" /></div><div class=\"rank\">"
-                +(c.rank + 1)
-                +". </div><div class=\"name\">"
-                +c.displayName
-                +"</div><div class=\"val\">"
-                +c.get("encdps")
-                +"</div></div>"
-                +"</div>");
-
-                if (c.name == "YOU" || c.name == "Limit Break")
-                {
-
-                }
-                else
-                {
-                    $("div[data-id=\""+c.name+"\"] .name").css({"-webkit-filter":"blur(3px)"});
-                }
-                var width = (c.get(lastCombat.sortkey)/lastCombat.maxValue*100);
-                $("div[data-id=\""+c.name+"\"] .bar").css({"width":width.toFixed(2)+"%"});
-            }
-        }
-    </script>
+    <script src="./js/app.js"></script>
 </html>

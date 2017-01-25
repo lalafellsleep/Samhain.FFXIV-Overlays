@@ -2,78 +2,9 @@
 @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); /* Support Eng (Jp...i dont know)*/
 * {font-family:"맑은 고딕"; cursor:default;}
 html, body {margin:0px; padding:0px;}
-::-webkit-scrollbar {width:5px;}
+::-webkit-scrollbar {width:5px; height:5px;}
 ::-webkit-scrollbar-track {background:transparent;}
-::-webkit-scrollbar-thumb {width:5px; background:#757575; border-radius:3px;}
-
-/* TAB (modern) */
-body.modern>.menu {position:fixed; bottom:0px; left:0px; right:0px; height:24px; background:rgba(0,0,0,0.5);}
-body.modern>.menu>.tabs {float:left; font-size:14px; color:#FFF; height:24px; line-height:24px;}
-body.modern>.menu>.tabs:after, body.modern>.menu>.tabs:before {display:none;}
-body.modern>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer;}
-body.modern>.menu>.tabs>.tab:hover {background:rgba(255,255,255,.25);}
-body.modern>.menu>.setting {float:right; width:24px; height:24px; background:rgba(0,0,0,0.5); color:transparent; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:center center;}
-
-/* TAB (ffchat) */
-body.ffchat>.menu {position:fixed; left:8px; bottom:8px; right:8px; height:20px;}
-body.ffchat>.menu>.tabs {float:left; position:relative; min-width:0px; height:20px; border-radius:10px; padding:0px 20px 0px 20px; line-height:19px; font-size:12px; color:#EDDFC1; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000);}
-body.ffchat>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
-body.ffchat>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
-body.ffchat>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
-body.ffchat>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
-body.ffchat>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
-body.ffchat>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
-body.ffchat>.menu>.setting {float:left; width:20px; height:20px; margin-left:8px; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000); border-radius:10px;}
-body.ffchat>.menu>.setting>div {overflow:hidden; width:20px; height:20px; border-radius:10px;}
-body.ffchat>.menu>.setting>div>div {border-radius:10px; width:20px; height:20px; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:3px 3px; -webkit-filter:drop-shadow(0px -1px 0px #000); cursor:pointer;}
-body.ffchat>.menu>.setting>div:hover{border-radius:10px; background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%) !important;}
-
-/* DATA (modern) */
-
-body.modern>.data {position:fixed; left:0px; top:0px; right:0px; bottom:0px;}
-body.modern>.data>.cont {position:absolute; left:0px; top:0px; right:0px; height:32px; background:rgba(0,0,0,0.75); }
-body.modern>.data>.cont>.encounter {font-size:14px; line-height:30px; color:#FFF; padding-left:12px;}
-body.modern>.data>.combatants {position:fixed; top:48px; left:0px; right:0px; bottom:0px;}
-body.modern>.data>.combatants>div {font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:0px; right:0px; background:rgba(0,0,0,0.25);}
-body.modern>.data>.combatants>div>div {height:20px; color:#FFF;}
-body.modern>.data>.combatants>div>svg {position:absolute; height:22px; width:7px; left:-7px; top:-1px;}
-body.modern>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
-body.modern>.data>.combatants>div>.dat>div {float:left;}
-body.modern>.data>.combatants>div>.dat>.class {width:20px; height:20px; margin-left:5px;}
-body.modern>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
-body.modern>.data>.combatants>div>.dat>.name {padding-left:4px;}
-body.modern>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
-body.modern>.data>.combatants>div>.dat>.val {float:right; text-align:right; padding-right:5px;}
-
-/* DATA */
-body.ffchat>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
-body.ffchat>.data>.labels {display:none;}
-body.ffchat>.data>.after {position:fixed; left:8px; top:8px; right:8px; bottom:42px; background:#000; -webkit-filter:blur(4px); opacity:.5; border-radius:8px;}
-body.ffchat>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; color:#FFF; font-size:12px; padding:8px; padding-top:11px; padding-bottom:4px;}
-body.ffchat>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; padding-top:1px; padding-bottom:1px;}
-body.ffchat>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
-
-body.ffchat>.data>.combatants {position:fixed; top:42px; left:12px; right:12px; bottom:50px;}
-body.ffchat>.data>.combatants>div {font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:12px; right:12px; background:rgba(0,0,0,0.05);}
-body.ffchat>.data>.combatants>div:after, body>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
-body.ffchat>.data>.combatants>div:after { border-right:6px solid rgba(0,0,0,0.05); position:absolute; left:-6px; }
-body.ffchat>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.05); position:absolute; right:-6px; }
-body.ffchat>.data>.combatants>div>div {height:20px; color:#FFF;}
-body.ffchat>.data>.combatants>div>svg {position:absolute; height:22px; width:7px; left:-7px; top:-1px;}
-body.ffchat>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
-body.ffchat>.data>.combatants>div>.dat>div {float:left;}
-body.ffchat>.data>.combatants>div>.dat>.class {width:20px;}
-body.ffchat>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
-body.ffchat>.data>.combatants>div>.dat>.name {padding-left:4px;}
-body.ffchat>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
-body.ffchat>.data>.combatants>div>.dat>.val {float:right; text-align:right; padding-right:5px;}
-body.ffchat>.data>.combatants>div>.border {position:absolute; height:20px; top:-1px; left:0px; right:0px;}
-
-body.ffchat>.data>.combatants>div>.bar {min-width:20px; width:20px; transition:.5s; position:absolute; left:0px; top:0px; z-index:1; background:rgba(0,0,0,0.25); opacity:0.75;}
-body.ffchat>.data>.combatants>div>.bar:after, 
-body.ffchat>.data>.combatants>div>.bar:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
-body.ffchat>.data>.combatants>div>.bar:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
-body.ffchat>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+::-webkit-scrollbar-thumb {width:5px; height:5px; background:#757575; border-radius:3px;}
 
 body>.settingwindow {position:fixed; left:4px; top:4px; bottom:0px; right:4px; display:none; z-index:999;}
 body>.settingwindow>.winclose {position:absolute; z-index:99; right:7px; top:7px; background:url(../img/windowa_button.png) no-repeat; width:28px; height:28px;}
@@ -113,7 +44,7 @@ body>.settingwindow>.set>.content>.checkbox:hover:before {filter:brightness(1.1)
 body>.settingwindow>.set>.content>.checkbox:after {position:absolute; background:url(../img/checkbox.png) no-repeat; content:" "; width:16px; height:16px; left:2px; top:2px;}
 
 body>.settingwindow>.set>.content>.checkbox[data-checked=true]:before {position:absolute; background:url(../img/checkbox.png) no-repeat; content:" "; width:16px; height:16px; left:2px; top:2px; background-position:-16px 0px; z-index:2;}
-body>.comboboxitems {min-width:206px; padding:5px; background:#434243; color:#EDDFC1; text-shadow:0px 1px 0px #000; font-size:14px; border-radius:3px; min-height:20px; z-index:9999; position:fixed; box-shadow:inset 0px 1px 1px rgba(255,255,255,.2); -webkit-filter:drop-shadow(0px 2px 1px #000); filter:drop-shadow(0px 2px 1px #000);}
+body>.comboboxitems {min-width:206px; padding:5px; background:#434243; color:#EDDFC1; text-shadow:0px 1px 0px #000; font-size:14px; border-radius:3px; min-height:20px; z-index:9999; position:fixed; box-shadow:inset 0px 1px 1px rgba(255,255,255,.2); filter:drop-shadow(0px 2px 1px #000);}
 body>.comboboxitems>div {padding-left:8px; height:24px; line-height:24px; position:relative; cursor:pointer;}
 body>.comboboxitems>div:hover:after {content:" "; position:absolute; z-index:-1; border-radius:10px; height:20px; left:0px; right:0px; top:3px; filter:blur(1px); -webkit-filter:blur(1px); background:linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 90%);}
 body>.comboboxitems>div.selected:after {content:" "; position:absolute; z-index:-1; border-radius:10px; height:20px; left:0px; right:0px; top:3px; filter:blur(1px); -webkit-filter:blur(1px); background:linear-gradient(to right, #6F5E49 0%, transparent 90%);}
@@ -138,3 +69,119 @@ body>.settingwindow>.set>.content>.preview>div>.bar:after,
 body>.settingwindow>.set>.content>.preview>div>.bar:before { transition:.5s; border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
 body>.settingwindow>.set>.content>.preview>div>.bar:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
 body>.settingwindow>.set>.content>.preview>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+
+/* TAB (ffchat) */
+body.ffchat>.menu {position:fixed; left:8px; bottom:8px; right:8px; height:20px;}
+body.ffchat>.menu>.tabs {float:left; position:relative; min-width:0px; height:20px; border-radius:10px; padding:0px 20px 0px 20px; line-height:19px; font-size:12px; color:#EDDFC1; text-shadow:0px 1px 0px #000; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000);}
+body.ffchat>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
+body.ffchat>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
+body.ffchat>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
+body.ffchat>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
+body.ffchat>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
+body.ffchat>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
+body.ffchat>.menu>.setting {float:left; width:20px; height:20px; margin-left:8px; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000); border-radius:10px;}
+body.ffchat>.menu>.setting>div {overflow:hidden; width:20px; height:20px; border-radius:10px;}
+body.ffchat>.menu>.setting>div>div {border-radius:10px; width:20px; height:20px; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:3px 3px; -webkit-filter:drop-shadow(0px -1px 0px #000); cursor:pointer;}
+body.ffchat>.menu>.setting>div:hover{border-radius:10px; background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%) !important;}
+
+body>.data>.combatants>div>.add {display:none;}
+body>.data>.combatants>div>.dat>.name {overflow:hidden; height:24px;}
+body>.data>.combatants>div>.dat>.val {overflow:hidden; position:absolute; top:0px; right:0px; height:24px;}
+body>.data>.combatants>div>.dat>.val>.dat {float:left; padding-left:5px; padding-right:5px;}
+body>.data>.combatants>div>.dat>.val>.dat:last-child {padding-right:0px;}
+
+/* DATA */
+body.ffchat>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
+body.ffchat>.data>.labels {display:none;}
+body.ffchat>.data>.after {position:fixed; left:8px; top:8px; right:8px; bottom:42px; background:#000; -webkit-filter:blur(4px); opacity:.5; border-radius:8px;}
+body.ffchat>.data>.cont {position:absolute; z-index:1; left:0px; right:0px; top:0px; color:#FFF; font-size:12px; padding:8px; padding-top:11px; padding-bottom:4px;}
+body.ffchat>.data>.cont>.encounter {padding:5px; color:#EDDFC1; text-shadow:0px 1px 0px #000; padding-top:1px; padding-bottom:1px;}
+body.ffchat>.data>.cont>.encounter span {font-size:7px; display:inline-block; transform:scale(.8, .8); margin-left:10px;}
+
+body.ffchat>.data>.combatants {position:fixed; top:42px; left:12px; right:12px; bottom:50px;}
+body.ffchat>.data>.combatants>div {font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:12px; right:12px; background:rgba(0,0,0,0.05);}
+body.ffchat>.data>.combatants>div:after, body>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+body.ffchat>.data>.combatants>div:after { border-right:6px solid rgba(0,0,0,0.05); position:absolute; left:-6px; }
+body.ffchat>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.05); position:absolute; right:-6px; }
+body.ffchat>.data>.combatants>div>div {height:20px; color:#FFF;}
+body.ffchat>.data>.combatants>div>svg {position:absolute; height:22px; width:7px; left:-7px; top:-1px;}
+body.ffchat>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
+body.ffchat>.data>.combatants>div>.dat>div {float:left;}
+body.ffchat>.data>.combatants>div>.dat>.class {width:20px;}
+body.ffchat>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
+body.ffchat>.data>.combatants>div>.dat>.name {padding-left:4px;}
+body.ffchat>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
+body.ffchat>.data>.combatants>div>.dat>.val {float:right; text-align:right; padding-right:5px;}
+body.ffchat>.data>.combatants>div>.border {position:absolute; height:20px; top:-1px; left:0px; right:0px;}
+
+body.ffchat>.data>.combatants>div>.bar {min-width:20px; width:20px; transition:.5s; position:absolute; left:0px; top:0px; z-index:1; background:rgba(0,0,0,0.25); opacity:0.75;}
+body.ffchat>.data>.combatants>div>.bar:after, 
+body.ffchat>.data>.combatants>div>.bar:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+body.ffchat>.data>.combatants>div>.bar:after { border-right:6px solid rgba(0,0,0,0.25); position:absolute; left:-6px; }
+body.ffchat>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+
+/* TAB (modern) */
+body.modern>.menu {position:fixed; bottom:0px; left:0px; right:0px; height:24px; background:rgba(0,0,0,0.5);}
+body.modern>.menu>.tabs {float:left; font-size:14px; color:#FFF; height:24px; line-height:24px;}
+body.modern>.menu>.tabs:after, body.modern>.menu>.tabs:before {display:none;}
+body.modern>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer;}
+body.modern>.menu>.tabs>.tab:hover {background:rgba(255,255,255,.25);}
+body.modern>.menu>.setting {position:fixed; top:0px; right:0px; width:24px; height:32px; background:rgba(0,0,0,0.5); color:transparent; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:center center;}
+
+body.modern>.data {position:fixed; left:0px; top:0px; right:0px; bottom:0px;}
+body.modern>.data>.labels {display:block; background:rgba(0,0,0,1); position:absolute; left:0px; top:32px; height:16px; font-size:11px; color:#FFF; text-align:right; padding-right:5px; right:0px;}
+body.modern>.data>.labels>.cont {position:absolute; right:5px;}
+body.modern>.data>.labels>.cont>div {text-align:center; padding-left:5px; padding-right:5px; float:left;}
+body.modern>.data>.labels>.cont>div:last-child {padding-right:0px;}
+body.modern>.data>.cont {position:absolute; left:0px; top:0px; right:0px; height:32px; background:rgba(0,0,0,0.75); }
+body.modern>.data>.cont>.encounter {font-size:14px; line-height:30px; color:#FFF; padding-left:12px;}
+body.modern>.data>.combatants {position:fixed; top:48px; left:0px; right:0px; bottom:0px;}
+body.modern>.data>.combatants>div {transition:.5s; font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:0px; right:0px; background:rgba(0,0,0,0.25);}
+body.modern>.data>.combatants>div>div {height:20px; color:#FFF;}
+body.modern>.data>.combatants>div>.bar {transition:.5s;}
+body.modern>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
+body.modern>.data>.combatants>div>.dat>div {float:left;}
+body.modern>.data>.combatants>div>.dat>.class {width:20px; height:20px; margin-left:5px;}
+body.modern>.data>.combatants>div>.dat>.class>img {width:20px; height:20px;}
+body.modern>.data>.combatants>div>.dat>.name {padding-left:4px;}
+body.modern>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
+body.modern>.data>.combatants>div>.dat>.val {float:right; text-align:center; padding-right:5px;}
+
+body.fancy>.menu {position:fixed; top:0px; left:0px; right:0px; height:24px;}
+body.fancy>.menu>.tabs {float:left; font-size:14px; color:#FFF; height:24px; line-height:24px;}
+body.fancy>.menu>.tabs:after, 
+body.fancy>.menu>.tabs:before {display:none;}
+body.fancy>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer; background:rgba(0,51,51,.75);}
+body.fancy>.menu>.tabs>.tab:hover {background:rgba(0,78,78,.75);}
+body.fancy>.menu>.setting {position:absolute; right:4px; top:4px; width:18px; height:18px; background:rgba(0,0,0,0.5); filter:brightness(1) drop-shadow(0px 0px 3px rgba(0,0,0,0.5)); border-radius:12px; border:2px solid #033; color:transparent; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:center center;}
+
+body.fancy>.data {position:fixed; left:0px; top:24px; right:0px; bottom:0px;}
+body.fancy>.data>.labels {display:block; background:rgba(0,0,0,1); position:absolute; left:0px; top:24px; height:16px; font-size:11px; color:#FFF; text-align:right; padding-right:13px; right:0px;}
+body.fancy>.data>.labels>.cont {position:absolute; right:13px;}
+body.fancy>.data>.labels>.cont>div {text-align:center; padding-left:5px; padding-right:5px; float:left;}
+body.fancy>.data>.labels>.cont>div:last-child {padding-right:0px;}
+
+body.fancy>.data>.cont {position:absolute; left:0px; top:0px; right:0px; height:24px; background:rgba(0,51,51,0.75); font-size:12px;}
+body.fancy>.data>.cont>.encounter {font-size:12px; line-height:23px; color:#FFF; padding-left:12px;}
+
+body.fancy>.data>.combatants {position:fixed; top:68px; left:0px; right:0px; bottom:0px;}
+body.fancy>.data>.combatants>div {transition:.5s; font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:32px; right:8px; background:rgba(0,0,0,0.25); filter:drop-shadow(0px 0px 3px rgba(0,0,0,0.5));}
+body.fancy>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+body.fancy>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+body.fancy>.data>.combatants>div>div {height:20px; color:#FFF;}
+body.fancy>.data>.combatants>div>.bar {transition:.5s; position:relative; opacity:.75;}
+body.fancy>.data>.combatants>div>.bar>.add {width:8px; height:20px; position:relative; overflow:hidden; left:-8px;}
+body.fancy>.data>.combatants>div>.bar>.add>div {width:30px; height:30px; border:10px solid; content:" "; position:absolute; border-radius:25px; left:-33px; top:-15px;}
+body.fancy>.data>.combatants>div>.bar>.add>div:after {width:30px; height:30px; border:10px solid rgba(0,0,0,.075); content:" "; position:absolute; border-radius:25px; left:-10px; top:-10px;}
+body.fancy>.data>.combatants>div>.bar:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
+body.fancy>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
+body.fancy>.data>.combatants>div>.dat {position:absolute; left:0px; top:0px; right:0px; z-index:999; -webkit-filter:drop-shadow(0px 0px 1px #000);}
+body.fancy>.data>.combatants>div>.dat>div {float:left;}
+body.fancy>.data>.combatants>div>.dat>.class {width:20px; height:20px; margin-left:5px; position:absolute; left:-34px; border:2px solid #FFF; border-radius:12px; top:-2px; overflow:hidden;}
+body.fancy>.data>.combatants>div[data-role=DPS]>.dat>.class {background:rgba(144,0,0,.75);}
+body.fancy>.data>.combatants>div[data-role=Tanker]>.dat>.class {background:rgba(0,0,144,.75);}
+body.fancy>.data>.combatants>div[data-role=Healer]>.dat>.class {background:rgba(0,144,0,.75);}
+body.fancy>.data>.combatants>div>.dat>.class>img {width:20px; height:20px; filter:drop-shadow(0px 0px 2px #000);}
+body.fancy>.data>.combatants>div>.dat>.name {padding-left:4px;}
+body.fancy>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
+body.fancy>.data>.combatants>div>.dat>.val {float:right; text-align:center; padding-right:5px;}

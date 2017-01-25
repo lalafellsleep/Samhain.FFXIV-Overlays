@@ -10,6 +10,9 @@
     <body>
         <div class="data" style="display:block;">
             <div class="after"></div>
+            <div class="labels">
+                <div class="cont"></div>
+            </div>
             <div class="cont">
                 <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span></span></div>
             </div>
@@ -58,6 +61,8 @@
                         <span data-ko="언어 (Language)" data-en="Language" data-jp="言語 (Language)">Language</span>
                         <div class="combobox" data-id="lang" data-items="{'en':{'ko':'English', 'en':'English', 'jp':'English'}, 'ko':{'ko':'한국어', 'en':'한국어', 'jp':'한국어'}, 'jp':{'ko':'日本語', 'en':'日本語', 'jp':'日本語'}}"><span data="cur">▶</span>English</div>
                     </div>
+                    <div class="title" data-ko="초기화" data-en="Reset" data-jp="初期化">Reset</div>
+                    <div class="button" onclick="setting.setDefault(true); location.href = location.href;">초기화</div>
                 </div>
                 <div class="content" style="display:none;" data-tab="sound">
                     <div class="title"
@@ -82,7 +87,7 @@
                         data-ko="프리셋" 
                         data-en="Preset" 
                         data-jp="プリセット">Preset</span>
-                        <div class="combobox" data-id="backstyle" data-items="{'ffchat':{'ko':'게임 채팅 스타일', 'en':'Chatting Window Style', 'jp':'チャットスタイル'}, 'modern':{'ko':'모던', 'en':'Modern', 'jp':'モダン'} , 'custom':{'ko':'사용자 설정', 'en':'User Custom', 'jp':'ユーザー設定'}}"><span data="cur">▶</span>Pastell</div>
+                        <div class="combobox" data-id="backstyle" data-items="{'ffchat':{'ko':'게임 채팅 스타일', 'en':'Chatting Window Style', 'jp':'チャットスタイル'}, 'modern':{'ko':'모던', 'en':'Modern', 'jp':'モダン'}, 'fancy':{'ko':'팬시', 'en':'Fancy', 'jp':'ファンシー'}}"><span data="cur">▶</span>Pastell</div>
                     </div>
                     <div class="title"
                     data-ko="막대 스타일 설정" 
@@ -93,7 +98,7 @@
                         data-ko="프리셋" 
                         data-en="Preset" 
                         data-jp="プリセット">Preset</span>
-                        <div class="combobox" data-id="style" data-items="{'pastell':{'d':'Pastell'}, 'original':{'d':'Original'}, 'rolipop':{'d':'Rolipop'}, 'regular':{'d':'Regular'}, 'underbar':{'d':'Underline'}, 'custom':{'ko':'사용자 설정', 'en':'User Custom', 'jp':'ユーザー設定'}}"><span data="cur">▶</span>Pastell</div>
+                        <div class="combobox" data-id="style" data-items="{'pastell':{'d':'Pastell'}, 'original':{'d':'Original'}, 'rolipop':{'d':'Rolipop'}, 'regular':{'d':'Regular'}, 'fancy':{'d':'Fancy'}, 'underbar':{'d':'Underline'}, 'custom':{'ko':'사용자 설정', 'en':'User Custom', 'jp':'ユーザー設定'}}"><span data="cur">▶</span>Pastell</div>
                     </div>
                     <div class="title"
                     data-ko="미리보기" 
@@ -137,6 +142,7 @@
                             </div>
                         </div>
                     </div>
+                    <div id="editor" style="width:100%; min-height:250px; margin-top:5px; position:relative;"></div>
                 </div>
             </div>
         </div>
@@ -156,11 +162,62 @@
             </div>
         </div>
     </body>
+    <style>
+        #editor{font-family:'Consolas' !important;}
+        #editor * {font-family:'Consolas' !important;}
+    </style>
+    <style id="custom">
+
+    </style>
     <script>
         var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/
         //$(".data").hide();
         //$(".settingwindow").show();
     </script>
     <script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/ace/1.2.6/min/ace.js"></script>
+    <script>
+        Debug.debug = false;
+        var set = loadSetting("crystalparticle_setting");
+
+        set.tab = {
+            "DPS":{label:"DPS", data:[
+                {"tag":"DPS", "data":"{encdps}", width:50},
+                {"tag":"DAMAGE", "data":"{damage}", width:50, fixed:0},
+                {"tag":"D%", "data":"{damage%}%", width:30, fixed:0},
+                {"tag":"SWING", "data":"{swings}", width:40, fixed:0},
+                {"tag":"MISS", "data":"{misses}", width:40, fixed:0},
+                {"tag":"D.CRIT", "data":"{crithit%}%", width:40, fixed:0},
+                {"tag":"DEATH", "data":"{deaths}", width:40, fixed:0},
+                //{"tag":"MXHIT", "data":"{maxhitstr} &lt;{maxhitval}&gt;", width:160},
+            ], sort:"encdps"},
+            "HEALER":{label:"HEALER", data:[
+                {"tag":"HPS", "data":"{enchps}", width:50},
+                {"tag":"HEALED", "data":"{healed}", width:50, fixed:0},
+                {"tag":"Ov.H", "data":"{overHeal}", width:40, fixed:0},
+                {"tag":"H%", "data":"{healed%}%", width:30, fixed:0},
+                {"tag":"HEALS", "data":"{heals}", width:40, fixed:0},
+                {"tag":"ABSORB", "data":"{absorbHeal}", width:40, fixed:0},
+                {"tag":"DEATH", "data":"{deaths}", width:40, fixed:0},
+                //{"tag":"MXHIT", "data":"{maxhitstr} &lt;{maxhitval}&gt;", width:160},
+            ], sort:"enchps"},
+        };
+
+        saveSetting("crystalparticle_setting", set);
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/css");
+        editor.getSession().on('change',function(e){
+            var set = loadSetting("crystalparticle_setting");
+
+            set.customcss = editor.getValue().replace(/(\r|\n)/ig, "");
+            $("#custom").html(set.customcss.replace(/(\r|\n)/ig, ""));
+            saveSetting("crystalparticle_setting", set);
+        });
+
+        editor.setValue(set.customcss.replace(/}/ig, "}\r\n"));
+        $("#custom").html(set.customcss.replace(/(\r|\n)/ig, ""));
+    </script>
     <script src="./js/app.js"></script>
 </html>

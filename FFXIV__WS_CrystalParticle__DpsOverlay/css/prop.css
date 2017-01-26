@@ -84,12 +84,6 @@ body.ffchat>.menu>.setting>div {overflow:hidden; width:20px; height:20px; border
 body.ffchat>.menu>.setting>div>div {border-radius:10px; width:20px; height:20px; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:3px 3px; -webkit-filter:drop-shadow(0px -1px 0px #000); cursor:pointer;}
 body.ffchat>.menu>.setting>div:hover{border-radius:10px; background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%) !important;}
 
-body>.data>.combatants>div>.add {display:none;}
-body>.data>.combatants>div>.dat>.name {overflow:hidden; height:24px;}
-body>.data>.combatants>div>.dat>.val {overflow:hidden; position:absolute; top:0px; right:0px; height:24px;}
-body>.data>.combatants>div>.dat>.val>.dat {float:left; padding-left:5px; padding-right:5px;}
-body>.data>.combatants>div>.dat>.val>.dat:last-child {padding-right:0px;}
-
 /* DATA */
 body.ffchat>.data {position:fixed; left:8px; top:8px; right:8px; bottom:42px;}
 body.ffchat>.data>.labels {display:none;}
@@ -151,8 +145,9 @@ body.fancy>.menu {position:fixed; top:0px; left:0px; right:0px; height:24px;}
 body.fancy>.menu>.tabs {float:left; font-size:14px; color:#FFF; height:24px; line-height:24px;}
 body.fancy>.menu>.tabs:after, 
 body.fancy>.menu>.tabs:before {display:none;}
-body.fancy>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer; background:rgba(0,51,51,.75);}
+body.fancy>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer; background:rgba(0,36,36,.75);}
 body.fancy>.menu>.tabs>.tab:hover {background:rgba(0,78,78,.75);}
+body.fancy>.menu>.tabs>.selected {background:rgba(0,51,51,.75);}
 body.fancy>.menu>.setting {position:absolute; right:4px; top:4px; width:18px; height:18px; background:rgba(0,0,0,0.5); filter:brightness(1) drop-shadow(0px 0px 3px rgba(0,0,0,0.5)); border-radius:12px; border:2px solid #033; color:transparent; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:center center;}
 
 body.fancy>.data {position:fixed; left:0px; top:24px; right:0px; bottom:0px;}
@@ -185,3 +180,9 @@ body.fancy>.data>.combatants>div>.dat>.class>img {width:20px; height:20px; filte
 body.fancy>.data>.combatants>div>.dat>.name {padding-left:4px;}
 body.fancy>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
 body.fancy>.data>.combatants>div>.dat>.val {float:right; text-align:center; padding-right:5px;}
+
+body>.data>.combatants>div>.add {display:none;}
+body>.data>.combatants>div>.dat>.name {overflow:hidden; height:20px;}
+body>.data>.combatants>div>.dat>.val {overflow:hidden; position:absolute; top:0px; right:0px; height:24px;}
+body>.data>.combatants>div>.dat>.val>.dat {float:left; padding-left:5px; padding-right:5px;}
+body>.data>.combatants>div>.dat>.val>.dat:last-child {padding-right:0px;}

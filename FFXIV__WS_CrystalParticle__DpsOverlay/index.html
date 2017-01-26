@@ -176,9 +176,15 @@
     </script>
     <script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
     <script src="https://cdn.jsdelivr.net/ace/1.2.6/min/ace.js"></script>
+    <script src="./js/setting.js"></script>
     <script>
         Debug.debug = false;
         var set = loadSetting("crystalparticle_setting");
+
+        if (set == "" || set == undefined)
+        {
+            set = new Setting();
+        }
 
         set.tab = {
             "DPS":{label:"DPS", data:[

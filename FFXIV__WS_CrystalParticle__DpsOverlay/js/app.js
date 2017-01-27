@@ -174,6 +174,8 @@ function onOverlayDataUpdate(e)
     lastarea = lastCombat.Encounter.CurrentZoneName;
     lastCombat.rerank(sortKey, true);
 
+    var rank = 99;
+
     for(var i in lastCombat.Combatant)
     {
         var c = lastCombat.Combatant[i];
@@ -207,11 +209,13 @@ function onOverlayDataUpdate(e)
             $(".combatants").append(html);
         }
         
+        var add = 0;
         var obj = "div[data-uid=\""+c.name+"\"] ";
         var toppx = 21;
 
         if (setting.backstyle == "fancy") 
         {
+            add = 4;
             toppx = 24;
         }
         var rgbget = $(obj+" div[data=bar]").css("background");
@@ -239,7 +243,7 @@ function onOverlayDataUpdate(e)
 
         $(obj).removeClass();
         $(obj).addClass(setting.style);
-        $(obj).css({"top":(c.rank * toppx)+"px"});
+        $(obj).css({"top":((c.rank * toppx)+add)+"px", "z-index":(rank - c.rank)});
         $(obj+" div[data=bar]").removeClass();
         $(obj+" div[data=bar]").addClass("bar");
         $(obj+" div[data=bar]").addClass(c.Class);
@@ -351,7 +355,14 @@ function resizeName()
         var mid = $(this).find(".class").width();
         var w = $(this).width();
 
-        $(this).find(".name").width(w - $(this).find(".val").width());
+        if (setting.backstyle == "fancy")
+        {
+            $(this).find(".name").width(w - ($(this).find(".val").width()));
+        }
+        else
+        {
+            $(this).find(".name").width(w - ($(this).find(".val").width() + 24));
+        }
     });
 }
 

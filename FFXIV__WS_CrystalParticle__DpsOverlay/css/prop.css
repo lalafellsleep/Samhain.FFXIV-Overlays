@@ -6,6 +6,8 @@ html, body {margin:0px; padding:0px;}
 ::-webkit-scrollbar-track {background:transparent;}
 ::-webkit-scrollbar-thumb {width:5px; height:5px; background:#757575; border-radius:3px;}
 
+body>.data>.combatants>div>.add {display:none;}
+
 body>.settingwindow {position:fixed; left:4px; top:4px; bottom:0px; right:4px; display:none; z-index:999;}
 body>.settingwindow>.winclose {position:absolute; z-index:99; right:7px; top:7px; background:url(../img/windowa_button.png) no-repeat; width:28px; height:28px;}
 body>.settingwindow>.topleft {position:absolute; top:0px; left:0px; width:16px; height:64px; background:url(../img/sel_edge.png);}
@@ -76,9 +78,10 @@ body.ffchat>.menu>.tabs {float:left; position:relative; min-width:0px; height:20
 body.ffchat>.menu>.tabs:after, body>.menu>.tabs:before {position:absolute; top:0px; content:" "; box-sizing:border-box; width:20px; height:20px;}
 body.ffchat>.menu>.tabs:after {left:0px; box-shadow:inset -1px 0px 0px rgba(255,255,255,.15); border-right:1px solid rgba(0,0,0,0.2);}
 body.ffchat>.menu>.tabs:before {right:0px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15); border-left:1px solid rgba(0,0,0,0.2);}
-body.ffchat>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left;}
+body.ffchat>.menu>.tabs>.tab {padding:0px 11px 0px 11px; border:1px solid rgba(255,255,255,.15); border-width:0px 1px 0px 1px; height:20px; cursor:pointer; float:left; position:relative;}
 body.ffchat>.menu>.tabs>.tab:not(:first-child) {border-left:1px solid rgba(0,0,0,0.2); padding-left:12px; box-shadow:inset 1px 0px 0px rgba(255,255,255,.15);}
 body.ffchat>.menu>.tabs>.tab:hover {background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.1) 100%);}
+body.ffchat>.menu>.tabs>.selected:after {background:#FFF; left:3px; top:4px; width:5px; height:5px; border-radius:60%; box-shadow:1px 1px 3px #8C6110, -1px -1px 3px #8C6110, 1px -1px 3px #8C6110, -1px 1px 3px #8C6110; content:" "; position:absolute;}
 body.ffchat>.menu>.setting {float:left; width:20px; height:20px; margin-left:8px; background:linear-gradient(to bottom, #5C5C5C 0%, #4B4B4B 50%, #333333 50%, #434343 100%); box-shadow:inset 0px 1px 0px rgba(255,255,255,.3), 0px 1px 0px rgba(0,0,0,0.5); -webkit-filter:drop-shadow(0px 0px 2px #000); border-radius:10px;}
 body.ffchat>.menu>.setting>div {overflow:hidden; width:20px; height:20px; border-radius:10px;}
 body.ffchat>.menu>.setting>div>div {border-radius:10px; width:20px; height:20px; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:3px 3px; -webkit-filter:drop-shadow(0px -1px 0px #000); cursor:pointer;}
@@ -118,8 +121,10 @@ body.ffchat>.data>.combatants>div>.bar:before { border-left:6px solid rgba(0,0,0
 body.modern>.menu {position:fixed; bottom:0px; left:0px; right:0px; height:24px; background:rgba(0,0,0,0.5);}
 body.modern>.menu>.tabs {float:left; font-size:14px; color:#FFF; height:24px; line-height:24px;}
 body.modern>.menu>.tabs:after, body.modern>.menu>.tabs:before {display:none;}
-body.modern>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer;}
+body.modern>.menu>.tabs>.tab {float:left; padding-left:10px; padding-right:10px; cursor:pointer; position:relative;}
 body.modern>.menu>.tabs>.tab:hover {background:rgba(255,255,255,.25);}
+body.modern>.menu>.tabs>.tab:after {display:none;}
+body.modern>.menu>.tabs>.selected:after {display:block; background:#FFF; left:3px; top:4px; width:5px; height:5px; border-radius:60%; box-shadow:1px 1px 3px #8C6110, -1px -1px 3px #8C6110, 1px -1px 3px #8C6110, -1px 1px 3px #8C6110; content:" "; position:absolute;}
 body.modern>.menu>.setting {position:fixed; top:0px; right:0px; width:24px; height:32px; background:rgba(0,0,0,0.5); color:transparent; background-image:url(../img/setting.png); background-repeat:no-repeat; background-position:center center;}
 
 body.modern>.data {position:fixed; left:0px; top:0px; right:0px; bottom:0px;}
@@ -160,7 +165,7 @@ body.fancy>.data>.cont {position:absolute; left:0px; top:0px; right:0px; height:
 body.fancy>.data>.cont>.encounter {font-size:12px; line-height:23px; color:#FFF; padding-left:12px;}
 
 body.fancy>.data>.combatants {position:fixed; top:68px; left:0px; right:0px; bottom:0px;}
-body.fancy>.data>.combatants>div {transition:.5s; font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:32px; right:8px; background:rgba(0,0,0,0.25); filter:drop-shadow(0px 0px 3px rgba(0,0,0,0.5));}
+body.fancy>.data>.combatants>div {transition:.5s; font-size:13px; font-family:"Noto Sans KR"; height:20px; position:absolute; line-height:19px; left:36px; right:12px; background:rgba(0,0,0,0.25); filter:drop-shadow(0px 0px 3px rgba(0,0,0,0.5));}
 body.fancy>.data>.combatants>div:before { border:10px solid transparent; border-left:6px; border-right:6px; content:" "; top:0px;}
 body.fancy>.data>.combatants>div:before { border-left:6px solid rgba(0,0,0,0.25); position:absolute; right:-6px; }
 body.fancy>.data>.combatants>div>div {height:20px; color:#FFF;}
@@ -181,7 +186,7 @@ body.fancy>.data>.combatants>div>.dat>.name {padding-left:4px;}
 body.fancy>.data>.combatants>div>.dat>.rank {width:18px; text-align:right;}
 body.fancy>.data>.combatants>div>.dat>.val {float:right; text-align:center; padding-right:5px;}
 
-body>.data>.combatants>div>.add {display:none;}
+body>.data>.combatants {overflow:auto;}
 body>.data>.combatants>div>.dat>.name {overflow:hidden; height:20px;}
 body>.data>.combatants>div>.dat>.val {overflow:hidden; position:absolute; top:0px; right:0px; height:24px;}
 body>.data>.combatants>div>.dat>.val>.dat {float:left; padding-left:5px; padding-right:5px;}

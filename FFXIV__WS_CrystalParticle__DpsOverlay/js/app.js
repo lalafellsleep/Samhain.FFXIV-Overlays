@@ -166,7 +166,7 @@ function onOverlayDataUpdate(e)
         $(".combatants").html("");
     }
 
-    if (this.mergepet)
+    if (setting.mergepet)
         lastCombat.AttachPets();
     else
         lastCombat.DetachPets();
@@ -175,6 +175,8 @@ function onOverlayDataUpdate(e)
     lastCombat.rerank(sortKey, true);
 
     var rank = 99;
+
+    lastCombat.Combatant["YOU"].displayName = myName;
 
     for(var i in lastCombat.Combatant)
     {
@@ -218,6 +220,10 @@ function onOverlayDataUpdate(e)
             add = 4;
             toppx = 24;
         }
+        else if (setting.backstyle == "ffchat")
+        {
+            toppx = 22;
+        }
         var rgbget = $(obj+" div[data=bar]").css("background");
         var regex = /(rgb\((.*?),(.*?),(.*?)\)|rgba\((.*?),(.*?),(.*?),(.*?)\))/ig;
         var match = rgbget.match(regex);
@@ -243,6 +249,7 @@ function onOverlayDataUpdate(e)
 
         $(obj).removeClass();
         $(obj).addClass(setting.style);
+        $(obj).attr("data-role", c.role);
         $(obj).css({"top":((c.rank * toppx)+add)+"px", "z-index":(rank - c.rank)});
         $(obj+" div[data=bar]").removeClass();
         $(obj+" div[data=bar]").addClass("bar");

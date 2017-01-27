@@ -5,6 +5,7 @@ function Setting()
 
 Setting.prototype.setDefault = function(b)
 {
+    this.useanim = false;
     this.backstyle = "ffchat";
     this.initialname = false;
     this.soundplay = true;
@@ -42,6 +43,9 @@ Setting.prototype.set = function(key, val)
     
     switch(key)
     {
+        case "useanim":
+            $("body").attr("data-anim", val);
+            break;
         case "style":
             $(".preview>div").removeClass();
 
@@ -94,6 +98,7 @@ Setting.prototype.set = function(key, val)
             break;
         case "backstyle":
             $("body").removeClass().addClass(val);
+            $(".data>.combatants").html("");
             break;
     }
 
@@ -126,7 +131,6 @@ Setting.prototype.set = function(key, val)
     }
 
     localStorage.setItem("crystalparticle_setting", JSON.stringify(this));
-    
     if (lastCombat != null)
         onOverlayDataUpdate();
 }

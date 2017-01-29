@@ -176,7 +176,8 @@ function onOverlayDataUpdate(e)
 
     var rank = 99;
 
-    lastCombat.Combatant["YOU"].displayName = myName;
+    if (myName != undefined)
+        lastCombat.Combatant["YOU"].displayName = myName;
 
     for(var i in lastCombat.Combatant)
     {

@@ -3,12 +3,15 @@ Updated for Stormblood, RDM + SAM added. Only the .css files icons need to be ch
 
 
 #Randy Sample (Pink DPS)
+
 ![](http://puu.sh/sFWfy/04c8439c71.jpg)
 
 #Regular Colours
+
 ![](https://puu.sh/sFU3c/5caca5a424.jpg)
 
 #Class Specific Colours
+
 ![](https://puu.sh/sFV5P/b99a5b9f1e.jpg)
 
 

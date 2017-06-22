@@ -606,29 +606,29 @@ li:last-child
 {
     border-color: transparent transparent transparent rgb(112, 165, 249);
 }
-.show-job-colors .rdm .bar,
+.show-job-colors .rdm .bar
 {
     background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
     box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
-.show-job-colors .rdm .bar::after,
+.show-job-colors .rdm .bar::after
 {
     border-color: transparent rgb(226, 104, 104) transparent transparent;
 }
-.show-job-colors .rdm .bar::before,
+.show-job-colors .rdm .bar::before
 {
     border-color: transparent transparent transparent rgb(226, 104, 104);
 }
-.show-job-colors .sam .bar,
+.show-job-colors .sam .bar
 {
     background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
     box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
-.show-job-colors .sam .bar::after,
+.show-job-colors .sam .bar::after
 {
     border-color: transparent rgb(226, 104, 104) transparent transparent;
 }
-.show-job-colors .sam .bar::before,
+.show-job-colors .sam .bar::before
 {
     border-color: transparent transparent transparent rgb(226, 104, 104);
 }

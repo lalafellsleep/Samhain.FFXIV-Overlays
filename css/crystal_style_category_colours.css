@@ -519,7 +519,6 @@ li:last-child
 .show-job-colors .궁술사 .bar,
 .show-job-colors .음유시인 .bar 
 {
-    /*background: rgb(180, 200, 80);*/
     background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
     box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
@@ -607,6 +606,32 @@ li:last-child
 {
     border-color: transparent transparent transparent rgb(112, 165, 249);
 }
+.show-job-colors .rdm .bar,
+{
+    background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .rdm .bar::after,
+{
+    border-color: transparent rgb(226, 104, 104) transparent transparent;
+}
+.show-job-colors .rdm .bar::before,
+{
+    border-color: transparent transparent transparent rgb(226, 104, 104);
+}
+.show-job-colors .sam .bar,
+{
+    background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .sam .bar::after,
+{
+    border-color: transparent rgb(226, 104, 104) transparent transparent;
+}
+.show-job-colors .sam .bar::before,
+{
+    border-color: transparent transparent transparent rgb(226, 104, 104);
+}
 /* JOB ONLY (no class) */
 .job-icon *
 {
@@ -640,7 +665,9 @@ li:last-child
 {
     -webkit-filter: hue-rotate(285deg);
 }
-.job-icon>.음유시인 
+.job-icon>.음유시인,
+.job-icon>.rdm,
+.job-icon>.sam 
 {
     -webkit-filter: hue-rotate(30deg);
 }

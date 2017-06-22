@@ -485,18 +485,18 @@ li:last-child
     border-color: transparent transparent transparent rgb(105, 224, 145);
 }
 .show-job-colors .주술사 .bar,
-.show-job-colors .흑마도사 .bar,
+.show-job-colors .흑마도사 .bar
 {
     background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
     box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
 .show-job-colors .주술사 .bar::after,
-.show-job-colors .흑마도사 .bar::after,
+.show-job-colors .흑마도사 .bar::after
 {
     border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .주술사 .bar::before,
-.show-job-colors .흑마도사 .bar::before,
+.show-job-colors .흑마도사 .bar::before
 {
     border-color: transparent transparent transparent rgb(229, 144, 187);
 }

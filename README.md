@@ -1,3 +1,7 @@
+Updated for Stormblood, RDM + SAM added. Only the .css files icons need to be changed.
+
+
+
 #Randy Sample (Pink DPS)
 ![](http://puu.sh/sFWfy/04c8439c71.jpg)
 

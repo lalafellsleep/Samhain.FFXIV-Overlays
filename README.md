@@ -1,2 +1,13 @@
-# 현재 이 리포지토리는 본인이 관리하고 있지 않습니다.
-# 이슈를 제보해도 반영이 느릴 수 있습니다.
+#  Project: The Stone
+> ~~Garu Banana~~
+
+FFXIV Overlay Theme : The Stone (Gemstone)<br>
+If you find FFXIV Overlays, look subfolders.<br>
+Subproject name is same folder name.<br>
+<br>
+
+ - [Fancy Detail: Amethyst Edition](https://github.com/laiglinne-ff/Project_TheStone/tree/master/Amethyst)
+ - [The Gemstone: Garnet](https://github.com/laiglinne-ff/Project_TheStone/tree/master/Dev/Garnet_Overlay)
+
+Included [Cleave-ORE](https://github.com/laiglinne-ff/FFXIV_Chamsucript)<br>
+![cleaveore logo](https://github.com/laiglinne-ff/Project_TheStone/blob/master/Attributes/cleaveore.png)

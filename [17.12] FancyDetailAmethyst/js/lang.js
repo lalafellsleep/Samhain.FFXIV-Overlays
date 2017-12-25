@@ -1,12 +1,5 @@
 var userLang = "en";
 userLang = navigator.language || navigator.userLanguage; 
-
-if(userLang == "ko" || userLang == "ko-KR" || userLang == "ko-Kr")
-{
-	userLang = "en"; // ah... ffxiv kr ha daijina koto wo hikeki dakara anataha mo sekutu dekinaindesu...
-	//
-}
-
 var languagePack = {
 	"ko":{
 		"lang":"한국어 (자동 감지)",
@@ -73,7 +66,9 @@ var languagePack = {
 			"fontsize":"폰트 크기",
 
 			"columnset":"항목 설정",
-			"setting-in-out":"설정 내보내기/들여오기"
+			"setting-in-out":"설정 내보내기/들여오기",
+			"overlayinfo":"오버레이 정보",
+			"topbgcolor":"헤더 색상"
 		},
 		"html":{
 			"lang-setting":"설정"
@@ -99,7 +94,8 @@ var languagePack = {
 			"set-col":"표시 항목 설정",
 			"set-gnb":"막대 일반 설정",
 			"set-adb":"막대 상세 설정",
-			"set-xim":"설정 내보내기/들여오기"
+			"set-xim":"설정 내보내기/들여오기",
+			"set-inf":"오버레이 정보"
 		},
 		"columns":{
 			"encdps":"DPS",

@@ -608,6 +608,10 @@ if (set != null)
 			localStorage.setItem("fancyColorpalette", v);
 
 			$this.find(".palette").prepend('<div class="citems" style="background-color:' + This.rgba2str(x) + ';"></div>');
+			$(".colorEditor_v2 .palette>.citems").click(function(e)
+			{
+				$this.openColorEditor(this, true);
+			});
 		}
 
 		this.acceptColor = function(color, sender)

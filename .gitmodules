@@ -1,4 +1,4 @@
-[submodule "Samhain.Cleave-ORE.js"]
-	path = Samhain.Cleave-ORE
+[submodule "Samhain.FFXIV-CleaveORE"]
+	path = Samhain.FFXIV-CleaveORE
 	url = https://github.com/laiglinne-ff/ffxiv_overlay_corejs
 	branch = master

@@ -4,10 +4,13 @@
 	<title>Fancy Detail Setting Window</title>
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="js/jquery-ui.min.js"></script>
-	<link href="//fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet" />
+
+	<link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/css?family=Aldrich" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
 	<link href="css/setting.css" rel="stylesheet" />
+	<link href="css/colorEditor.css" rel="stylesheet" />
 </head>
 <body>
 	<div class="header" id="lang-setting">Setting</div>
@@ -118,14 +121,12 @@
 					<img src="image/trillion.svg" width="100" style="filter:drop-shadow(0px 0px 2px #000); -webkit-filter:drop-shadow(0px 0px 2px #000);"/>
 					<div style="text-align:center; font-size:16px; font-weight:bold; color:#9C77D5;">AMETHYST EDITION</div>
 					<div style="text-align:center;"><a href="https://github.com/laiglinne-ff/Project_TheStone/blob/master/LICENSE" target="_blank" style="display:inline-block; font-size:13px; text-decoration:none; border:1px solid #9C77D5; padding:2px; color:#9C77D5; padding-left:12px; padding-right:12px; border-radius:2px; margin-top:5px;">GNU GPL v3.0</a></div>
-					<div style="margin-left:40px; margin-right:40px; padding:5px; text-align:center; border-top:2px solid #9C77D5; border-bottom:2px solid #9C77D5; margin-top:30px; text-align:center; color:#9C77D5;"><span style="font-size:12px;">Current Version</span><br><b>Square cushion cut</b><br>v1.2<br><br>
-					<span style="font-size:13px;"><b>12/13 2017</b><br>
-						Patch ColorPicker bugs and UI,<br>
-						you can save color to palette.<br>
-						and Overlay Header Customize now available!<br>
-						additional things
-					</span>	
-					<br><br>
+					<div style="margin-left:40px; margin-right:40px; padding:5px; text-align:center; border-top:2px solid #9C77D5; border-bottom:2px solid #9C77D5; margin-top:30px; text-align:center; color:#9C77D5;"><span style="font-size:12px;">Current Version</span><br><b>Getting over it</b><br>v1.3<br><br>
+					<div style="font-size:13px;">
+						<b>12/26 2017</b><br>
+						<div class="listitem">Fixed Column Edit bug</div>
+					</div>
+					<br>
 					<span style="font-size:12px;">Main Programmer</span><br><b>Laighlinne</b><br><br>
 						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 							<input type="hidden" name="cmd" value="_s-xclick">
@@ -138,6 +139,15 @@
 					<div style="margin-left:40px; margin-right:40px; padding:5px; text-align:center; border-top:2px solid #9C77D5; border-bottom:2px solid #9C77D5; margin-top:30px; text-align:center; color:#9C77D5;">
 						<b style="font-size:18px;">Patch Informations</b><br>
 						<br>
+						<b>Square cushion cut <span style="font-size:12px;">v1.2</span></b><br>
+						<b style="font-size:13px;">12/08 2017</b><br>
+						<span style="font-size:13px;">
+							Patch ColorPicker bugs and UI,<br>
+							you can save color to palette.<br>
+							and Overlay Header Customize now available!<br>
+							additional things
+						</span>
+						<br><br>
 						<b>Shield Cut <span style="font-size:12px;">v1.1</span></b><br>
 						<b style="font-size:13px;">12/09 2017</b><br>
 						<span style="font-size:13px;">
@@ -408,11 +418,31 @@ if (set != null)
 			$this.find("[data-type=R]").val(rgb.r);
 			$this.find("[data-type=G]").val(rgb.g);
 			$this.find("[data-type=B]").val(rgb.b);
-			$this.find("[data-type=A]").val(a * 100);
-			$this.find("[data-type=HUE]").val((parseInt($hue.css("top")) / 255 * 359).toFixed(3));
-			$this.find("[data-type=SAT]").val((parseInt($colorcursor.css("left")) / 255 * 100).toFixed(3));
-			$this.find("[data-type=VAL]").val((100 - (parseInt($colorcursor.css("top")) / 255 * 100)).toFixed(3));
+			$this.find("[data-type=A]").val(Math.round(a * 100));
+			$this.find("[data-type=HUE]").val((parseInt($hue.css("top")) / 255 * 359).toFixed(0));
+			$this.find("[data-type=SAT]").val((parseInt($colorcursor.css("left")) / 255 * 100).toFixed(0));
+			$this.find("[data-type=VAL]").val((100 - (parseInt($colorcursor.css("top")) / 255 * 100)).toFixed(0));
 			$this.find("[data-type=hex]").val(this.rgb2Hex({"r":rgb.r, "g":rgb.g, "b":rgb.b, "a":a}));
+		}
+
+		this.hsv2Rgb = function(h, s, v) 
+		{
+			var r, g, b, i, f, p, q, t;
+			h = h * 359;
+			h = Math.max(0, Math.min(360, h)); s = Math.max(0, Math.min(100, s)); v = Math.max(0, Math.min(100, v));
+			s /= 100; v /= 100;
+			if(s==0) {r=g=b=v; return {r:Math.round(r * 255), g:Math.round(g * 255), b:Math.round(b * 255)};}
+			h /= 60;i = Math.floor(h);f = h - i;p = v * (1 - s);q = v * (1 - s * f);t = v * (1 - s * (1 - f));
+			switch(i) 
+			{
+				case 0:r=v;g=t;b=p;break;
+				case 1:r=q;g=v;b=p;break;
+				case 2:r=p;g=v;b=t;break;
+				case 3:r=p;g=q;b=v;break;
+				case 4:r=t;g=p;b=v;break;
+				default:r=v;g=p;b=q;
+			}
+			return {r:Math.round(r * 255), g:Math.round(g * 255), b:Math.round(b * 255)};
 		}
 
 		this.hsvToRgb = function(gethue) 
@@ -558,10 +588,10 @@ if (set != null)
 			$this.find("[data-type=R]").val(rgba.r);
 			$this.find("[data-type=G]").val(rgba.g);
 			$this.find("[data-type=B]").val(rgba.b);
-			$this.find("[data-type=A]").val(rgba.a * 100);
-			$this.find("[data-type=HUE]").val((hsv.h * 359).toFixed(3));
-			$this.find("[data-type=SAT]").val((hsv.s * 100).toFixed(3));
-			$this.find("[data-type=VAL]").val((hsv.v * 100).toFixed(3));
+			$this.find("[data-type=A]").val(Math.round(rgba.a * 100));
+			$this.find("[data-type=HUE]").val((hsv.h * 359).toFixed(0));
+			$this.find("[data-type=SAT]").val((hsv.s * 100).toFixed(0));
+			$this.find("[data-type=VAL]").val((hsv.v * 100).toFixed(0));
 			$this.find("[data-type=hex]").val(this.rgb2Hex(rgba));
 		}
 
@@ -573,7 +603,15 @@ if (set != null)
 			hex += rgba.b.toString(16).length == 1 ? "0" + rgba.b.toString(16) : rgba.b.toString(16);
 			if(rgba.a != 1)
 			{
-				hex += (Math.floor(rgba.a * 255).toString(16)).length == 1 ? "0" +  Math.floor(rgba.a * 255).toString(16) :  Math.floor(rgba.a * 255).toString(16);
+				if(rgba.a > 1)
+					var ax = rgba.a * 2.55;
+				else
+					var ax = rgba.a * 255;
+
+				if(ax < 16)
+					hex += "0" + (Math.round(ax)).toString(16);
+				else
+					hex += (Math.round(ax)).toString(16);
 			}
 			return hex;
 		}
@@ -603,14 +641,15 @@ if (set != null)
 		{
 			var v = localStorage.getItem("fancyColorpalette");
 			if(v == undefined) v = "";
-			v = v.split(":");
+
 			v += ":" + This.rgb2Hex(x);
 			localStorage.setItem("fancyColorpalette", v);
 
 			$this.find(".palette").prepend('<div class="citems" style="background-color:' + This.rgba2str(x) + ';"></div>');
+
 			$(".colorEditor_v2 .palette>.citems").click(function(e)
 			{
-				$this.openColorEditor(this, true);
+				CEditor.openColorEditor(this, true);
 			});
 		}
 
@@ -658,6 +697,10 @@ if (set != null)
 		var $g = $this.find("input[data-type=G]");
 		var $b = $this.find("input[data-type=B]");
 		var $a = $this.find("input[data-type=A]");
+		var $huev = $this.find("input[data-type=HUE]");
+		var $sat = $this.find("input[data-type=SAT]");
+		var $val = $this.find("input[data-type=VAL]");
+		var $hex = $this.find("input[data-type=hex]");
 		var clickType;
 
 		// events
@@ -683,6 +726,80 @@ if (set != null)
 		{
 			This.openColorEditor(this, true);
 		});
+
+		$this.find("input").change(function(e)
+		{
+			This.inputChange(e);
+		});
+
+		$this.find("input").on("input", function(e)
+		{
+			This.inputChange(e);
+		});
+
+		this.inputChange = function(event)
+		{
+			var dtype = $(event.target).attr("data-type");
+			if(dtype == "R" || dtype == "G" || dtype == "B" || dtype == "A" || dtype == "hex")
+			{
+				if(dtype == "hex")
+				{
+					var rgba = this.str2rgb("#" + $hex.val());
+					console.log(rgba);
+				}
+				else
+				{
+					var rgba = this.str2rgb("rgba(" + $r.val() + "," + $g.val() + "," + $b.val() + "," + parseInt($a.val()) / 100 + ")");
+				}
+				var hsv = this.rgb2Hsv(rgba);
+				var hrgb = this.hsvToRgb(true);
+				var h = Math.round(hsv.h * 255);
+				var s = Math.round(hsv.s * 255);
+				var v = 255 - Math.round((hsv.v * 255));
+				var a = 255 - Math.round(rgba.a * 255);
+
+				$huev.val(Math.round(hsv.h * 359));
+				$sat.val(Math.round(hsv.s * 100));
+				$val.val(Math.round(hsv.v * 100));
+				if(dtype != "hex")
+					$hex.val(this.rgb2Hex(rgba));
+			}
+			else if(dtype == "HUE" || dtype == "SAT" || dtype == "VAL")
+			{
+				var a = parseInt($a.val()) / 100;
+				var h = parseInt($huev.val()) / 359;
+				var s = parseInt($sat.val());
+				var v = parseInt($val.val());
+				var rgba = this.hsv2Rgb(h, s, v);
+				var hrgb = this.hsv2Rgb(h, 100, 100);
+				
+				h *= 255;
+				s *= 2.55;
+				v *= 2.55;
+
+				h = Math.round(h);
+				s = Math.round(s);
+				v = Math.round(v);
+				rgba["a"] = a * 100;
+				a = 255 - Math.round(a * 255);
+
+				v = 255 - v;
+				$r.val(rgba.r);
+				$g.val(rgba.g);
+				$b.val(rgba.b);
+				$a.val(rgba.a);
+				$hex.val(this.rgb2Hex(rgba));
+			}
+
+			$this.find("input[name=data-origin-color]").val(hsv);
+
+			$newColor.css("background", "linear-gradient(to bottom, rgb(" + rgba.r + "," + rgba.g + "," + rgba.b + ") 0%, rgba(" + + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")");
+			$alphabar.css("background", "linear-gradient(to bottom, rgb(" + rgba.r + "," + rgba.g + "," + rgba.b + ") 0%, rgba(" + + rgba.r + "," + rgba.g + "," + rgba.b + ",0)");
+			$color.css("background", "linear-gradient(to right, #FFF 0%, rgb(" + hrgb.r + "," + hrgb.g + "," + hrgb.b + ") 100%)");
+			$colorcursor.css({"left": s + "px", "top": v + "px"});
+			$hue.css("top", h + "px");
+			$alpha.css("top", a + "px");
+		}
 
 		$this
 		.mousedown(function(e)
@@ -787,6 +904,7 @@ if (set != null)
 	var cl = localStorage.getItem("fancyColorpalette");
 	if(cl==undefined) cl = "";
 	var dac = cl.split(":");
+	console.log(cl);
 
 	dac.reverse();
 	for(var i in dac)
@@ -923,21 +1041,6 @@ else
 	}
 }
 
-
-
-$("#sortable-dps>li").dblclick(function()
-{
-	if($(this).attr("data-view") != "true")
-	{
-		$(this).attr("data-view", "true");
-	}
-	else
-	{
-		$(this).attr("data-view", "false");
-	}
-});
-
-$("#sortable-dps, #sortable-hps").sortable();
 $(".group").each(function()
 {
 	if($(this).attr("tag") != undefined)
@@ -1012,7 +1115,6 @@ function colorSave() {
 		if(!option.displayedhps[i].view)
 			$("#sortable-hps").append("<li dat=\"" + option.displayedhps[i].name + "\" data-view=\"" + option.displayedhps[i].view + "\">" + option.displayedhps[i].name + "<input type='number' min='42' max='300' value='" + option.displayedhps[i].width + "' /></li>");
 	}
-	
 	$('#tmp').html('* {font-family:"' + option.fonts + '"}');
 	option["backgroundimg"] = $(".imageurlpicker>.imagearea>.image").attr("style");
 	window.opener.option = option;
@@ -1020,6 +1122,7 @@ function colorSave() {
 	window.opener.setCSS();
 	saveSetting();
 	$("#settingtxt").val(JSON.stringify(option, null, 4));
+	actAdd();
 }
 
 $("select,input").change(function() {
@@ -1085,6 +1188,24 @@ $(".item").click(function(e) {
 		}
 	}
 });
+
+function actAdd()
+{
+	$("ul>li").dblclick(function(e)
+	{
+		if($(this).attr("data-view") == "false")
+		{
+			$(this).attr("data-view", "true");
+		}
+		else
+		{
+			$(this).attr("data-view", "false");
+		}
+		return false;
+	});
+
+	$("#sortable-dps, #sortable-hps").sortable();
+}
 
 $(".imageurlpicker").each(function() {
 	$(this).html('<div class="inputarea"><input type="text" value="" placeholder="Image URL"/><div class="chk"><i class="material-icons">launch</i></div><div class="deleteimg"><i class="material-icons">delete</i></div></div><div class="imagearea"><div class="image"></div></div><div class="remotectrl"><textarea placeholder="EX) blur(2px) contrast(1.25) ... etc"></textarea><div class="label" data-label="cssfilter"></div><div class="options imagealign" data-id="imgalign" label=""></div><dov class="options sizeoption" data-id="imgsizeopt"><button data-checked="true" data-label="widthfit"></button><button data-checked="false" data-label="heightfit"></button><button data-checked="false" data-label="original"></button></div></div>');
@@ -1190,6 +1311,7 @@ for (var i in option) {
 		$(".imageurlpicker textarea").val($(".imageurlpicker>.imagearea>.image").css("filter"));
 		if ($(".imageurlpicker textarea").val() == "none")
 			$(".imageurlpicker textarea").val($(".imageurlpicker>.imagearea>.image").css("webkitFilter"));
+
 		if ($(".imageurlpicker textarea").val() == "none")
 			$(".imageurlpicker textarea").val("");
 
@@ -1263,7 +1385,7 @@ for (var i in option) {
 }
 $('#tmp').html('* {font-family:"' + option.fonts + '"}');
 
-$("input, select").change(function() {
+$(".group input,.group select").change(function() {
 	$(".savebtn").addClass("alarm");
 });
 $("#settingtxt").val(JSON.stringify(option, null, 4));
@@ -1279,4 +1401,5 @@ function allowset()
 		location.href = location.href;
 	}
 }
+actAdd();
 </script>

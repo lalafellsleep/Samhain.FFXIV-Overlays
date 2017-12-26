@@ -8,7 +8,7 @@
 		<link href="//fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet">
 		<link href="css/default.css" rel="stylesheet">
 		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
-		<script src="http://cleaveore.ffxiv.io/2.1.2/cleaveore.js"></script>
+		<script src="https://cleaveore.ffxiv.io/2.1.3/cleaveore.js"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
 		<style>
 		</style>
@@ -44,17 +44,6 @@
 				<span style="font-size:14px;">Fancy Detail: Amethyst Edition</span>
 			</div>
 			<div class="donate" data-label="setting" onclick="opensetting();">Set And Info</div>
-			<div class="donate" onclick="window.open('https://github.com/laiglinne-ff/FFXIV_Chamsucript');" data-label="issue">Leave ISSUE</div>
-			<div class="title">Square cushion cut patch</div>
-			<div lang="true" en="Color editor bug fixed" ko="컬러 에디터 버그가 수정되었습니다."></div>
-			<div class="title">1.1 Shield Cut Patch</div>
-			<div lang="true" en="Column editing and setting export/import Adding" ko="항목 설정과 설정 내보내기/들여오기가 추가되었습니다."></div>
-			<div class="title">1.0a hotfix</div>
-			<div lang="true" en="disable Console log and Nin Customize option fixed" ko="콘솔 로그를 비활성화 했으며 닌자 버그를 수정했습니다."></div>
-			<div class="title">1.0 Brilliant Cut Patch</div>
-			<div lang="true" en="Setting Page renew and\ncustomize option added" ko="설정 페이지를 새단장\n커스텀 옵션이 추가되었습니다."></div>
-			<div class="title">0.9 Ceylon Cut Patch</div>
-			<div lang="true" en="bugfix and EN language support now!\n" ko="일부 버그가 수정되었으며 영어를 지원합니다!"></div>
 		</div>
 		<div class="body">
 			<div class="dpsheader">
@@ -733,7 +722,7 @@
 							$(cdiv).show();
 						}
 
-						$(cdiv).css("top", ((rank*24)+2)+"px");
+						$(cdiv).css("top", ((rank*$(cdiv).height())+2)+"px");
 
 						if(e[0].summonerMerge && !c.isPet)
 							rank++;
@@ -742,22 +731,33 @@
 					}
 
 					var height = 0;
+
 					$("." + x + ">div")
 					.each(function()
 					{ 
 						if($(this).attr("style") != undefined)
 						{
 							if($(this).attr("style").indexOf("display: none") == -1)
-								height ++;
+								height += $(this).height();
 						}
 						else
-							height ++;
+							height += $(this).height();
 					});
 					
-					$("." + x).css("height", (height * 24)+4+"px");
+					$("." + x).css("height", height+4+"px");
+
+					if(height == 0)
+					{
+						$("." + x.replace("dpsarea", "dpsheader").replace("hpsarea", "hpsheader")).hide();
+						$("." + x).hide();
+					}
+					else
+					{
+						$("." + x.replace("dpsarea", "dpsheader").replace("hpsarea", "hpsheader")).show();
+						$("." + x).show();
+					}
 				}
 			}
-
 			aresize();
 		}
 

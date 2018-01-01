@@ -107,7 +107,7 @@ body>.body>div>div>.shadowbar {left:37px; top:2px; right:8px;}
 .body>div>*>.data>.name {-webkit-filter:blur(3px); filter:blur(3px);}
 .body>div>.YOU>.data>.name {display:inline; -webkit-filter:none; filter:none;}
 .body>div>*>.data>.columns {position:absolute; right:0px; top:0px; bottom:0px; left:50px; text-align:right; overflow:hidden;}
-.body>div>*>.data>.columns>* {display:inline-block; width:48px; padding-left:2px; padding-right:3px; text-align:center; position:relative; height:20px; -webkit-font-smoothing:none;}
+.body>div>*>.data>.columns>* {display:inline-block; width:48px; padding-left:2px; padding-right:3px; text-align:center; position:relative; height:20px;}
 .body>div>*>.data>.columns>*::before {content:" "; width:1px; height:20px; background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, #FFF 50%, rgba(255,255,255,0) 100%); float:left; position:absolute; left:0px; top:0px;}
 .body>div>div .bar {z-index:5;}
 .body>div>div .pbar {z-index:1; -webkit-filter:brightness(0.4); filter:brightness(0.4);}

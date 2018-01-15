@@ -1,0 +1,9 @@
+[submodule "core-scripts/cleaveore"]
+	path = core-scripts/cleaveore
+	url = https://github.com/laiglinne-ff/Samhain.FFXIV-CleaveORE.git
+[submodule "core-scripts/chrysoberyl"]
+	path = core-scripts/chrysoberyl
+	url = https://github.com/laiglinne-ff/TheStone.Chrysoberyl.git
+[submodule "Overlays/Fancy_Detail_Amethyst"]
+	path = Overlays/Fancy_Detail_Amethyst
+	url = https://github.com/laiglinne-ff/cleaveore.FancyAmethyst.git

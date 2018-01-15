@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Doughnut DpsOverlay</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script src="js/piechart.js"></script>
+		<script src="https://ZCube.github.io/ACTWebSocket/Sample/actwebsocket.js"></script>
+		<script src="https://ZCube.github.io/ACTWebSocket/Sample/actwebsocket_compat.js"></script>
+		<script>var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/</script>
+		<style type="text/css" media="screen">
+		html
+		{
+			padding:0px; margin:0px; overflow:hidden;
+		}
+		body
+		{
+			border:1px solid rgba(0,120,220,0.5);
+			position:fixed;
+			left:0px; bottom:0px; right:0px; top:0px;
+			border-radius:5px;
+			padding:5px;
+		}
+		.body
+		{
+			border:1px solid rgba(0,120,220,0.5);
+			border-radius:50%;
+			background:rgba(0,0,0,0.25);
+			position:fixed;
+			width:200px;
+			height:200px;
+			overflow:hidden;
+			top:42px;
+		}
+
+		h1
+		{
+			margin: 150px auto 30px auto;
+			text-align: center;
+			color: #fff;
+		}
+
+		.tooltip
+		{
+			background-color:rgba(0,0,0,0.5);
+			color:#FFF;
+			font-size: 11px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			box-shadow: 1px 1px 1px 1px rgba(25, 25, 25, 0.15);
+			text-align: left;
+			max-width: 240px;
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+
+		.data
+		{
+			z-index:-1;
+			position:fixed;
+			top:112px;
+			height:100px;
+			width:200px;
+			text-align:center;
+			color:#FFF;
+			font-size:14px;
+			font-family:'돋움';
+			line-height:22px;
+		}
+
+		.title
+		{
+			color:#FFF;
+			background:rgba(0,0,0,0.25);
+			padding:3px;
+			border-radius:3px;
+			text-align:center;
+			font-size:14px;
+		}
+
+		.users
+		{
+			position:fixed;
+			left:230px;
+			top:42px;
+			right:15px;
+			bottom:15px;
+			overflow:auto;
+		}
+
+		.chart
+		{
+			z-index:99;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="title">-</div>
+		<div class="body">
+			<div class="chart"></div>
+			<div class="data">DUR : --:--<br>RDPS : -<br>Tot. : -</div>
+		</div>
+		<div class="users">
+
+		</div>
+	</body>
+	<script type="text/javascript">
+		var colors = [
+			"#C000C0",
+			"#FF80FF",
+			"#0000C0",
+			"#8080FF",
+			"#00C0C0",
+			"#80FFFF",
+			"#00C000",
+			"#80FF80",
+			"#C0C000",
+			"#8080FF",
+			"#C04000",
+			"#FFC080",
+			"#C00000",
+			"#FF8080",
+			"#FF00FF",
+			"#400040",
+			"#0000FF",
+			"#000040",
+			"#00FFFF",
+			"#004040",
+			"#FFFF00",
+			"#404000",
+			"#FF8000",
+			"#804040",
+			"#FF0000",
+			"#400000"
+			];
+
+		/* 자신의 닉네임 (여러개를 사용하는 경우 var myname = ["닉네임1", "닉네임2", "닉네임3"]; 과 같이 입력.) */
+		var myname = ["라그린네"];
+
+		/* 최초 정렬 기준 [default = encdps] */
+		var defaultSort = "encdps";
+
+		/* 최초 보여줄 탭 [default = 기본] */
+		var selectTab = "기본";
+		$(".chart").donutpie();
+	</script>
+	<script src="js/app.js"></script>
+</html>

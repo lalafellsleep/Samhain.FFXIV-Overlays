@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CrystalParticle DpsOverlay</title>
+        <meta charset="UTF-8">
+  		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <link rel="stylesheet" href="./css/prop.css" />
+        <link rel="stylesheet" href="./css/presets.css" />
+    </head>
+    <body>
+        <div class="data" style="display:block;">
+            <div class="after"></div>
+            <div class="labels">
+                <div class="cont"></div>
+            </div>
+            <div class="cont">
+                <div class="encounter">[00:00] Encounter (--- DPS / --- HPS) <span></span></div>
+            </div>
+            <div class="combatants">
+            </div>
+        </div>
+        <div class="settingwindow" style="display:none;">
+            <div class="winclose" onclick="$('.data').show(); $('.settingwindow').hide();"></div>
+            <div class="topleft"></div><div class="top"></div><div class="topright"></div><div class="left"></div><div class="right"></div><div class="bottomleft"></div><div class="bottom"></div><div class="bottomright"></div><div class="center"></div>
+            <div class="set">
+                <div class="title" data-ko="오버레이 설정" data-en="Overlay Setting" data-jp="オーバーレイ設定">Overlay Setting</div>
+                <div class="left">
+                    <div class="icons selected" style="background:url(./img/system_configuration.png) no-repeat;" data-tab-id="default"></div>
+                    <div class="icons" style="background:url(./img/sound_settings.png) no-repeat;" data-tab-id="sound"></div>
+                    <div class="icons" style="background:url(./img/tabsetting.png) no-repeat;" data-tab-id="tabset"></div>
+                    <div class="icons" style="background:url(./img/ui_settings.png) no-repeat;" data-tab-id="ui"></div>
+                </div>
+                <div class="leftspliter"></div>
+                <div class="content" style="display:block;" data-tab="default">
+                    <div class="title" data-ko="표시 설정" data-en="Display Setting" data-jp="表示設定">Display Setting</div>
+                    <div class="checkbox" data-id="nickblur" data-checked="true"
+                    data-ko="이름을 블러 처리" 
+                    data-en="Nickname Blur Effect" 
+                    data-jp="ニックネームのぼかし">Nickname Blur Effect</div>
+                    <div class="checkbox" data-id="mergepet" data-checked="true"
+                    data-ko="소환수 합산" 
+                    data-en="Merge Pet" 
+                    data-jp="召喚獣合算">Merge Pet</div>
+                    <div class="checkbox" data-id="usename" data-checked="true"
+                    data-ko="자신의 이름 사용" 
+                    data-en="Using Your Name" 
+                    data-jp="私の名前を使用する">Using Your Name</div>
+                    <div class="checkbox" data-id="useanim" data-checked="true"
+                    data-ko="애니메이션 효과 사용" 
+                    data-en="Using Bar Animation" 
+                    data-jp="バーアニメーションを使用する"></div>
+                    <div class="cover">
+                        <span
+                        data-ko="소수점 표시" 
+                        data-en="Decimal Point" 
+                        data-jp="小数点表示">Decimal Point</span>
+                        <div class="combobox" data-id="decimal" data-items="{'v2':{'d':'0.00 (2)'}, 'v1':{'d':'0.0 (1)'}, 'v0':{'d':'0 (0)'}}"><span data="cur">▶</span>0.00 (2)</div>
+                    </div>
+                    <div class="title" data-ko="현지화 설정" data-en="Localization Setting" data-jp="ローカライズ設定">Localization Setting</div>
+                    <div class="checkbox" data-id="initialname" data-checked="false" 
+                    data-ko="이니셜 이름 (글로벌 서버 전용)" 
+                    data-en="Initial Name (Global Server only)" 
+                    data-jp="初期名（グローバルサーバのみ）">Initial Name (Global Server only)</div>
+                    <div class="cover">
+                        <span data-ko="언어 (Language)" data-en="Language" data-jp="言語 (Language)">Language</span>
+                        <div class="combobox" data-id="lang" data-items="{'en':{'ko':'English', 'en':'English', 'jp':'English'}, 'ko':{'ko':'한국어', 'en':'한국어', 'jp':'한국어'}, 'jp':{'ko':'日本語', 'en':'日本語', 'jp':'日本語'}}"><span data="cur">▶</span>English</div>
+                    </div>
+                    <div class="title" data-ko="초기화" data-en="Reset" data-jp="初期化">Reset</div>
+                    <div class="button" onclick="setting.setDefault(true); location.href = location.href;">초기화</div>
+                </div>
+                <div class="content" style="display:none;" data-tab="sound">
+                    <div class="title"
+                    data-ko="소리 설정" 
+                    data-en="Sound Setting" 
+                    data-jp="音の設定">Sound Setting</div>
+                    <div class="checkbox" data-id="soundplay" data-checked="true"
+                    data-ko="효과음 사용" 
+                    data-en="Use Sound Effect" 
+                    data-jp="サウンドエフェクトを使用">Use Sound Effect</div>
+                </div>
+                <div class="content" style="display:none;" data-tab="tabset">
+
+                </div>
+                <div class="content" style="display:none;" data-tab="ui">
+                    <div class="title"
+                    data-ko="배경 스타일 설정" 
+                    data-en="Back Style Setting" 
+                    data-jp="背景スタイル設定">Style Setting</div>
+                    <div class="cover" style="margin-bottom:10px;">
+                        <span
+                        data-ko="프리셋" 
+                        data-en="Preset" 
+                        data-jp="プリセット">Preset</span>
+                        <div class="combobox" data-id="backstyle" data-items="{'ffchat':{'ko':'게임 채팅 스타일', 'en':'Chatting Window Style', 'jp':'チャットスタイル'}, 'modern':{'ko':'모던', 'en':'Modern', 'jp':'モダン'}, 'fancy':{'ko':'팬시', 'en':'Fancy', 'jp':'ファンシー'}}"><span data="cur">▶</span>Pastell</div>
+                    </div>
+                    <div class="title"
+                    data-ko="막대 스타일 설정" 
+                    data-en="Bar Style Setting" 
+                    data-jp="バースタイル設定">Style Setting</div>
+                    <div class="cover" style="margin-bottom:10px;">
+                        <span
+                        data-ko="프리셋" 
+                        data-en="Preset" 
+                        data-jp="プリセット">Preset</span>
+                        <div class="combobox" data-id="style" data-items="{'pastell':{'d':'Pastell'}, 'original':{'d':'Original'}, 'rolipop':{'d':'Rolipop'}, 'regular':{'d':'Regular'}, 'fancy':{'d':'Fancy'}, 'underbar':{'d':'Underline'}, 'custom':{'ko':'사용자 설정', 'en':'User Custom', 'jp':'ユーザー設定'}}"><span data="cur">▶</span>Pastell</div>
+                    </div>
+                    <div class="title"
+                    data-ko="미리보기" 
+                    data-en="Preview" 
+                    data-jp="プレビュー">Preview</div>
+                    <div class="preview" style="border:2px solid #FFF; position:relative; border-radius:10px; margin-left:2px; height:72px;">
+                        <div style="top:4px;" class="pastell">
+                            <div class="bar PLD pastell" style="width:100%;"></div>
+                            <div class="border"></div>
+                            <div class="dat">
+                                <div class="class">
+                                    <img src="./img/PLD.png">
+                                </div>
+                                <div class="rank">1. </div>
+                                <div class="name">YOU</div>
+                                <div class="val">999.99</div>
+                            </div>
+                        </div>
+                        <div style="top:26px;" class="pastell">
+                            <div class="bar MNK pastell" style="width:50%;"></div>
+                            <div class="border"></div>
+                            <div class="dat">
+                                <div class="class">
+                                    <img src="./img/MNK.png">
+                                </div>
+                                <div class="rank">2. </div>
+                                <div class="name">YOU</div>
+                                <div class="val">999.99</div>
+                            </div>
+                        </div>
+                        <div style="top:48px;" class="pastell">
+                            <div class="bar WHM pastell" style="width:25%;"></div>
+                            <div class="border"></div>
+                            <div class="dat">
+                                <div class="class">
+                                    <img src="./img/WHM.png">
+                                </div>
+                                <div class="rank">3. </div>
+                                <div class="name">YOU</div>
+                                <div class="val">999.99</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editor" style="width:100%; min-height:250px; margin-top:5px; position:relative;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="comboboxitems" style="display:none;">
+            <div>Test Item 1</div>
+            <div>Test Item 2</div>
+        </div>
+        <div class="menu">
+            <!-- TAB CUSTOMIZE Find "function createTabs"-->
+            <div class="tabs">
+            </div>
+
+            <div class="setting" onclick="openSet();">
+                <div>
+                    <div style="padding-left:20px;">Setting</div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <style>
+        #editor{font-family:'Consolas' !important;}
+        #editor * {font-family:'Consolas' !important;}
+    </style>
+    <style id="custom">
+
+    </style>
+    <script>
+        var wsUri = "ws://@HOST_PORT@/MiniParse"; /*DO NOT EDIT THIS VALUE*/
+        //$(".data").hide();
+        //$(".settingwindow").show();
+    </script>
+    <script src="../ffxiv_overlay_corejs/overlaycore1.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/ace/1.2.6/min/ace.js"></script>
+    <script src="./js/setting.js"></script>
+    <script>
+        Debug.debug = false;
+        var set = loadSetting("crystalparticle_setting");
+
+        if (set == "" || set == undefined)
+        {
+            set = new Setting();
+        }
+
+        set.tab = {
+            "DPS":{label:"DPS", data:[
+                {"tag":"DPS", "data":"{encdps}", width:50},
+                {"tag":"DAMAGE", "data":"{damage}", width:50, fixed:0},
+                {"tag":"D%", "data":"{damage%}%", width:30, fixed:0},
+                {"tag":"SWING", "data":"{swings}", width:40, fixed:0},
+                {"tag":"MISS", "data":"{misses}", width:40, fixed:0},
+                {"tag":"D.CRIT", "data":"{crithit%}%", width:40, fixed:0},
+                {"tag":"DEATH", "data":"{deaths}", width:40, fixed:0},
+                //{"tag":"MXHIT", "data":"{maxhitstr} &lt;{maxhitval}&gt;", width:160},
+            ], sort:"encdps"},
+            "HEALER":{label:"HEALER", data:[
+                {"tag":"HPS", "data":"{enchps}", width:50},
+                {"tag":"HEALED", "data":"{healed}", width:50, fixed:0},
+                {"tag":"Ov.H", "data":"{overHeal}", width:40, fixed:0},
+                {"tag":"H%", "data":"{healed%}%", width:30, fixed:0},
+                {"tag":"HEALS", "data":"{heals}", width:40, fixed:0},
+                {"tag":"ABSORB", "data":"{absorbHeal}", width:40, fixed:0},
+                {"tag":"DEATH", "data":"{deaths}", width:40, fixed:0},
+                //{"tag":"MXHIT", "data":"{maxhitstr} &lt;{maxhitval}&gt;", width:160},
+            ], sort:"enchps"},
+        };
+
+        saveSetting("crystalparticle_setting", set);
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/css");
+        editor.getSession().on('change',function(e){
+            var set = loadSetting("crystalparticle_setting");
+
+            set.customcss = editor.getValue().replace(/(\r|\n)/ig, "");
+            $("#custom").html(set.customcss.replace(/(\r|\n)/ig, ""));
+            saveSetting("crystalparticle_setting", set);
+        });
+
+        editor.setValue(set.customcss.replace(/}/ig, "}\r\n"));
+        $("#custom").html(set.customcss.replace(/(\r|\n)/ig, ""));
+    </script>
+    <script src="./js/app.js"></script>
+</html>

@@ -7,3 +7,9 @@
 [submodule "Overlays/Fancy_Detail_Amethyst"]
 	path = Overlays/Fancy_Detail_Amethyst
 	url = https://github.com/laiglinne-ff/cleaveore.FancyAmethyst.git
+[submodule "Overlays/MaxhitRanking"]
+	path = Overlays/MaxhitRanking
+	url = https://github.com/laiglinne-ff/chrysoberyl.MaxhitRanking.git
+[submodule "Overlays/Cat_s_Eye"]
+	path = Overlays/Cat_s_Eye
+	url = https://github.com/laiglinne-ff/chrysoberyl.Cat_s_Eye.git

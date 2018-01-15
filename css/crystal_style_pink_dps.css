@@ -485,18 +485,18 @@ li:last-child
     border-color: transparent transparent transparent rgb(105, 224, 145);
 }
 .show-job-colors .주술사 .bar,
-.show-job-colors .흑마도사 .bar 
+.show-job-colors .흑마도사 .bar
 {
     background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
     box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
 }
 .show-job-colors .주술사 .bar::after,
-.show-job-colors .흑마도사 .bar::after 
+.show-job-colors .흑마도사 .bar::after
 {
     border-color: transparent rgb(229, 144, 187) transparent transparent;
 }
 .show-job-colors .주술사 .bar::before,
-.show-job-colors .흑마도사 .bar::before 
+.show-job-colors .흑마도사 .bar::before
 {
     border-color: transparent transparent transparent rgb(229, 144, 187);
 }
@@ -607,6 +607,35 @@ li:last-child
 {
     border-color: transparent transparent transparent rgb(112, 165, 249);
 }
+.show-job-colors .rdm .bar
+{
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .rdm .bar::after
+{
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
+}
+.show-job-colors .rdm .bar::before
+{
+    border-color: transparent transparent transparent rgb(229, 144, 187);
+}
+.show-job-colors .sam .bar
+{
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .sam .bar::after
+{
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
+}
+.show-job-colors .sam .bar::before
+{
+    border-color: transparent transparent transparent rgb(229, 144, 187);
+}
+
+
+
 /* JOB ONLY (no class) */
 .job-icon *
 {
@@ -616,7 +645,7 @@ li:last-child
 {
     -webkit-filter: hue-rotate(190deg);
 }
-.job-icon>.몽크 
+.job-icon>.몽크,
 {
     -webkit-filter: hue-rotate(5deg);
 }
@@ -632,7 +661,7 @@ li:last-child
 {
     -webkit-filter: brightness(2);
 }
-.job-icon>.흑마도사 
+.job-icon>.흑마도사,
 {
     -webkit-filter: hue-rotate(200deg);
 }
@@ -640,7 +669,9 @@ li:last-child
 {
     -webkit-filter: hue-rotate(285deg);
 }
-.job-icon>.음유시인 
+.job-icon>.음유시인,
+.job-icon>.rdm,
+.job-icon>.sam 
 {
     -webkit-filter: hue-rotate(30deg);
 }
@@ -657,7 +688,7 @@ li:last-child
     -webkit-filter: hue-rotate(345deg);
 }
 .job-icon>.기공사,
-.job-icon>.포탑 
+.job-icon>.포탑
 {
     -webkit-filter: hue-rotate(135deg);
 }

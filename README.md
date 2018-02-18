@@ -11,20 +11,20 @@ Overlay for ACTWebSocket and OverlayPlugin
 
 ## Overlays
 > ### Cat's Eye<br>
->`latest-update: Stormblood 4.18`<br>
+>`latest-update: Stormblood 4.18` `MIT License`<br>
 > ### Fancy Detail Amethyst<br>
->`latest-update: Stormblood 4.18`<br>
+>`latest-update: Stormblood 4.18` `GNU GPL 3.0`<br>
 > ### CrystalParticle<br>
->`latest-update: Heavensward 3.4`<br>
+>`latest-update: Heavensward 3.4` `MIT License`<br>
 > ### Chocolate<br>
->`latest-update: Heavensward 3.3`<br>
+>`latest-update: Heavensward 3.3` `MIT License`<br>
 > ### Doughnut<br>
->`latest-update: Heavensward 3.1`<br>
+>`latest-update: Heavensward 3.1` `MIT License`<br>
 > ### Fancy<br>
->`latest-update: Heavensward 3.1`<br>
+>`latest-update: Heavensward 3.1` `GNU GPL 3.0`<br>
 
 ## COREs
 > ### Chrysoberyl<br>
->`latest-update: Stormblood 4.18`<br>
+>`latest-update: Stormblood 4.18` `MIT License`<br>
 > ### Cleaveore<br>
->`latest-update: Stormblood 4.15`<br>
+>`latest-update: Stormblood 4.15` `MIT License`<br>

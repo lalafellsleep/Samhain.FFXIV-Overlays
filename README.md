@@ -13,7 +13,8 @@ Overlay for ACTWebSocket and OverlayPlugin
 > ### Cat's Eye<br>
 >`latest-update: Stormblood 4.18` `MIT License`<br>
 > ### Fancy Detail Amethyst<br>
->`latest-update: Stormblood 4.18` `GNU GPL 3.0`<br>
+>`latest-update: Stormblood 4.18` `GNU GPL 3.0` **`STABLE`**<br>
+>`latest-update: Stormblood 4.2 ` `GNU GPL 3.0` **`DEVELOP`**<br>
 > ### CrystalParticle<br>
 >`latest-update: Heavensward 3.4` `MIT License`<br>
 > ### Chocolate<br>

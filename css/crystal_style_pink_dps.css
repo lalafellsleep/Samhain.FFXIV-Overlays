@@ -633,7 +633,32 @@ li:last-child
 {
     border-color: transparent transparent transparent rgb(229, 144, 187);
 }
-
+.show-job-colors .dnc .bar
+{
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .dnc .bar::after
+{
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
+}
+.show-job-colors .dnc .bar::before
+{
+    border-color: transparent transparent transparent rgb(229, 144, 187);
+}
+.show-job-colors .gnb .bar 
+{
+    background: linear-gradient(to right, rgb(112, 165, 249) 0%, transparent 50%, transparent 50%, rgb(112, 165, 249) 100%);
+    box-shadow: inset 0px 0px 7px rgba(112, 165, 249, 1);
+}
+.show-job-colors .gnb .bar::after 
+{
+    border-color: transparent rgb(112, 165, 249) transparent transparent;
+}
+.show-job-colors .gnb .bar::before 
+{
+    border-color: transparent transparent transparent rgb(112, 165, 249);
+}
 
 
 /* JOB ONLY (no class) */
@@ -671,7 +696,9 @@ li:last-child
 }
 .job-icon>.음유시인,
 .job-icon>.rdm,
-.job-icon>.sam 
+.job-icon>.sam,
+.job-icon>.dnc,
+.job-icon>.gnb 
 {
     -webkit-filter: hue-rotate(30deg);
 }

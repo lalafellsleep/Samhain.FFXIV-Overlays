@@ -633,6 +633,19 @@ li:last-child
 {
     border-color: transparent transparent transparent rgb(229, 144, 187);
 }
+.show-job-colors .gnb .bar
+{
+    background: linear-gradient(to right, rgb(229, 144, 187) 0%, transparent 50%, transparent 50%, rgb(229, 144, 187) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .gnb .bar::after
+{
+    border-color: transparent rgb(229, 144, 187) transparent transparent;
+}
+.show-job-colors .gnb .bar::before
+{
+    border-color: transparent transparent transparent rgb(229, 144, 187);
+}
 
 
 
@@ -671,7 +684,8 @@ li:last-child
 }
 .job-icon>.음유시인,
 .job-icon>.rdm,
-.job-icon>.sam 
+.job-icon>.sam,
+.job-icon>.gnb 
 {
     -webkit-filter: hue-rotate(30deg);
 }

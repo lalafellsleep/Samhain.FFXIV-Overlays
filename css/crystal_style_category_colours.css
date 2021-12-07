@@ -659,6 +659,33 @@ li:last-child
     border-color: transparent transparent transparent rgb(112, 165, 249);
 }
 
+.show-job-colors .rpr .bar
+{
+    background: linear-gradient(to right, rgb(226, 104, 104) 0%, transparent 50%, transparent 50%, rgb(226, 104, 104) 100%);
+    box-shadow: inset 0px 0px 7px rgba(226, 104, 104, 1);
+}
+.show-job-colors .rpr .bar::after
+{
+    border-color: transparent rgb(226, 104, 104) transparent transparent;
+}
+.show-job-colors .rpr .bar::before
+{
+    border-color: transparent transparent transparent rgb(226, 104, 104);
+}
+
+.show-job-colors .sge .bar 
+{
+    background: linear-gradient(to right, rgb(105, 224, 145) 0%, transparent 50%, transparent 50%, rgb(105, 224, 145) 100%);
+    box-shadow: inset 0px 0px 7px rgba(105, 224, 145, 1);
+}
+.show-job-colors .sge .bar::after 
+{
+    border-color: transparent rgb(105, 224, 145) transparent transparent;
+}
+.show-job-colors .sge .bar::before 
+{
+    border-color: transparent transparent transparent rgb(105, 224, 145);
+}
 
 /* JOB ONLY (no class) */
 .job-icon *
@@ -697,7 +724,9 @@ li:last-child
 .job-icon>.rdm,
 .job-icon>.sam,
 .job-icon>.dnc,
-.job-icon>.gnb,
+.job-icon>.rpr,
+.job-icon>.rpr,
+.job-icon>.gnb
 {
     -webkit-filter: hue-rotate(30deg);
 }
